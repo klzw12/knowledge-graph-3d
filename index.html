@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Knowledge Graph 3D — 知识图谱</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="canvas-container"></div>
+    <div id="title-overlay">
+      <h1>🕸️ Knowledge Graph</h1>
+      <p class="subtitle">3D 知识图谱 · 点击节点查看关联 · 知识是网，不是树</p>
+      <p class="hint">🖱 拖拽旋转 · 滚轮缩放 · 右键平移</p>
+    </div>
+    <div id="info-panel" class="hidden">
+      <div id="info-panel-header">
+        <span id="info-panel-label"></span>
+        <button id="info-panel-close">✕</button>
+      </div>
+      <div id="info-panel-description"></div>
+      <div id="info-panel-content"></div>
+      <div id="info-panel-connections"><!-- connected nodes go here --></div>
+      <a id="info-panel-url" target="_blank" rel="noopener" class="hidden">🔗 打开链接 →</a>
+    </div>
+    <div id="breadcrumb"></div>
+    <div id="stats">
+      <span id="stats-nodes">0</span> 节点 · <span id="stats-edges">0</span> 关联
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
