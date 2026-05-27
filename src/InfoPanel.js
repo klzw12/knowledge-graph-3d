@@ -1,29 +1,8 @@
 /**
- * 节点详情面板 — 显示节点信息和关联
+ * 节点详情面板 — 显示节点信息、子节点、交叉关联
  */
-
-function getNodeConnections(nodeId, edges, nodeMap) {
-  const connected = []
-  const seen = new Set()
-  for (const e of edges) {
-    if (e.source === nodeId && !seen.has(e.target)) {
-      const n = nodeMap.get(e.target)
-      if (n) connected.push({ node: n, relation: e.label, dir: 'out' })
-      seen.add(e.target)
-    }
-    if (e.target === nodeId && !seen.has(e.source)) {
-      const n = nodeMap.get(e.source)
-      if (n) connected.push({ node: n, relation: e.label, dir: 'in' })
-      seen.add(e.source)
-    }
-  }
-  return connected
-}
-
 export class InfoPanel {
-  constructor(edges, nodeMap) {
-    this.edges = edges
-    this.nodeMap = nodeMap
+  constructor() {
     this.panel = document.getElementById('info-panel')
     this.label = document.getElementById('info-panel-label')
     this.desc = document.getElementById('info-panel-description')
@@ -32,12 +11,18 @@ export class InfoPanel {
     this.urlLink = document.getElementById('info-panel-url')
     this.closeBtn = document.getElementById('info-panel-close')
     this.closeBtn.addEventListener('click', () => this.hide())
+    this._relations = [] // set from outside
+    this._allNodes = new Map()
   }
+
+  setRelations(relations) { this._relations = relations || [] }
+  setNodeMap(m) { this._allNodes = m }
 
   show(nodeData) {
     if (!nodeData) { this.hide(); return }
 
-    this.label.textContent = `🕸️ ${nodeData.label}`
+    const icon = nodeData._depth === 0 ? '🌳' : (!nodeData._children || nodeData._children.length === 0) ? '📄' : '📂'
+    this.label.textContent = `${icon} ${nodeData.label}`
     this.desc.textContent = nodeData.description || ''
 
     // Content
@@ -60,33 +45,80 @@ export class InfoPanel {
       }
     }
 
-    // Connections
+    // Connections section
     this.connections.innerHTML = ''
-    const conns = getNodeConnections(nodeData.id, this.edges, this.nodeMap)
-    if (conns.length > 0) {
+
+    // Tree children
+    if (nodeData._children && nodeData._children.length > 0) {
       const title = document.createElement('div')
       title.className = 'info-subtitle'
-      title.textContent = `关联 (${conns.length})`
+      title.textContent = `📂 子节点 (${nodeData._children.length})`
       this.connections.appendChild(title)
       const list = document.createElement('div')
-      list.className = 'info-connections'
-      conns.forEach(c => {
+      list.className = 'info-conn-list'
+      nodeData._children.forEach(cid => {
+        const child = this._allNodes.get(cid)
+        if (!child) return
         const item = document.createElement('a')
         item.className = 'info-conn-link'
         item.href = '#'
-        item.innerHTML = `
-          <span class="conn-dot" style="background:${c.node.color}"></span>
-          <span class="conn-label">${c.node.label}</span>
-          <span class="conn-relation">${c.relation || '—'}</span>
-        `
-        item.addEventListener('click', (e) => {
-          e.preventDefault()
-          document.dispatchEvent(new CustomEvent('kg:focus', { detail: { nodeId: c.node.id } }))
-        })
+        item.innerHTML = `<span class="conn-dot" style="background:${child.color}"></span><span class="conn-label">${child.label}</span>`
+        item.addEventListener('click', (e) => { e.preventDefault()
+          document.dispatchEvent(new CustomEvent('kg:focus', { detail: { nodeId: cid } })) })
         list.appendChild(item)
       })
       this.connections.appendChild(list)
-    } else {
+    }
+
+    // Cross relations
+    const crossRels = this._relations.filter(r => r.source === nodeData.id || r.target === nodeData.id)
+    if (crossRels.length > 0) {
+      const title = document.createElement('div')
+      title.className = 'info-subtitle'
+      title.innerHTML = `🔗 交叉关联 (${crossRels.length}) <span class="info-badge">跨域</span>`
+      this.connections.appendChild(title)
+      const list = document.createElement('div')
+      list.className = 'info-conn-list'
+      crossRels.forEach(r => {
+        const otherId = r.source === nodeData.id ? r.target : r.source
+        const other = this._allNodes.get(otherId)
+        if (!other) return
+        const dir = r.source === nodeData.id ? '→' : '←'
+        const item = document.createElement('a')
+        item.className = 'info-conn-link cross'
+        item.href = '#'
+        item.innerHTML = `
+          <span class="conn-dot" style="background:${other.color}"></span>
+          <span class="conn-label">${other.label}</span>
+          <span class="conn-relation">${dir} ${r.label || '—'}</span>
+        `
+        item.addEventListener('click', (e) => { e.preventDefault()
+          document.dispatchEvent(new CustomEvent('kg:focus', { detail: { nodeId: otherId } })) })
+        list.appendChild(item)
+      })
+      this.connections.appendChild(list)
+    }
+
+    // Parent
+    if (nodeData._parentId) {
+      const parent = this._allNodes.get(nodeData._parentId)
+      if (parent) {
+        const title = document.createElement('div')
+        title.className = 'info-subtitle'
+        title.textContent = '⬆ 所属'
+        this.connections.appendChild(title)
+        const item = document.createElement('a')
+        item.className = 'info-conn-link'
+        item.href = '#'
+        item.innerHTML = `<span class="conn-dot" style="background:${parent.color}"></span><span class="conn-label">${parent.label}</span>`
+        item.addEventListener('click', (e) => { e.preventDefault()
+          document.dispatchEvent(new CustomEvent('kg:focus', { detail: { nodeId: parent.id } })) })
+        this.connections.appendChild(item)
+      }
+    }
+
+    // If no connections at all
+    if (!nodeData._children && crossRels.length === 0 && !nodeData._parentId) {
       const empty = document.createElement('div')
       empty.className = 'info-subtitle'
       empty.textContent = '暂无关联'
