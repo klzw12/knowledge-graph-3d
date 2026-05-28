@@ -46,7 +46,15 @@ export class SearchUI {
     row.appendChild(this.clear)
     this.wrapper.appendChild(row)
 
-    // ── Domain 快速导航栏 ──
+    // 结果列表
+    this.results = document.createElement('div')
+    this.results.id = 'search-results'
+    this.results.style.display = 'none'
+    this.wrapper.appendChild(this.results)
+
+    container.appendChild(this.wrapper)
+
+    // ── Domain 快速导航（独立于搜索框，左侧定位） ──
     this.domainBar = document.createElement('div')
     this.domainBar.id = 'domain-bar'
     for (const d of this._domains) {
@@ -57,15 +65,8 @@ export class SearchUI {
       chip.addEventListener('click', () => this._selectDomain(d.id))
       this.domainBar.appendChild(chip)
     }
-    this.wrapper.appendChild(this.domainBar)
+    container.appendChild(this.domainBar)
 
-    // ── 结果列表 ──
-    this.results = document.createElement('div')
-    this.results.id = 'search-results'
-    this.results.style.display = 'none'
-    this.wrapper.appendChild(this.results)
-
-    container.appendChild(this.wrapper)
     this._bindEvents()
   }
 
