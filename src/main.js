@@ -230,24 +230,49 @@ async function main() {
   document.getElementById('start-hint')?.classList.add('visible')
 
   // ─── 搜索 ───
+  const DOMAINS = [
+    { id: 'ai', label: '人工智能', color: '#ff6b6b' },
+    { id: 'math', label: '数学基础', color: '#eab308' },
+    { id: 'languages', label: '语言与框架', color: '#8b5cf6' },
+  ]
+
   const searchUI = new SearchUI(
     nodes,
-    (matchedIds) => {
-      if (matchedIds.length > 0) {
-        graph.setSearchHighlight(matchedIds)
-      } else {
-        graph.clearHighlight()
-        graph.selectNode(-1)
-      }
+    {
+      onHighlight: (matchedIds) => {
+        if (matchedIds.length > 0) {
+          graph.setSearchHighlight(matchedIds)
+        } else {
+          graph.clearHighlight()
+          graph.selectNode(-1)
+        }
+      },
+      onSelect: (node) => {
+        const idx = nodes.findIndex(n => n.id === node.id)
+        if (idx >= 0) {
+          graph.selectNode(idx)
+          panel.show(node)
+          camCtrl.flyToNode(node)
+        }
+      },
+      onDomainSelect: (domainId) => {
+        if (!domainId) {
+          graph.clearHighlight()
+          graph.selectNode(-1)
+          camCtrl.resetFullView()
+          return
+        }
+        // 找到该 domain 根节点，飞过去
+        const domainNode = nodes.find(n => n.id === domainId)
+        if (domainNode) {
+          const idx = nodes.findIndex(n => n.id === domainId)
+          graph.selectNode(idx)
+          panel.show(domainNode)
+          camCtrl.flyToNode(domainNode)
+        }
+      },
     },
-    (node) => {
-      const idx = nodes.findIndex(n => n.id === node.id)
-      if (idx >= 0) {
-        graph.selectNode(idx)
-        panel.show(node)
-        camCtrl.flyToNode(node)
-      }
-    },
+    DOMAINS,
     document.getElementById('app')
   )
 
