@@ -165,9 +165,9 @@ async function main() {
 
   const bloomPass = new UnrealBloomPass(
     new THREE.Vector2(width, height),
-    0.3,   // strength
-    0.5,   // radius
-    0.1    // threshold
+    0.6,   // strength
+    0.4,   // radius
+    0.05   // threshold
   )
   composer.addPass(bloomPass)
 

@@ -12,10 +12,10 @@
 import * as THREE from 'three'
 
 // ─── 常量 ───
-const NODE_SEGMENTS = 24    // 球体细分
+const NODE_SEGMENTS = 20    // 球体细分
 const EDGE_CURVE_POINTS = 8 // 每条边的曲线采样点
-const BASE_RADIUS = 0.35
-const LEAF_RADIUS = 0.25
+const BASE_RADIUS = 0.8
+const LEAF_RADIUS = 0.55
 const HOVER_SCALE = 1.35
 const SELECT_SCALE = 1.6
 const DIM_OPACITY = 0.08
@@ -73,14 +73,7 @@ export class Graph3D {
     const count = this.nodes.length
     if (count === 0) return
 
-    const material = new THREE.MeshPhysicalMaterial({
-      metalness: 0.2,
-      roughness: 0.3,
-      clearcoat: 0.4,
-      clearcoatRoughness: 0.3,
-      emissive: new THREE.Color(0x444488),
-      emissiveIntensity: 0.15,
-    })
+    const material = new THREE.MeshBasicMaterial()
 
     this.nodesMesh = new THREE.InstancedMesh(this.sharedGeo, material, count)
     this.nodesMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
