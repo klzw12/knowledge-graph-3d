@@ -89,11 +89,11 @@ async function runForceLayout(nodes, edges, onProgress) {
     const sim = forceSimulation(nodes, 3)
       .force('link', forceLink(linkData)
         .id((_, i) => i)
-        .distance(35)
-        .strength(0.3))
-      .force('charge', forceManyBody().strength(-120).theta(0.8))
+        .distance(25)
+        .strength(0.4))
+      .force('charge', forceManyBody().strength(-60).theta(0.9))
       .force('center', forceCenter(0, 0, 0))
-      .alphaDecay(0.08)
+      .alphaDecay(0.1)
       .stop()
 
     let tick = 0
@@ -145,7 +145,6 @@ async function main() {
 
   // 相机
   const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100)
-  camera.position.set(8, 5, 12)
 
   // 渲染器
   const renderer = new THREE.WebGLRenderer({
@@ -209,6 +208,9 @@ async function main() {
 
   // 构建图谱
   graph.build(nodes, edges)
+
+  // 适配相机到全图
+  camCtrl.fitToGraph(nodes)
 
   // 构建节点全量 Map（供 InfoPanel 使用）
   const allNodes = new Map()
@@ -308,6 +310,7 @@ async function main() {
       graph.selectNode(-1)
       panel.hide()
       searchUI.clearSearch()
+      camCtrl.resetFullView()
     }
   })
 

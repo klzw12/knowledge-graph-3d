@@ -6,6 +6,7 @@
  * - flyTo 动画（点击节点平滑移动相机）
  * - 空闲自动旋转（5 秒无操作启动）
  * - 触屏支持
+ * - 右键复位视角
  */
 
 import * as THREE from 'three'
@@ -18,8 +19,8 @@ export class CameraController {
     this.camera = camera
     this.dom = domElement
 
-    // 球坐标
-    this.spherical = new THREE.Spherical(8, PI_2, 0)
+    // 球坐标（初始值会被 fitToGraph 覆盖）
+    this.spherical = new THREE.Spherical(20, PI_2, 0)
     this.targetSpherical = this.spherical.clone()
     this.orbitCenter = new THREE.Vector3(0, 0, 0)
     this.targetCenter = new THREE.Vector3(0, 0, 0)
@@ -32,7 +33,7 @@ export class CameraController {
     // 自动旋转
     this.autoOrbit = true
     this.autoOrbitTimeout = null
-    this.autoRotateSpeed = 0.06
+    this.autoRotateSpeed = 0.04
 
     // flyTo 动画
     this.isAnimating = false
@@ -42,14 +43,19 @@ export class CameraController {
     this.flyCenterStart = new THREE.Vector3()
     this.flyCenterEnd = new THREE.Vector3()
     this.flyStartTime = 0
-    this.flyDuration = 1.2
+    this.flyDuration = 0.8
     this.flyCallback = null
+    this.flyTargetNode = null // 记住目标节点，供右键复位
 
     // 边界
     this.minRadius = 3
-    this.maxRadius = 30
-    this.minPhi = 0.2
-    this.maxPhi = PI - 0.2
+    this.maxRadius = 50
+    this.minPhi = 0.1
+    this.maxPhi = PI - 0.1
+
+    // 全景视角参数（右键双击恢复）
+    this._defaultRadius = 20
+    this._defaultCenter = new THREE.Vector3(0, 0, 0)
 
     this._bindEvents()
     this._updateCamera()
@@ -61,7 +67,7 @@ export class CameraController {
     el.addEventListener('mousemove', (e) => this._onMouseMove(e))
     el.addEventListener('mouseup', (e) => this._onMouseUp(e))
     el.addEventListener('wheel', (e) => this._onWheel(e), { passive: false })
-    el.addEventListener('dblclick', (e) => this._onDblClick && this._onDblClick(e))
+    el.addEventListener('contextmenu', (e) => { e.preventDefault(); this.resetFullView() })
 
     // 触屏
     el.addEventListener('touchstart', (e) => this._onTouchStart(e), { passive: false })
@@ -70,6 +76,8 @@ export class CameraController {
   }
 
   _onMouseDown(e) {
+    // 忽略右键
+    if (e.button === 2) return
     this.isDragging = true
     this.mouseDownPos = { x: e.clientX, y: e.clientY }
     this.lastMouse = { x: e.clientX, y: e.clientY }
@@ -88,6 +96,7 @@ export class CameraController {
   }
 
   _onMouseUp(e) {
+    if (e.button === 2) return
     this.isDragging = false
     const dist = Math.abs(e.clientX - this.mouseDownPos.x) + Math.abs(e.clientY - this.mouseDownPos.y)
     if (dist < 5 && this._onClick) {
@@ -98,7 +107,7 @@ export class CameraController {
 
   _onWheel(e) {
     e.preventDefault()
-    const factor = e.deltaY > 0 ? 1.12 : 0.88
+    const factor = e.deltaY > 0 ? 1.15 : 0.85
     this.targetSpherical.radius = Math.max(this.minRadius, Math.min(this.maxRadius, this.targetSpherical.radius * factor))
     this._scheduleAutoOrbit()
   }
@@ -124,7 +133,6 @@ export class CameraController {
       this.targetSpherical.theta -= dx * 0.008
       this.targetSpherical.phi = Math.max(this.minPhi, Math.min(this.maxPhi, this.targetSpherical.phi - dy * 0.008))
     } else if (e.touches.length === 2) {
-      // 双指缩放
       const t0 = e.touches[0], t1 = e.touches[1]
       const dist = Math.sqrt((t0.clientX - t1.clientX) ** 2 + (t0.clientY - t1.clientY) ** 2)
       if (this._lastTouchDist) {
@@ -142,25 +150,51 @@ export class CameraController {
     this._scheduleAutoOrbit()
   }
 
-  // ─── flyTo 动画 ───
-  flyToNode(node, callback) {
-    if (this.isAnimating) {
-      this.flyCallback = null
+  // ─── 自动适配全图 ───
+  fitToGraph(nodes, padding = 0.3) {
+    if (nodes.length === 0) return
+
+    // 计算包围盒
+    const box = new THREE.Box3()
+    for (const n of nodes) {
+      box.expandByPoint(new THREE.Vector3(n.x, n.y, n.z))
     }
+    const size = box.getSize(new THREE.Vector3())
+    const center = box.getCenter(new THREE.Vector3())
+    const maxDim = Math.max(size.x, size.y, size.z)
 
-    // 目标位置：从节点位置偏移一段距离
+    // 相机距离 = 最大维度 / tan(FOV/2) + padding
+    const fov = this.camera.fov * PI / 180
+    const radius = (maxDim / 2) / Math.tan(fov / 2) * (1 + padding)
+
+    this._defaultRadius = radius
+    this._defaultCenter.copy(center)
+
+    this.targetSpherical.radius = radius
+    this.targetSpherical.phi = PI_2 * 0.7  // 略微俯视
+    this.targetSpherical.theta = -0.5
+    this.targetCenter.copy(center)
+
+    this.spherical.radius = radius
+    this.spherical.phi = PI_2 * 0.7
+    this.spherical.theta = -0.5
+    this.orbitCenter.copy(center)
+
+    this._updateCamera()
+  }
+
+  // ─── flyTo 动画（固定距离） ───
+  flyToNode(node, callback) {
+    if (!node) return
+    this.isAnimating = false
+
     const target = new THREE.Vector3(node.x, node.y, node.z)
-    const newSpherical = new THREE.Spherical()
-    const offset = new THREE.Vector3()
 
-    // 保持当前视角方向，但拉近到节点附近
-    const currentPos = this.camera.position.clone()
-    const dir = currentPos.clone().sub(this.orbitCenter).normalize()
-    const dist = Math.max(4, currentPos.distanceTo(target) * 0.4)
-    offset.copy(dir).multiplyScalar(dist)
-    const flyTo = target.clone().add(offset)
+    // 固定观察距离（跟图的大小成正比，但最小6最大15）
+    const baseRadius = Math.min(15, Math.max(6, this._defaultRadius * 0.35))
+    const newSpherical = new THREE.Spherical(baseRadius, PI_2 * 0.6, this.spherical.theta)
 
-    newSpherical.setFromVector3(flyTo.clone().sub(target))
+    this.flyTargetNode = node
     this.flyCenterStart.copy(this.orbitCenter)
     this.flyCenterEnd.copy(target)
     this.flyStart.theta = this.spherical.theta
@@ -177,11 +211,34 @@ export class CameraController {
     this._clearAutoOrbitTimeout()
   }
 
+  // ─── 复位到全景（右键） ───
+  resetFullView() {
+    if (this.isAnimating) {
+      this.flyCallback = null
+      this.isAnimating = false
+    }
+    // 直接用 fit 的参数飞回去
+    this.flyCenterStart.copy(this.orbitCenter)
+    this.flyCenterEnd.copy(this._defaultCenter)
+    this.flyStart.theta = this.spherical.theta
+    this.flyStart.phi = this.spherical.phi
+    this.flyStart.radius = this.spherical.radius
+    this.flyEnd.theta = -0.5
+    this.flyEnd.phi = PI_2 * 0.7
+    this.flyEnd.radius = this._defaultRadius
+
+    this.flyTargetNode = null
+    this.isAnimating = true
+    this.flyStartTime = performance.now()
+    this.flyCallback = null
+    this.autoOrbit = false
+    this._scheduleAutoOrbit()
+  }
+
   _updateFlyAnimation(now) {
     if (!this.isAnimating) return
 
     const t = Math.min(1, (now - this.flyStartTime) / (this.flyDuration * 1000))
-    // easeOutCubic
     const ease = 1 - Math.pow(1 - t, 3)
 
     this.spherical.theta = this.flyStart.theta + (this.flyEnd.theta - this.flyStart.theta) * ease
@@ -218,21 +275,13 @@ export class CameraController {
     }
   }
 
-  // ─── 重置视角 ───
-  resetView() {
-    this.targetCenter.set(0, 0, 0)
-    this.orbitCenter.set(0, 0, 0)
-    this.targetSpherical.set(8, PI_2, 0)
-  }
-
   // ─── 每帧更新 ───
   update(now) {
-    // flyTo 动画
     this._updateFlyAnimation(now)
 
     // 自动旋转
     if (this.autoOrbit && !this.isAnimating) {
-      this.targetSpherical.theta += this.autoRotateSpeed * 0.016 // ~60fps 归一化
+      this.targetSpherical.theta += this.autoRotateSpeed * 0.016
     }
 
     // 平滑插值
@@ -253,9 +302,8 @@ export class CameraController {
     this.camera.lookAt(this.orbitCenter)
   }
 
-  // ─── 事件回调注册（外部设置） ───
+  // ─── 事件回调注册 ───
   onClick(cb) { this._onClick = cb }
-  onDblClick(cb) { this._onDblClick = cb }
 
   dispose() {
     this._clearAutoOrbitTimeout()
