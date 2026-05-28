@@ -11,6 +11,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { forceSimulation, forceLink, forceManyBody, forceCenter } from 'd3-force-3d'
 
 import { graphData } from './graph-data.js'
+import { DOMAIN_COLORS } from './domains/domain-colors.js'
 import { Graph3D } from './Graph3D.js'
 import { CameraController } from './CameraController.js'
 import { SearchUI } from './SearchUI.js'
@@ -22,13 +23,17 @@ function parseTree(data) {
   const treeEdges = []
   const crossEdges = data.relations || []
 
-  const walk = (node, parentId, depth) => {
+  const walk = (node, parentId, depth, parentDomain) => {
     const nd = { ...node }
     nd._parentId = parentId
     nd._depth = depth
     nd._children = node.children ? node.children.map(c => c.id) : []
     nd.inDegree = 0
     nd.outDegree = 0
+    // 标记所属 domain（depth=2 的节点本身就是 domain，其子节点继承）
+    nd._parentDomain = DOMAIN_COLORS[node.id]
+      ? node.id          // depth=2 的 domain 节点
+      : parentDomain     // 子节点继承父 domain
     delete nd.children
     nodes.push(nd)
 
@@ -39,12 +44,12 @@ function parseTree(data) {
 
     if (node.children) {
       node.children.forEach(c => {
-        walk(c, node.id, depth + 1)
+        walk(c, node.id, depth + 1, nd._parentDomain)
       })
     }
   }
 
-  walk(data.root, null, 0)
+  walk(data.root, null, 0, null)
 
   // 合并所有边
   const allEdges = [

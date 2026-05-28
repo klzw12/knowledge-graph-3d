@@ -10,6 +10,7 @@
  */
 
 import * as THREE from 'three'
+import { DOMAIN_COLORS } from './domains/domain-colors.js'
 
 // ─── 常量 ───
 const NODE_SEGMENTS = 20    // 球体细分
@@ -119,7 +120,9 @@ export class Graph3D {
       const sx = src.x, sy = src.y, sz = src.z
       const dx = dst.x, dy = dst.y, dz = dst.z
 
-      // 计算控制点（略抬升制造曲线感）
+      // 确定 domain 颜色（统一色，非渐变）
+      const domain = src._parentDomain || dst._parentDomain || 'tools'
+      const domainColor = new THREE.Color(DOMAIN_COLORS[domain] || '#8888aa')
       const mx = (sx + dx) / 2
       const my = (sy + dy) / 2
       const mz = (sz + dz) / 2
@@ -160,26 +163,21 @@ export class Graph3D {
         positions[vi + 4] = p1.y
         positions[vi + 5] = p1.z
 
-        // 颜色插值
-        const u0 = si / SEGMENTS
-        const u1 = (si + 1) / SEGMENTS
-        const c0 = srcCol.clone().lerp(dstCol, u0)
-        const c1 = srcCol.clone().lerp(dstCol, u1)
-
-        colors[vi + 0] = c0.r
-        colors[vi + 1] = c0.g
-        colors[vi + 2] = c0.b
-        colors[vi + 3] = c1.r
-        colors[vi + 4] = c1.g
-        colors[vi + 5] = c1.b
+        // 颜色用 domain 统一色
+        colors[vi + 0] = domainColor.r
+        colors[vi + 1] = domainColor.g
+        colors[vi + 2] = domainColor.b
+        colors[vi + 3] = domainColor.r
+        colors[vi + 4] = domainColor.g
+        colors[vi + 5] = domainColor.b
 
         // 保存基础颜色（用于高亮恢复）
-        this.edgeBaseColors[vi + 0] = c0.r
-        this.edgeBaseColors[vi + 1] = c0.g
-        this.edgeBaseColors[vi + 2] = c0.b
-        this.edgeBaseColors[vi + 3] = c1.r
-        this.edgeBaseColors[vi + 4] = c1.g
-        this.edgeBaseColors[vi + 5] = c1.b
+        this.edgeBaseColors[vi + 0] = domainColor.r
+        this.edgeBaseColors[vi + 1] = domainColor.g
+        this.edgeBaseColors[vi + 2] = domainColor.b
+        this.edgeBaseColors[vi + 3] = domainColor.r
+        this.edgeBaseColors[vi + 4] = domainColor.g
+        this.edgeBaseColors[vi + 5] = domainColor.b
       }
     }
 
@@ -190,7 +188,7 @@ export class Graph3D {
     const mat = new THREE.LineBasicMaterial({
       vertexColors: true,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.7,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
     })
