@@ -4,9 +4,9 @@
  * AI 技术的落地应用方向
  */
 
-import nlp from './nlp.js'
-import cv from './cv.js'
-import recsys from './recsys.js'
+import nlp from './app-areas/nlp.js'
+import cv from './app-areas/cv.js'
+import recsys from './app-areas/recsys.js'
 
 const subs = [nlp, cv, recsys]
 
@@ -15,8 +15,7 @@ export default {
     id: 'app-areas',
     label: '应用领域',
     color: '#a29bfe',
-    description: 'AI 技术的主要应用场景',
-    content: { summary: '将算法底座的技术应用于解决实际问题的各个方向，涵盖自然语言、视觉、推荐等。', tags: ['应用'] },
+    description: '将算法之力落于现实场景的桥梁',
     children: subs.map(d => d.root),
   },
   relations: subs.flatMap(d => d.relations || []),

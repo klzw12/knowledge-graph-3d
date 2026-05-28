@@ -10,7 +10,7 @@ export default {
     label: '数据结构与算法',
     color: '#00cec9',
     description: '计算机程序的基石：数据的组织、存储与操作方式',
-    content: { summary: '数据结构与算法是计算机科学的核心基础，决定了程序的效率与能力。图结构是其中重要的数据组织方式。', tags: ['基础', '核心'] },
+    content: { summary: '程序效率之源，计算机科学的灵魂。决定了算法的时间与空间边界。', tags: ['基础', '核心'] },
     children: [
       {
         id: 'knowledge-graph',

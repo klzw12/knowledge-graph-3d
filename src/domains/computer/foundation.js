@@ -10,7 +10,7 @@ export default {
     label: '数学',
     color: '#eab308',
     description: 'AI 算法的数学根基',
-    content: { summary: '线性代数、概率统计、微积分、最优化——AI 算法的数学根基。', tags: ['基础'] },
+    content: { summary: '一切自然科学的基石与通用语言，AI 算法的理论源头。', tags: ['基础'] },
     children: [
       {
         id: 'linear-algebra',
