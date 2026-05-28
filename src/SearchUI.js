@@ -54,17 +54,30 @@ export class SearchUI {
 
     container.appendChild(this.wrapper)
 
-    // ── Domain 快速导航（独立于搜索框，左侧定位） ──
+    // ── Domain 快速导航（两级） ──
     this.domainBar = document.createElement('div')
     this.domainBar.id = 'domain-bar'
+
+    // L1 列
+    this.l1Col = document.createElement('div')
+    this.l1Col.id = 'domain-l1'
     for (const d of this._domains) {
       const chip = document.createElement('span')
-      chip.className = 'domain-chip'
+      chip.className = 'domain-chip l1'
       chip.dataset.domain = d.id
-      chip.innerHTML = `<span class="domain-dot" style="background:${d.color}"></span>${d.label}`
-      chip.addEventListener('click', () => this._selectDomain(d.id))
-      this.domainBar.appendChild(chip)
+      const arrow = d.children && d.children.length > 0 ? '<span class="d-arrow">▸</span>' : ''
+      chip.innerHTML = `<span class="domain-dot" style="background:${d.color}"></span>${d.label}${arrow}`
+      chip.addEventListener('click', () => this._selectL1(d))
+      this.l1Col.appendChild(chip)
     }
+    this.domainBar.appendChild(this.l1Col)
+
+    // L2 列（动态显隐）
+    this.l2Col = document.createElement('div')
+    this.l2Col.id = 'domain-l2'
+    this.l2Col.style.display = 'none'
+    this.domainBar.appendChild(this.l2Col)
+
     container.appendChild(this.domainBar)
 
     this._bindEvents()
@@ -107,24 +120,64 @@ export class SearchUI {
     this.clear.addEventListener('click', () => this.clearSearch())
   }
 
-  _selectDomain(domainId) {
-    // toggle
-    if (this._activeDomain === domainId) {
-      this._activeDomain = null
-      this.domainBar.querySelectorAll('.domain-chip').forEach(c => c.classList.remove('active'))
-      if (this._onDomainSelect) this._onDomainSelect(null)
-      if (this._onHighlight) this._onHighlight([])
+  _selectL1(domain) {
+    // toggle: 再次点击同个 L1 取消
+    if (this._activeL1 === domain.id) {
+      this._clearDomains()
       return
     }
-    this._activeDomain = domainId
-    this.domainBar.querySelectorAll('.domain-chip').forEach(c => c.classList.remove('active'))
-    this.domainBar.querySelector(`[data-domain="${domainId}"]`)?.classList.add('active')
+    this._activeL1 = domain.id
+    this._activeL2 = null
 
-    // 找到该 domain 下的所有节点
-    const matched = this.nodes.filter(n => n._parentDomain === domainId || n.id === domainId)
-    const ids = matched.map(n => n.id)
-    if (this._onHighlight) this._onHighlight(ids)
-    if (this._onDomainSelect) this._onDomainSelect(domainId)
+    // L1 高亮
+    this.l1Col.querySelectorAll('.domain-chip').forEach(c => c.classList.remove('active'))
+    this.l1Col.querySelector(`[data-domain="${domain.id}"]`)?.classList.add('active')
+
+    // L2 列
+    this.l2Col.innerHTML = ''
+    if (domain.children && domain.children.length > 0) {
+      for (const sub of domain.children) {
+        const chip = document.createElement('span')
+        chip.className = 'domain-chip l2'
+        chip.dataset.domain = sub.id
+        chip.innerHTML = `<span class="domain-dot" style="background:${domain.color}"></span>${sub.label}`
+        chip.addEventListener('click', (e) => {
+          e.stopPropagation()
+          this._selectL2(sub.id, domain)
+        })
+        this.l2Col.appendChild(chip)
+      }
+      this.l2Col.style.display = 'flex'
+    } else {
+      this.l2Col.style.display = 'none'
+    }
+
+    // 高亮该 domain 所有节点
+    const matched = this.nodes.filter(n => n._parentDomain === domain.id || n.id === domain.id)
+    if (this._onHighlight) this._onHighlight(matched.map(n => n.id))
+    if (this._onDomainSelect) this._onDomainSelect(domain.id)
+  }
+
+  _selectL2(subId, parent) {
+    if (this._activeL2 === subId) return
+    this._activeL2 = subId
+
+    this.l2Col.querySelectorAll('.domain-chip').forEach(c => c.classList.remove('active'))
+    this.l2Col.querySelector(`[data-domain="${subId}"]`)?.classList.add('active')
+
+    const matched = this.nodes.filter(n => n._parentDomain === subId || n.id === subId)
+    if (this._onHighlight) this._onHighlight(matched.map(n => n.id))
+    if (this._onDomainSelect) this._onDomainSelect(subId)
+  }
+
+  _clearDomains() {
+    this._activeL1 = null
+    this._activeL2 = null
+    this.l1Col.querySelectorAll('.domain-chip').forEach(c => c.classList.remove('active'))
+    this.l2Col.innerHTML = ''
+    this.l2Col.style.display = 'none'
+    if (this._onHighlight) this._onHighlight([])
+    if (this._onDomainSelect) this._onDomainSelect(null)
   }
 
   _search() {
@@ -200,21 +253,12 @@ export class SearchUI {
   clearSearch() {
     this.input.value = ''
     this._clearResults()
-    if (this._activeDomain) {
-      this._activeDomain = null
-      this.domainBar.querySelectorAll('.domain-chip').forEach(c => c.classList.remove('active'))
-      if (this._onDomainSelect) this._onDomainSelect(null)
-    }
+    this._clearDomains()
     this.input.focus()
   }
 
   clearDomainFilter() {
-    if (this._activeDomain) {
-      this._activeDomain = null
-      this.domainBar.querySelectorAll('.domain-chip').forEach(c => c.classList.remove('active'))
-      if (this._onDomainSelect) this._onDomainSelect(null)
-      if (this._onHighlight) this._onHighlight([])
-    }
+    this._clearDomains()
   }
 
   setNodes(nodes) { this.nodes = nodes }

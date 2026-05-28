@@ -231,8 +231,14 @@ async function main() {
 
   // ─── 搜索 ───
   const DOMAINS = [
-    { id: 'computer', label: '计算机科学', color: '#4d96ff' },
-    { id: 'math', label: '数学基础', color: '#eab308' },
+    {
+      id: 'computer', label: '计算机科学', color: '#4d96ff',
+      children: [
+        { id: 'ai', label: '人工智能' },
+        { id: 'languages', label: '语言与框架' },
+      ]
+    },
+    { id: 'math', label: '数学基础', color: '#eab308', children: [] },
   ]
 
   const searchUI = new SearchUI(
