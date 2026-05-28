@@ -49,7 +49,7 @@ export class CameraController {
 
     // 边界
     this.minRadius = 3
-    this.maxRadius = 50
+    this.maxRadius = 200
     this.minPhi = 0.1
     this.maxPhi = PI - 0.1
 

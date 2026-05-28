@@ -141,10 +141,10 @@ async function main() {
   // 场景
   const scene = new THREE.Scene()
   scene.background = new THREE.Color(0x080818)
-  scene.fog = new THREE.Fog(0x080818, 25, 45)
+  scene.fog = new THREE.Fog(0x080818, 60, 120)
 
   // 相机
-  const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100)
+  const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 500)
 
   // 渲染器
   const renderer = new THREE.WebGLRenderer({
@@ -365,7 +365,7 @@ function createStars(scene) {
   ]
 
   for (let i = 0; i < count; i++) {
-    const r = 30 + Math.random() * 50
+    const r = 50 + Math.random() * 200
     const theta = Math.random() * Math.PI * 2
     const phi = Math.acos(2 * Math.random() - 1)
     positions[i * 3] = r * Math.sin(phi) * Math.cos(theta)
