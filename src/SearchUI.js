@@ -12,7 +12,7 @@ export class SearchUI {
    * @param {Array} domains - [{id, label, color}] 要显示的 domain 列表
    * @param {HTMLElement} container
    */
-  constructor(nodes, opts, domains, container) {
+  constructor(nodes, opts, domains, searchContainer, domainContainer) {
     this.nodes = nodes
     this._onHighlight = opts.onHighlight
     this._onSelect = opts.onSelect
@@ -21,10 +21,10 @@ export class SearchUI {
     this._lastResults = []
     this._activeDomain = null
 
-    this._build(container)
+    this._build(searchContainer, domainContainer)
   }
 
-  _build(container) {
+  _build(searchContainer, domainContainer) {
     this.wrapper = document.createElement('div')
     this.wrapper.id = 'search-wrap'
 
@@ -52,7 +52,7 @@ export class SearchUI {
     this.results.style.display = 'none'
     this.wrapper.appendChild(this.results)
 
-    container.appendChild(this.wrapper)
+    searchContainer.appendChild(this.wrapper)
 
     // ── Domain 快速导航（两级） ──
     this.domainBar = document.createElement('div')
@@ -78,7 +78,7 @@ export class SearchUI {
     this.l2Col.style.display = 'none'
     this.domainBar.appendChild(this.l2Col)
 
-    container.appendChild(this.domainBar)
+    domainContainer.appendChild(this.domainBar)
 
     this._bindEvents()
   }

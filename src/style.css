@@ -15,9 +15,6 @@ html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Segoe UI
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   letter-spacing: 2px;
 }
-#top-bar .hint {
-  color: rgba(255,255,255,.2); font-size: 11px; white-space: nowrap;
-}
 
 /* ─── 搜索框 ─── */
 #search-wrap {

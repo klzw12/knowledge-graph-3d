@@ -278,6 +278,7 @@ async function main() {
       },
     },
     DOMAINS,
+    document.getElementById('top-bar'),
     document.getElementById('app')
   )
 
