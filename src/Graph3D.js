@@ -1,480 +1,375 @@
+/**
+ * 🕸️ Graph3D — InstancedMesh 渲染引擎
+ * 
+ * 关键特性：
+ * - InstancedMesh 批量渲染所有节点（1 个 draw call）
+ * - LineSegments + BufferGeometry 批量渲染所有边
+ * - 节点颜色 + 大小通过 instanceMatrix / instanceColor 控制
+ * - 边颜色渐变（source → target）
+ * - 高亮模式通过矩阵/颜色批量更新
+ */
+
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
 
-// ─── 布局参数 ───
-const VERTICAL_GAP = 2.8
-const RADIAL_SPREAD = 3.0
-const RADIUS_DECAY = 0.6
-const NODE_RADIUS = 0.35
+// ─── 常量 ───
+const NODE_SEGMENTS = 24    // 球体细分
+const EDGE_CURVE_POINTS = 8 // 每条边的曲线采样点
+const BASE_RADIUS = 0.35
 const LEAF_RADIUS = 0.25
-
-function hexToThree(c) {
-  return new THREE.Color(c)
-}
+const HOVER_SCALE = 1.35
+const SELECT_SCALE = 1.6
+const DIM_OPACITY = 0.08
 
 export class Graph3D {
-  constructor(containerId) {
-    this.container = document.getElementById(containerId)
-    this.scene = new THREE.Scene()
-    this.camera = new THREE.PerspectiveCamera(50, this.container.clientWidth / this.container.clientHeight, 0.1, 100)
-    this.camera.position.set(10, 6, 14)
+  constructor(scene) {
+    this.scene = scene
 
-    // Renderers
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    this.renderer.setSize(this.container.clientWidth, this.container.clientHeight)
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-    this.renderer.toneMapping = THREE.ACESFilmicToneMapping
-    this.renderer.toneMappingExposure = 1.2
-    this.container.appendChild(this.renderer.domElement)
+    // 共享几何体（所有节点共用同一个球体）
+    this.sharedGeo = new THREE.SphereGeometry(1, NODE_SEGMENTS, NODE_SEGMENTS)
 
-    this.labelRenderer = new CSS2DRenderer()
-    this.labelRenderer.setSize(this.container.clientWidth, this.container.clientHeight)
-    this.labelRenderer.domElement.style.position = 'absolute'
-    this.labelRenderer.domElement.style.top = '0'
-    this.labelRenderer.domElement.style.pointerEvents = 'none'
-    this.container.appendChild(this.labelRenderer.domElement)
+    // 状态
+    this.nodes = []          // 节点数据 [{id, label, color, x, y, z, ...}]
+    this.nodeIndexMap = new Map()  // id → index
+    this.flatEdges = []      // [{source: node, target: node}]
+    this.selectedIdx = -1
+    this.hoveredIdx = -1
+    this.highlightedSet = new Set() // 搜索高亮
+    this.edgeBaseColors = null
 
-    // Controls
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement)
-    this.controls.enableDamping = true
-    this.controls.dampingFactor = 0.08
-    this.controls.minDistance = 4
-    this.controls.maxDistance = 35
-    this.controls.maxPolarAngle = Math.PI / 2.1
+    // Three.js 对象
+    this.nodesMesh = null
+    this.edgesMesh = null
+    this.sceneObjects = []
 
-    // Stars
-    this._createStars()
-    this._createGroundGlow()
-
-    // Lights
-    this.scene.add(new THREE.AmbientLight(0x333355, 0.6))
-    const dl = new THREE.DirectionalLight(0xffffff, 1.5)
-    dl.position.set(10, 20, 10)
-    this.scene.add(dl)
-    const fl = new THREE.DirectionalLight(0x8888ff, 0.5)
-    fl.position.set(-10, 5, -10)
-    this.scene.add(fl)
-
-    // State
+    // 射线
     this.raycaster = new THREE.Raycaster()
-    this.pointer = new THREE.Vector2()
-    this.nodeMeshes = []
-    this.nodeMap = new Map()     // id → { data, mesh, glow, label, pos }
-    this.treeEdgeGroup = new THREE.Group()
-    this.crossEdgeGroup = new THREE.Group()
-    this.allEdges = []           // all Line objects
-    this.crossEdgeLines = []     // cross edges only
-    this.selectedId = null
-    this.hoveredId = null
-    this.onNodeClick = null
-    this.onNodeHover = null
-
-    this.scene.add(this.treeEdgeGroup)
-    this.scene.add(this.crossEdgeGroup)
-
-    this._setupEvents()
-    this._animate()
+    this._mat4 = new THREE.Matrix4()
+    this._pos = new THREE.Vector3()
+    this._quat = new THREE.Quaternion()
+    this._sca = new THREE.Vector3()
+    this._col = new THREE.Color()
   }
 
-  _createStars() {
-    const g = new THREE.BufferGeometry()
-    const n = 2000
-    const pos = new Float32Array(n * 3)
-    for (let i = 0; i < n; i++) {
-      const r = 40 + Math.random() * 60
-      const t = Math.random() * Math.PI * 2
-      const p = Math.acos(2 * Math.random() - 1)
-      pos[i*3] = r * Math.sin(p) * Math.cos(t)
-      pos[i*3+1] = r * Math.cos(p)
-      pos[i*3+2] = r * Math.sin(p) * Math.sin(t)
+  // ─── 构建图谱 ───
+  build(nodes, edges) {
+    this.clearObjects()
+    this.nodes = nodes
+    this.flatEdges = edges
+    this.nodeIndexMap.clear()
+    this.selectedIdx = -1
+    this.hoveredIdx = -1
+    this.highlightedSet.clear()
+    this.edgeBaseColors = null
+
+    // 建立 id → index 映射
+    nodes.forEach((n, i) => this.nodeIndexMap.set(n.id, i))
+
+    this._buildNodes()
+    this._buildEdges()
+  }
+
+  // ─── 构建节点 (InstancedMesh) ───
+  _buildNodes() {
+    const count = this.nodes.length
+    if (count === 0) return
+
+    const material = new THREE.MeshPhysicalMaterial({
+      metalness: 0.2,
+      roughness: 0.3,
+      clearcoat: 0.4,
+      clearcoatRoughness: 0.3,
+    })
+
+    this.nodesMesh = new THREE.InstancedMesh(this.sharedGeo, material, count)
+    this.nodesMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage)
+    this.nodesMesh.instanceColor = new THREE.InstancedBufferAttribute(
+      new Float32Array(count * 3), 3
+    )
+    this.nodesMesh.castShadow = false
+    this.nodesMesh.receiveShadow = false
+
+    // 设置每个实例的矩阵 + 颜色
+    for (let i = 0; i < count; i++) {
+      this._applyNodeMatrix(i)
     }
-    g.setAttribute('position', new THREE.BufferAttribute(pos, 3))
-    const m = new THREE.PointsMaterial({ size: 0.12, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false })
-    this.stars = new THREE.Points(g, m)
-    this.scene.add(this.stars)
+    this.nodesMesh.instanceMatrix.needsUpdate = true
+    this.nodesMesh.instanceColor.needsUpdate = true
+
+    this.scene.add(this.nodesMesh)
+    this.sceneObjects.push(this.nodesMesh)
   }
 
-  _createGroundGlow() {
-    const g = new THREE.RingGeometry(6, 14, 64)
-    const m = new THREE.MeshBasicMaterial({ color: 0x4444aa, transparent: true, opacity: 0.05, side: THREE.DoubleSide, depthWrite: false })
-    const r = new THREE.Mesh(g, m)
-    r.rotation.x = -Math.PI / 2
-    r.position.y = -3
-    this.scene.add(r)
-  }
+  // ─── 构建边 (LineSegments) ───
+  _buildEdges() {
+    const edgeCount = this.flatEdges.length
+    if (edgeCount === 0) return
 
-  // ─── 解析树数据 → nodes[] + treeEdges[] + crossEdges[] ───
-  _parseData(data) {
-    const nodes = []
-    const treeEdges = []
-    const crossEdges = data.relations || []
+    // 每条边：bezier 曲线采样 EDGE_CURVE_POINTS 个点
+    // LineSegments 需要成对顶点：(p0,p1), (p1,p2), ... 
+    // EDGE_CURVE_POINTS 个点 = EDGE_CURVE_POINTS-1 条线段 = (EDGE_CURVE_POINTS-1)*2 个顶点
+    const SEGMENTS = EDGE_CURVE_POINTS - 1
+    const VERTS_PER_EDGE = SEGMENTS * 2
+    const totalVerts = edgeCount * VERTS_PER_EDGE
 
-    const walk = (node, parentId, depth) => {
-      const nd = { ...node }
-      nd._parentId = parentId
-      nd._depth = depth
-      if (node.children) nd._children = node.children.map(c => c.id)
-      else nd._children = []
-      nodes.push(nd)
+    const positions = new Float32Array(totalVerts * 3)
+    const colors = new Float32Array(totalVerts * 3)
+    this.edgeBaseColors = new Float32Array(totalVerts * 3)
 
-      if (parentId) {
-        treeEdges.push({ source: parentId, target: node.id, label: '' })
+    for (let ei = 0; ei < edgeCount; ei++) {
+      const edge = this.flatEdges[ei]
+      const src = edge.source
+      const dst = edge.target
+      if (!src || !dst) continue
+
+      const sx = src.x, sy = src.y, sz = src.z
+      const dx = dst.x, dy = dst.y, dz = dst.z
+
+      // 计算控制点（略抬升制造曲线感）
+      const mx = (sx + dx) / 2
+      const my = (sy + dy) / 2
+      const mz = (sz + dz) / 2
+      const dist = Math.sqrt((dx - sx) ** 2 + (dy - sy) ** 2 + (dz - sz) ** 2) || 1
+      const offset = dist * 0.15
+      const cx = mx + (Math.random() - 0.5) * offset * 0.3
+      const cy = my + offset * 0.6
+      const cz = mz + (Math.random() - 0.5) * offset * 0.3
+
+      // 采样曲线点
+      const pts = []
+      for (let t = 0; t < EDGE_CURVE_POINTS; t++) {
+        const u = t / (EDGE_CURVE_POINTS - 1)
+        // 二次贝塞尔: (1-u)²·P0 + 2(1-u)u·P1 + u²·P2
+        const u1 = 1 - u
+        const x = u1 * u1 * sx + 2 * u1 * u * cx + u * u * dx
+        const y = u1 * u1 * sy + 2 * u1 * u * cy + u * u * dy
+        const z = u1 * u1 * sz + 2 * u1 * u * cz + u * u * dz
+        pts.push({ x, y, z })
       }
 
-      if (node.children) {
-        node.children.forEach(c => walk(c, node.id, depth + 1))
+      // 写入 LineSegments 顶点（成对）
+      const srcCol = new THREE.Color(src.color)
+      const dstCol = new THREE.Color(dst.color)
+      const baseOffset = ei * VERTS_PER_EDGE * 3
+
+      for (let si = 0; si < SEGMENTS; si++) {
+        const p0 = pts[si]
+        const p1 = pts[si + 1]
+        const vi = baseOffset + si * 6
+
+        // p0
+        positions[vi + 0] = p0.x
+        positions[vi + 1] = p0.y
+        positions[vi + 2] = p0.z
+        // p1
+        positions[vi + 3] = p1.x
+        positions[vi + 4] = p1.y
+        positions[vi + 5] = p1.z
+
+        // 颜色插值
+        const u0 = si / SEGMENTS
+        const u1 = (si + 1) / SEGMENTS
+        const c0 = srcCol.clone().lerp(dstCol, u0)
+        const c1 = srcCol.clone().lerp(dstCol, u1)
+
+        colors[vi + 0] = c0.r
+        colors[vi + 1] = c0.g
+        colors[vi + 2] = c0.b
+        colors[vi + 3] = c1.r
+        colors[vi + 4] = c1.g
+        colors[vi + 5] = c1.b
+
+        // 保存基础颜色（用于高亮恢复）
+        this.edgeBaseColors[vi + 0] = c0.r
+        this.edgeBaseColors[vi + 1] = c0.g
+        this.edgeBaseColors[vi + 2] = c0.b
+        this.edgeBaseColors[vi + 3] = c1.r
+        this.edgeBaseColors[vi + 4] = c1.g
+        this.edgeBaseColors[vi + 5] = c1.b
       }
     }
 
-    walk(data.root, null, 0)
-    return { nodes, treeEdges, crossEdges }
-  }
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3))
 
-  // ─── 树布局（根为中心，层次辐射） ───
-  _layoutTree(nodes, rootId) {
-    const posMap = new Map()
-
-    // 按 depth 分组，每层布局
-    const byDepth = {}
-    for (const n of nodes) {
-      const d = n._depth
-      if (!byDepth[d]) byDepth[d] = []
-      byDepth[d].push(n)
-    }
-
-    // Root
-    const root = nodes.find(n => n.id === rootId)
-    if (root) posMap.set(root.id, new THREE.Vector3(0, -1, 0))
-
-    // 逐层布局
-    for (const [depthStr, levelNodes] of Object.entries(byDepth)) {
-      const depth = parseInt(depthStr)
-      if (depth === 0) continue
-
-      for (const n of levelNodes) {
-        const parent = nodes.find(p => p.id === n._parentId)
-        const parentPos = posMap.get(n._parentId)
-        if (!parentPos) continue
-
-        // 同一父节点的兄弟节点均匀分布
-        const siblings = nodes.filter(s => s._parentId === n._parentId)
-        const idx = siblings.indexOf(n)
-        const total = siblings.length
-        const angleStep = (2 * Math.PI) / total
-        const angle = angleStep * idx + (depth % 2) * 0.3
-
-        const radius = RADIAL_SPREAD * Math.pow(RADIUS_DECAY, depth - 1) * (1 + depth * 0.08)
-        const y = parentPos.y + VERTICAL_GAP * (1 - depth * 0.03)
-
-        const x = parentPos.x + radius * Math.cos(angle)
-        const z = parentPos.z + radius * Math.sin(angle) * 0.8 // slight flatten for better view
-
-        posMap.set(n.id, new THREE.Vector3(x, y, z))
-      }
-    }
-
-    return posMap
-  }
-
-  // ─── 创建弯曲连线 ───
-  _createCurve(start, end, color, opacity, dashed = false) {
-    const mid = new THREE.Vector3().addVectors(start, end).multiplyScalar(0.5)
-    const offset = 0.5 + Math.random() * 0.3
-    mid.x += (Math.random() - 0.5) * offset
-    mid.z += (Math.random() - 0.5) * offset
-    mid.y += 0.3
-
-    const curve = new THREE.QuadraticBezierCurve3(start, mid, end)
-    const pts = curve.getPoints(20)
-    const geo = new THREE.BufferGeometry().setFromPoints(pts)
     const mat = new THREE.LineBasicMaterial({
-      color: hexToThree(color),
+      vertexColors: true,
       transparent: true,
-      opacity: opacity,
-      blending: dashed ? THREE.NormalBlending : THREE.AdditiveBlending,
+      opacity: 0.55,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
     })
-    if (dashed) {
-      mat.dashed = true
-      // Can't easily dash LineBasicMaterial, use a different approach
-    }
-    return new THREE.Line(geo, mat)
+
+    this.edgesMesh = new THREE.LineSegments(geo, mat)
+    this.scene.add(this.edgesMesh)
+    this.sceneObjects.push(this.edgesMesh)
   }
 
-  // ─── 构建 ───
-  build(data) {
-    // 解析
-    const { nodes, treeEdges, crossEdges } = this._parseData(data)
-    const positions = this._layoutTree(nodes, data.root.id)
+  // ─── 更新单个节点的矩阵 + 颜色 ───
+  _applyNodeMatrix(index) {
+    if (index < 0 || index >= this.nodes.length || !this.nodesMesh) return
+    const node = this.nodes[index]
+    if (!node) return
 
-    // 更新统计
-    document.getElementById('stats-nodes').textContent = nodes.length
-    document.getElementById('stats-edges').textContent = treeEdges.length + crossEdges.length
+    // 大小：根据关联度
+    const degree = (node.inDegree || 0) + (node.outDegree || 0) + (node._children?.length || 0)
+    const size = LEAF_RADIUS + (BASE_RADIUS - LEAF_RADIUS) * Math.min(1, degree / 5)
 
-    // 创建节点
-    for (const nd of nodes) {
-      const pos = positions.get(nd.id)
-      if (!pos) continue
-
-      const isLeaf = !nd._children || nd._children.length === 0
-      const radius = isLeaf ? LEAF_RADIUS : NODE_RADIUS
-
-      const color = hexToThree(nd.color)
-      const geo = new THREE.SphereGeometry(radius, 20, 20)
-      const mat = new THREE.MeshPhysicalMaterial({
-        color, emissive: color, emissiveIntensity: 0.15,
-        metalness: 0.3, roughness: 0.4, clearcoat: 0.3,
-      })
-      const mesh = new THREE.Mesh(geo, mat)
-      mesh.position.copy(pos)
-      mesh.userData = { nodeId: nd.id }
-      this.scene.add(mesh)
-      this.nodeMeshes.push(mesh)
-
-      // Glow
-      const gGeo = new THREE.SphereGeometry(radius * 1.6, 12, 12)
-      const gMat = new THREE.MeshBasicMaterial({
-        color, transparent: true, opacity: 0.08,
-        depthWrite: false, blending: THREE.AdditiveBlending,
-      })
-      const glow = new THREE.Mesh(gGeo, gMat)
-      glow.position.copy(pos)
-      this.scene.add(glow)
-
-      // Label
-      const div = document.createElement('div')
-      div.className = 'graph-label'
-      div.innerHTML = `<span class="label-icon">${isLeaf ? '📄' : nd._depth === 0 ? '🌳' : '📂'}</span><span class="label-text">${nd.label}</span>`
-      if (!isLeaf) {
-        div.innerHTML += `<span class="label-count">${nd._children.length}</span>`
-      }
-      div.style.color = nd.color
-      const label = new CSS2DObject(div)
-      label.position.copy(pos)
-      label.position.y += radius + 0.45
-      this.scene.add(label)
-
-      this.nodeMap.set(nd.id, { data: nd, mesh, glow, label, pos, connectedEdges: [] })
+    // 基础缩放
+    let scale = size
+    if (index === this.selectedIdx) {
+      scale *= SELECT_SCALE
+    } else if (index === this.hoveredIdx) {
+      scale *= HOVER_SCALE
+    } else if (this.highlightedSet.has(node.id)) {
+      scale *= 1.3
     }
 
-    // 创建树边（淡色细线）
-    for (const e of treeEdges) {
-      const from = this.nodeMap.get(e.source)
-      const to = this.nodeMap.get(e.target)
-      if (!from || !to) continue
+    // 矩阵
+    this._pos.set(node.x, node.y, node.z)
+    this._sca.setScalar(scale)
+    this._mat4.compose(this._pos, this._quat, this._sca)
+    this.nodesMesh.setMatrixAt(index, this._mat4)
 
-      const childNode = nodes.find(n => n.id === e.target)
-      const edgeColor = childNode ? childNode.color : '#8888aa'
-
-      const line = this._createCurve(from.pos, to.pos, edgeColor, 0.2)
-      this.treeEdgeGroup.add(line)
-      this.allEdges.push(line)
+    // 颜色
+    this._col.set(node.color)
+    const isDimmed = (this.selectedIdx >= 0 || this.highlightedSet.size > 0) &&
+      index !== this.selectedIdx &&
+      !this.highlightedSet.has(node.id)
+    if (isDimmed) {
+      this._col.multiplyScalar(DIM_OPACITY)
+    } else if (index === this.selectedIdx) {
+      this._col.multiplyScalar(1.8)
+    } else if (this.highlightedSet.has(node.id)) {
+      this._col.multiplyScalar(1.5)
+    } else if (index === this.hoveredIdx) {
+      this._col.multiplyScalar(1.3)
     }
 
-    // 创建交叉边（亮色粗线 + 光晕）
-    for (const e of crossEdges) {
-      const from = this.nodeMap.get(e.source)
-      const to = this.nodeMap.get(e.target)
-      if (!from || !to) continue
-
-      const color = e.color || '#ffaa00'
-      const line = this._createCurve(from.pos, to.pos, color, 0.5)
-      this.crossEdgeGroup.add(line)
-      this.allEdges.push(line)
-      this.crossEdgeLines.push(line)
-
-      // 发光副本
-      const glowLine = this._createCurve(from.pos, to.pos, color, 0.08)
-      this.crossEdgeGroup.add(glowLine)
-
-      // Edge label
-      if (e.label) {
-        const mid = new THREE.Vector3().addVectors(from.pos, to.pos).multiplyScalar(0.5)
-        const eDiv = document.createElement('div')
-        eDiv.className = 'cross-edge-label'
-        eDiv.textContent = e.label
-        eDiv.style.color = color
-        const eLabel = new CSS2DObject(eDiv)
-        eLabel.position.copy(mid)
-        this.scene.add(eLabel)
-      }
-    }
-
-    this._focusGraph()
+    this.nodesMesh.setColorAt(index, this._col)
   }
 
-  _focusGraph() {
-    const box = new THREE.Box3().setFromObject(this.scene)
-    const c = box.getCenter(new THREE.Vector3())
-    this.controls.target.copy(c)
-  }
-
-  // ─── 高亮逻辑 ───
-  selectNode(nodeId) {
-    this._resetHighlight()
-    if (!nodeId) { this.selectedId = null; return }
-
-    const entry = this.nodeMap.get(nodeId)
-    if (!entry) return
-    this.selectedId = nodeId
-
-    // 找树邻居（父子）
-    const neighbors = new Set()
-    const walkUp = (id, depth) => {
-      if (depth > 3) return
-      const e = this.nodeMap.get(id)
-      if (!e) return
-      neighbors.add(id)
-      const parentId = e.data._parentId
-      if (parentId) walkUp(parentId, depth + 1)
-      if (e.data._children) e.data._children.forEach(c => neighbors.add(c))
+  // ─── 批量更新所有矩阵 ───
+  _applyAllMatrices() {
+    for (let i = 0; i < this.nodes.length; i++) {
+      this._applyNodeMatrix(i)
     }
-    walkUp(nodeId, 0)
-
-    // 找交叉邻居
-    const crossNeighbors = new Set()
-    const allRel = []
-    // Reconstruct from cross edges - this is a bit hacky but works
-    // We need access to the original crossEdges data
-    // For now, compute from nodeMap
-
-    // 高亮选中节点
-    entry.mesh.material.emissiveIntensity = 0.8
-    entry.glow.material.opacity = 0.35
-    entry.label.element.classList.add('active')
-
-    // 高亮树邻居
-    for (const nid of neighbors) {
-      const n = this.nodeMap.get(nid)
-      if (!n || nid === nodeId) continue
-      n.mesh.material.emissiveIntensity = 0.4
-      n.glow.material.opacity = 0.18
-      n.label.element.classList.add('connected')
-    }
-
-    // 所有边调暗，选中和邻居的边加亮
-    // Tree edges: highlight connections to/from selected
-    for (const child of this.treeEdgeGroup.children) {
-      child.material.opacity = 0.04
-    }
-    // Cross edges: brighten if connected to selected
-    for (const line of this.crossEdgeLines) {
-      line.material.opacity = 0.04
-    }
-
-    // Simplified: just highlight all edges from/to selected node
-    // by checking nodeMap connections later
-    // For now, just brighten cross edges near selection
-    // This is a visual simplification
-
-    // 淡化非关联节点
-    const allHighlighted = new Set([...neighbors])
-    for (const [id, n] of this.nodeMap) {
-      if (allHighlighted.has(id) || id === nodeId) continue
-      n.mesh.material.opacity = 0.12
-      n.mesh.material.transparent = true
-      n.glow.material.opacity = 0.02
-      n.label.element.style.opacity = '0.2'
+    if (this.nodesMesh) {
+      this.nodesMesh.instanceMatrix.needsUpdate = true
+      this.nodesMesh.instanceColor.needsUpdate = true
     }
   }
 
-  _resetHighlight() {
-    for (const [id, n] of this.nodeMap) {
-      n.mesh.material.emissiveIntensity = 0.15
-      n.mesh.material.opacity = 1
-      n.mesh.material.transparent = false
-      n.glow.material.opacity = 0.08
-      n.label.element.classList.remove('active', 'connected')
-      n.label.element.style.opacity = '1'
-    }
-    for (const line of this.allEdges) {
-      line.material.opacity = line.material._origOpacity || 0.3
-    }
-    // Restore tree/cross edge defaults
-    for (const child of this.treeEdgeGroup.children) {
-      child.material.opacity = 0.2
-    }
-    for (const line of this.crossEdgeLines) {
-      line.material.opacity = 0.5
-    }
+  // ─── 选中 ───
+  selectNode(index) {
+    if (this.selectedIdx === index) return
+    const prev = this.selectedIdx
+    this.selectedIdx = index
+    this._applyNodeMatrix(prev)
+    this._applyNodeMatrix(index)
+    this._applyEdgeHighlight()
   }
 
-  _handleHover(event) {
-    const rect = this.renderer.domElement.getBoundingClientRect()
-    this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
-    this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
-    this.raycaster.setFromCamera(this.pointer, this.camera)
-    const hits = this.raycaster.intersectObjects(this.nodeMeshes)
+  // ─── 悬停 ───
+  setHovered(index) {
+    if (this.hoveredIdx === index) return
+    const prev = this.hoveredIdx
+    this.hoveredIdx = index
+    this._applyNodeMatrix(prev)
+    this._applyNodeMatrix(index)
+  }
 
-    if (hits.length > 0) {
-      const nid = hits[0].object.userData.nodeId
-      if (this.hoveredId !== nid) {
-        if (this.hoveredId && this.hoveredId !== this.selectedId) {
-          const prev = this.nodeMap.get(this.hoveredId)
-          if (prev) { prev.mesh.material.emissiveIntensity = 0.15; prev.glow.material.opacity = 0.08 }
+  // ─── 搜索高亮 ───
+  setSearchHighlight(nodeIds) {
+    this.highlightedSet.clear()
+    for (const id of nodeIds) {
+      const idx = this.nodeIndexMap.get(id)
+      if (idx !== undefined) this.highlightedSet.add(id)
+    }
+    this._applyAllMatrices()
+    this._applyEdgeHighlight()
+  }
+
+  clearHighlight() {
+    if (this.highlightedSet.size === 0) return
+    this.highlightedSet.clear()
+    this._applyAllMatrices()
+    this._applyEdgeHighlight()
+  }
+
+  // ─── 边高亮 ───
+  _applyEdgeHighlight() {
+    if (!this.edgesMesh || !this.edgeBaseColors) return
+
+    const colorAttr = this.edgesMesh.geometry.getAttribute('color')
+    const arr = colorAttr.array
+    const hasSelection = this.selectedIdx >= 0 || this.highlightedSet.size > 0
+
+    if (!hasSelection) {
+      // 恢复
+      arr.set(this.edgeBaseColors)
+      colorAttr.needsUpdate = true
+      return
+    }
+
+    // 获取选中/高亮节点关联的边索引
+    const activeIds = new Set()
+    if (this.selectedIdx >= 0) {
+      activeIds.add(this.nodes[this.selectedIdx]?.id)
+    }
+    for (const id of this.highlightedSet) {
+      activeIds.add(id)
+    }
+
+    const SEGMENTS = EDGE_CURVE_POINTS - 1
+    const VERTS_PER_EDGE = SEGMENTS * 2
+
+    for (let ei = 0; ei < this.flatEdges.length; ei++) {
+      const edge = this.flatEdges[ei]
+      const isConnected = activeIds.has(edge.source.id) || activeIds.has(edge.target.id)
+      const offset = ei * VERTS_PER_EDGE * 3
+
+      if (isConnected) {
+        // 恢复或加亮
+        for (let vi = 0; vi < VERTS_PER_EDGE * 3; vi++) {
+          arr[offset + vi] = Math.min(1, this.edgeBaseColors[offset + vi] * 2)
         }
-        this.hoveredId = nid
-        const entry = this.nodeMap.get(nid)
-        if (entry && nid !== this.selectedId) {
-          entry.mesh.material.emissiveIntensity = 0.5
-          entry.glow.material.opacity = 0.2
+      } else {
+        // 变暗
+        for (let vi = 0; vi < VERTS_PER_EDGE * 3; vi++) {
+          arr[offset + vi] = this.edgeBaseColors[offset + vi] * DIM_OPACITY
         }
-        this.renderer.domElement.style.cursor = 'pointer'
-        if (this.onNodeHover) this.onNodeHover(entry?.data || null)
       }
-    } else {
-      if (this.hoveredId && this.hoveredId !== this.selectedId) {
-        const prev = this.nodeMap.get(this.hoveredId)
-        if (prev) { prev.mesh.material.emissiveIntensity = 0.15; prev.glow.material.opacity = 0.08 }
-      }
-      this.hoveredId = null
-      this.renderer.domElement.style.cursor = 'default'
-      if (this.onNodeHover) this.onNodeHover(null)
     }
+    colorAttr.needsUpdate = true
   }
 
-  _handleClick(event) {
-    const rect = this.renderer.domElement.getBoundingClientRect()
-    this.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
-    this.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
-    this.raycaster.setFromCamera(this.pointer, this.camera)
-    const hits = this.raycaster.intersectObjects(this.nodeMeshes)
+  // ─── 通用 ───
+  getNode(index) {
+    return this.nodes[index] || null
+  }
 
-    if (hits.length > 0) {
-      const nid = hits[0].object.userData.nodeId
-      this.selectNode(nid)
-      const entry = this.nodeMap.get(nid)
-      if (this.onNodeClick && entry) this.onNodeClick(entry.data)
-    } else {
-      this.selectNode(null)
-      if (this.onNodeClick) this.onNodeClick(null)
+  getNodeMesh() {
+    return this.nodesMesh
+  }
+
+  getNodeCount() {
+    return this.nodes.length
+  }
+
+  clearObjects() {
+    for (const obj of this.sceneObjects) {
+      this.scene.remove(obj)
+      if (obj.geometry) obj.geometry.dispose()
+      if (obj.material) obj.material.dispose()
     }
-  }
-
-  _setupEvents() {
-    this.renderer.domElement.addEventListener('click', (e) => this._handleClick(e))
-    this.renderer.domElement.addEventListener('mousemove', (e) => this._handleHover(e))
-    window.addEventListener('resize', () => {
-      const w = this.container.clientWidth
-      const h = this.container.clientHeight
-      this.camera.aspect = w / h
-      this.camera.updateProjectionMatrix()
-      this.renderer.setSize(w, h)
-      this.labelRenderer.setSize(w, h)
-    })
-  }
-
-  _animate() {
-    requestAnimationFrame(() => this._animate())
-    if (this.stars) this.stars.rotation.y += 0.00015
-    this.controls.update()
-    this.renderer.render(this.scene, this.camera)
-    this.labelRenderer.render(this.scene, this.camera)
+    this.sceneObjects = []
+    this.nodesMesh = null
+    this.edgesMesh = null
   }
 
   dispose() {
-    this.renderer.dispose()
-    this.labelRenderer.domElement.remove()
-    this.renderer.domElement.remove()
+    this.clearObjects()
+    this.sharedGeo.dispose()
   }
 }
