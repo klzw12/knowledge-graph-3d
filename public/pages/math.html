@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数学 — 知识图谱 3D</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: #080818;
+      color: rgba(255,255,255,.85);
+    }
+    a { text-decoration: none; color: inherit; }
+
+    .back-link {
+      position: fixed; top: 16px; left: 20px;
+      z-index: 100;
+      font-size: 13px; color: rgba(255,255,255,.35);
+      transition: all .2s;
+    }
+    .back-link:hover { color: rgba(255,255,255,.7); }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 40px 40px;
+      gap: 48px;
+    }
+
+    .desc {
+      flex: 0 0 320px;
+      padding-top: 20px;
+    }
+    .desc .title {
+      font-size: 32px; font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .desc .title-bar {
+      width: 48px; height: 4px; border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .desc .text {
+      font-size: 14px; line-height: 1.8;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 16px;
+    }
+    .desc .tags {
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .desc .tag {
+      font-size: 11px; padding: 3px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.08);
+      color: rgba(255,255,255,.35);
+      background: rgba(255,255,255,.03);
+    }
+
+    .children {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .children::-webkit-scrollbar { width: 3px; }
+    .children::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 2px; }
+
+    .child-card {
+      background: rgba(15,15,40,.5);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 12px;
+      padding: 14px 18px;
+      transition: all .2s;
+      cursor: pointer;
+    }
+    .child-card:hover {
+      background: rgba(25,25,55,.7);
+      border-color: rgba(255,255,255,.12);
+    }
+    .child-card .head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 6px;
+    }
+    .child-card .dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .child-card .name {
+      font-size: 16px; font-weight: 600;
+    }
+    .child-card .arrow {
+      margin-left: auto;
+      color: rgba(255,255,255,.2);
+      font-size: 12px;
+    }
+    .child-card .desc-text {
+      font-size: 12px; line-height: 1.6;
+      color: rgba(255,255,255,.4);
+      margin-left: 20px;
+      margin-bottom: 8px;
+    }
+
+    .sub-list {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      margin-left: 20px; margin-top: 6px;
+    }
+    .sub-chip {
+      font-size: 11px; padding: 3px 10px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.05);
+      color: rgba(255,255,255,.45);
+      transition: all .15s;
+    }
+    .sub-chip:hover {
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.7);
+    }
+
+    @media (max-width: 720px) {
+      .container { flex-direction: column; gap: 24px; padding: 50px 20px 20px; }
+      .desc { flex: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="../">← 🕸️ 返回图谱</a>
+
+  <div class="container">
+    <!-- 左侧：描述 -->
+    <div class="desc">
+      <div class="title" style="color:#eab308">📐 数学</div>
+      <div class="title-bar" style="background:#eab308"></div>
+      <div class="text">
+        AI 算法的数学根基。<br><br>
+        线性代数提供向量与矩阵运算基础，微积分支撑梯度优化，概率统计处理不确定性，最优化求解最优参数——四者共同构成现代 AI 的理论基石。
+      </div>
+      <div class="tags">
+        <span class="tag">基础</span>
+        <span class="tag">AI 核心</span>
+      </div>
+    </div>
+
+    <!-- 右侧：子域 -->
+    <div class="children">
+      <!-- 线性代数 -->
+      <a class="child-card" href="linear-algebra.html" style="border-left:3px solid #d4a000">
+        <div class="head">
+          <span class="dot" style="background:#d4a000"></span>
+          <span class="name" style="color:#d4a000">线性代数</span>
+          <span class="arrow">→</span>
+        </div>
+        <div class="desc-text">向量、矩阵及其变换——深度学习的计算基础</div>
+        <div class="sub-list">
+          <span class="sub-chip" style="color:#c09000">矩阵运算</span>
+          <span class="sub-chip" style="color:#ac8000">特征值分解</span>
+          <span class="sub-chip" style="color:#987000">SVD 分解</span>
+        </div>
+      </a>
+
+      <!-- 微积分 -->
+      <a class="child-card" href="calculus.html" style="border-left:3px solid #c0a000">
+        <div class="head">
+          <span class="dot" style="background:#c0a000"></span>
+          <span class="name" style="color:#c0a000">微积分</span>
+          <span class="arrow">→</span>
+        </div>
+        <div class="desc-text">函数的变化率与累积——梯度优化的数学根源</div>
+        <div class="sub-list">
+          <span class="sub-chip" style="color:#ac8c00">导数与梯度</span>
+          <span class="sub-chip" style="color:#987800">链式法则</span>
+        </div>
+      </a>
+
+      <!-- 概率与统计 -->
+      <a class="child-card" href="probability.html" style="border-left:3px solid #b09800">
+        <div class="head">
+          <span class="dot" style="background:#b09800"></span>
+          <span class="name" style="color:#b09800">概率与统计</span>
+          <span class="arrow">→</span>
+        </div>
+        <div class="desc-text">处理不确定性的数学工具——机器学习的理论支柱</div>
+        <div class="sub-list">
+          <span class="sub-chip" style="color:#9c8400">贝叶斯定理</span>
+          <span class="sub-chip" style="color:#887000">概率分布</span>
+        </div>
+      </a>
+
+      <!-- 最优化 -->
+      <a class="child-card" href="optimization.html" style="border-left:3px solid #a09000">
+        <div class="head">
+          <span class="dot" style="background:#a09000"></span>
+          <span class="name" style="color:#a09000">最优化</span>
+          <span class="arrow">→</span>
+        </div>
+        <div class="desc-text">在约束下寻找最优解——模型训练的数学引擎</div>
+        <div class="sub-list">
+          <span class="sub-chip" style="color:#8c7c00">梯度下降</span>
+          <span class="sub-chip" style="color:#786800">凸优化</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+</body>
+</html>

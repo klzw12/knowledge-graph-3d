@@ -238,7 +238,7 @@ async function main() {
         { id: 'languages', label: '语言与框架' },
       ]
     },
-    { id: 'math', label: '数学基础', color: '#eab308', children: [] },
+    { id: 'math', label: '数学', color: '#eab308', children: [] },
   ]
 
   const searchUI = new SearchUI(

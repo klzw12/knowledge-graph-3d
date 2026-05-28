@@ -1,5 +1,5 @@
 /**
- * 📂 数学基础
+ * 📂 数学
  * 
  * AI/ML 所需的核心数学知识
  */
@@ -7,7 +7,7 @@
 export default {
   root: {
     id: 'math',
-    label: '数学基础',
+    label: '数学',
     color: '#eab308',
     description: 'AI 算法的数学根基',
     content: { summary: '线性代数、概率统计、微积分、最优化——AI 算法的数学根基。', tags: ['基础'] },

@@ -27,5 +27,5 @@ export const DOMAIN_COLORS = {
   languages:  '#8b5cf6',    // 语言与框架 — 紫罗兰
 
   // 数学基础
-  math:       '#eab308',    // 数学基础 — 黄
+  math:       '#eab308',    // 数学 — 黄
 }

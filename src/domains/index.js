@@ -4,7 +4,7 @@
  * 
  * 两大顶级领域：
  *   💻 计算机科学 → AI / 语言与框架
- *   📐 数学基础   → 线性代数 / 微积分 / ...
+ *   📐 数学       → 线性代数 / 微积分 / ...
  * 
  * 📝 新增大类：在下面 import 并加入 categories 数组
  */
@@ -14,7 +14,7 @@ import foundation from './computer/foundation.js'
 
 const categories = [
   computer,     // 💻 计算机科学
-  foundation,   // 📐 数学基础
+  foundation,   // 📐 数学
 ]
 
 export const graphData = {
