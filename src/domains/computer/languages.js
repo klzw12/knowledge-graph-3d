@@ -18,7 +18,7 @@ export default {
     ],
   },
   relations: [
-    { source: 'python', target: 'ml', label: '实现语言', color: '#3776AB' },
+    { source: 'python', target: 'common-ml', label: '实现语言', color: '#3776AB' },
     { source: 'python', target: 'dl', label: '实现语言', color: '#3776AB' },
     { source: 'pytorch', target: 'dl', label: '主流框架', color: '#EE4C2C' },
     { source: 'tf', target: 'dl', label: '框架', color: '#FF6F00' },

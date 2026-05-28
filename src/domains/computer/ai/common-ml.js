@@ -1,14 +1,14 @@
 /**
- * 📂 机器学习 (ML)
- * 编辑这个文件来管理 ML 领域的所有节点
+ * 📂 传统机器学习 (Common ML)
+ * 编辑这个文件来管理 Common ML 领域的所有节点
  */
 export default {
   root: {
-    id: 'ml',
-    label: '机器学习',
+    id: 'common-ml',
+    label: '传统机器学习',
     color: '#ffaa3a',
-    description: '从数据中学习模式',
-    content: { summary: '让计算机通过数据自动学习规律，无需显式编程。', tags: ['核心领域'] },
+    description: '从数据中学习模式（非深度学习传统方法）',
+    content: { summary: '让计算机通过数据自动学习规律，无需显式编程。传统机器学习包括监督、无监督和集成方法。', tags: ['核心领域'] },
     children: [
       {
         id: 'supervised',
@@ -41,8 +41,6 @@ export default {
       },
     ],
   },
-
-  // 跨域关联
   relations: [
     { source: 'linear-reg', target: 'linear-algebra', label: '依赖线性代数', color: '#eab308' },
     { source: 'svm', target: 'optimization', label: '依赖凸优化', color: '#eab308' },

@@ -59,8 +59,8 @@ export default {
     { source: 'gd', target: 'dl', label: '核心算法', color: '#eab308' },
     { source: 'chain-rule', target: 'dl', label: '反向传播基础', color: '#eab308' },
     { source: 'bayes', target: 'nlp', label: '基础', color: '#eab308' },
-    { source: 'distribution', target: 'ml', label: '基础', color: '#eab308' },
+    { source: 'distribution', target: 'common-ml', label: '基础', color: '#eab308' },
     { source: 'matrix', target: 'dl', label: '张量运算基础', color: '#eab308' },
-    { source: 'svd', target: 'systems', label: '推荐系统基础', color: '#eab308' },
+    { source: 'svd', target: 'recommender', label: '推荐系统基础', color: '#eab308' },
   ],
 }
