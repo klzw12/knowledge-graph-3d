@@ -151,7 +151,7 @@ export class CameraController {
   }
 
   // ─── 自动适配全图 ───
-  fitToGraph(nodes, padding = 0.3) {
+  fitToGraph(nodes, padding = 1.2) {
     if (nodes.length === 0) return
 
     // 计算包围盒
