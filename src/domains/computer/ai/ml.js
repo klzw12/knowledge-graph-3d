@@ -42,6 +42,13 @@ export default {
     ],
   },
 
-  // 本域内的交叉关联（也可引用其他域的节点）
-  relations: [],
+  // 跨域关联
+  relations: [
+    { source: 'linear-reg', target: 'linear-algebra', label: '依赖线性代数', color: '#eab308' },
+    { source: 'svm', target: 'optimization', label: '依赖凸优化', color: '#eab308' },
+    { source: 'pca', target: 'linear-algebra', label: '依赖线性代数', color: '#eab308' },
+    { source: 'decision-tree', target: 'probability', label: '依赖信息论', color: '#eab308' },
+    { source: 'knn', target: 'math', label: '依赖距离度量', color: '#eab308' },
+    { source: 'kmeans', target: 'math', label: '依赖距离度量', color: '#eab308' },
+  ],
 }
