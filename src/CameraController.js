@@ -304,6 +304,7 @@ export class CameraController {
 
   // ─── 事件回调注册 ───
   onClick(cb) { this._onClick = cb }
+  onDblClick(cb) { this._onDblClick = cb }
 
   dispose() {
     this._clearAutoOrbitTimeout()
