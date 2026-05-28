@@ -159,6 +159,7 @@ async function main() {
 
   // 后处理（Bloom）
   const composer = new EffectComposer(renderer)
+  composer.setSize(width, height)
   const renderPass = new RenderPass(scene, camera)
   composer.addPass(renderPass)
 

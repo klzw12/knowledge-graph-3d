@@ -78,6 +78,8 @@ export class Graph3D {
       roughness: 0.3,
       clearcoat: 0.4,
       clearcoatRoughness: 0.3,
+      emissive: new THREE.Color(0x444488),
+      emissiveIntensity: 0.15,
     })
 
     this.nodesMesh = new THREE.InstancedMesh(this.sharedGeo, material, count)
