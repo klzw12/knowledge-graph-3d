@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>线性回归 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html,body {
+      width:100%; min-height:100vh;
+      background:#080818;
+      color:rgba(255,255,255,.85);
+      font:400 15px/1.7 'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    }
+    a { color:inherit; text-decoration:none; }
+
+    /* ---- 返回 ---- */
+    .back-link {
+      position:fixed; top:16px; left:20px; z-index:100;
+      font-size:13px; color:rgba(255,255,255,.35); transition:all .2s;
+    }
+    .back-link:hover { color:rgba(255,255,255,.7); }
+
+    /* ===== 整体容器 ===== */
+    .page {
+      max-width:1200px;
+      margin:0 auto;
+      padding:60px 20px 0;
+    }
+
+    /* ===== title ===== */
+    .title-area {
+      padding:0 0 20px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      margin-bottom:28px;
+    }
+    .title-area h1 {
+      font-size:28px; font-weight:700;
+      display:flex; align-items:baseline; gap:12px;
+    }
+    .title-area .en {
+      font-size:16px; font-weight:400; color:rgba(255,255,255,.35);
+    }
+    .title-area .bar {
+      width:40px; height:4px; border-radius:2px;
+      margin:10px 0 14px;
+    }
+    .title-area .brief {
+      font-size:14px; color:rgba(255,255,255,.5); max-width:640px;
+    }
+
+    /* ===== 论文地址 ===== */
+    .paper-line {
+      margin-bottom:20px;
+      font-size:13px;
+    }
+    .paper-line a {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 14px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:8px;
+      color:rgba(255,255,255,.5);
+      transition:all .2s;
+    }
+    .paper-line a:hover {
+      border-color:rgba(255,255,255,.2);
+      color:rgba(255,255,255,.8);
+      background:rgba(255,255,255,.03);
+    }
+
+    /* ===== 三栏布局 ===== */
+    .layout {
+      display:flex; gap:24px;
+      align-items:flex-start;
+    }
+
+    /* ---- 左侧导航 ---- */
+    .nav-col {
+      flex:0 0 180px;
+      position:sticky; top:60px;
+    }
+    .nav-col .nav-title {
+      font-size:12px; font-weight:600; text-transform:uppercase;
+      color:rgba(255,255,255,.25); letter-spacing:1px;
+      margin-bottom:12px;
+    }
+    .nav-col a {
+      display:block;
+      font-size:13px; line-height:2;
+      color:rgba(255,255,255,.35);
+      transition:color .15s;
+    }
+    .nav-col a:hover { color:rgba(255,255,255,.7); }
+
+    /* ---- 中间正文 ---- */
+    .main-col {
+      flex:1; min-width:0;
+    }
+    .main-col section {
+      margin-bottom:28px;
+    }
+    .main-col section h2 {
+      font-size:17px; font-weight:600;
+      margin-bottom:10px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .main-col section h3 {
+      font-size:14px; font-weight:600;
+      margin:16px 0 8px;
+      color:rgba(255,255,255,.7);
+    }
+    .main-col section p {
+      font-size:14px; line-height:1.9;
+      color:rgba(255,255,255,.55);
+      margin-bottom:8px;
+    }
+    .main-col section p:last-child { margin-bottom:0; }
+
+    /* 公式 */
+    .formula {
+      background:rgba(0,0,0,.25);
+      border-radius:8px;
+      padding:14px 18px;
+      margin:10px 0;
+      overflow-x:auto;
+      text-align:center;
+    }
+    .formula .katex { color:rgba(255,255,255,.85); }
+
+    /* 列表 */
+    .main-col section ul {
+      list-style:none; padding:0;
+    }
+    .main-col section ul li {
+      font-size:14px; line-height:1.9;
+      color:rgba(255,255,255,.5);
+      padding-left:16px; position:relative;
+    }
+    .main-col section ul li::before {
+      content:'•'; position:absolute; left:2px;
+      color:rgba(255,255,255,.2);
+    }
+
+    /* ---- 右侧着重 ---- */
+    .aside-col {
+      flex:0 0 220px;
+      position:sticky; top:60px;
+    }
+    .aside-col .aside-title {
+      font-size:12px; font-weight:600; text-transform:uppercase;
+      color:rgba(255,255,255,.2); letter-spacing:1px;
+      margin-bottom:12px;
+    }
+    .aside-col .callout {
+      background:rgba(229,115,74,.06);
+      border-left:3px solid #e5734a;
+      border-radius:0 8px 8px 0;
+      padding:12px 14px;
+      margin-bottom:12px;
+      font-size:13px; line-height:1.7;
+      color:rgba(255,255,255,.55);
+    }
+    .aside-col .callout strong {
+      display:block; font-size:12px;
+      color:#e5734a; margin-bottom:4px;
+    }
+    /* callout 颜色变体在具体页面覆写 */
+    .aside-col .callout.tip {
+      border-left-color:#4d96ff;
+    }
+    .aside-col .callout.tip strong { color:#4d96ff; }
+    .aside-col .callout.warn {
+      border-left-color:#eab308;
+    }
+    .aside-col .callout.warn strong { color:#eab308; }
+
+    /* ===== 统一尾部 ===== */
+    .footer {
+      margin-top:48px;
+      padding:20px 0 40px;
+      border-top:1px solid rgba(255,255,255,.04);
+      text-align:center;
+      font-size:12px; color:rgba(255,255,255,.15);
+    }
+
+    @media (max-width:800px) {
+      .layout { flex-direction:column; }
+      .nav-col, .aside-col { flex:none; position:static; width:100%; }
+      .nav-col { display:flex; gap:12px; flex-wrap:wrap; }
+      .nav-col .nav-title { display:none; }
+      .nav-col a { font-size:12px; padding:4px 10px; background:rgba(255,255,255,.03); border-radius:6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="../">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        线性回归
+        <span class="en">Linear Regression</span>
+      </h1>
+      <div class="bar" style="background:#ff8866"></div>
+      <p class="brief">
+        通过拟合一条直线来描述自变量与因变量之间的线性关系，最基础的回归方法。
+      </p>
+    </div>
+
+    <!-- ===== 论文地址（如果有） ===== -->
+    <!-- 无论文时删除这个块 -->
+    <div class="paper-line" style="display:none">
+      <a href="https://arxiv.org/abs/XXXX.XXXXX" target="_blank" rel="noopener">
+        📄 论文标题全称，Year
+      </a>
+    </div>
+
+    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#definition">📖 定义</a>
+        <a href="#math">📐 数学原理</a>
+        <a href="#concepts">🔑 关键概念</a>
+        <a href="#related">🔗 关联方法</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <section id="definition">
+          <h2>📖 定义</h2>
+          <p><!-- 完整定义 --></p>
+        </section>
+
+        <section id="math">
+          <h2>📐 数学原理</h2>
+          <h3>模型形式</h3>
+          <p>简单线性回归（单变量）：</p>
+          <div class="formula">$$y = wx + b$$</div>
+          <p>多元线性回归：</p>
+          <div class="formula">$$\hat{y} = \mathbf{w}^\mathsf{T}\mathbf{x} + b$$</div>
+          <h3>损失函数</h3>
+          <p>均方误差 (MSE)：</p>
+          <div class="formula">$$\mathcal{L}(\mathbf{w},b) = \frac{1}{n}\sum_{i=1}^{n}\bigl(y_i - (\mathbf{w}^\mathsf{T}\mathbf{x}_i + b)\bigr)^2$$</div>
+        </section>
+
+        <section id="concepts">
+          <h2>🔑 关键概念</h2>
+          <ul>
+            <li><!-- 概念 1 --></li>
+            <li><!-- 概念 2 --></li>
+          </ul>
+        </section>
+
+        <section id="related">
+          <h2>🔗 关联方法</h2>
+          <ul>
+            <li><!-- 关联 --></li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重注意 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          <!-- 核心 insight、关键假设 -->
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 局限</strong>
+          <!-- 缺点、边界条件 -->
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 实践</strong>
+          <!-- 工程经验、调参技巧 -->
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 算法底座 · 线性回归
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

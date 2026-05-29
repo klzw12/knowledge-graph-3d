@@ -28,6 +28,7 @@ function parseTree(data) {
     nd._parentId = parentId
     nd._depth = depth
     nd._children = node.children ? node.children.map(c => c.id) : []
+    nd.url = nd.url || nd.src  // src = 项目内 HTML, url = 外链, 统一映射
     nd.inDegree = 0
     nd.outDegree = 0
     // 标记所属 domain（depth=2 的节点本身就是 domain，其子节点继承）
