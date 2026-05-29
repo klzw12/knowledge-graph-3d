@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>监督学习 — 知识图谱 3D</title>
+  <title>决策树 — 知识图谱 3D</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
@@ -197,10 +197,10 @@
     }
   </style>
   <style>
-    /* 页面专属颜色 — 橙色主题 */
-    .title-area .bar { background:#ff9933; }
-    .aside-col .callout { border-left-color:#ff9933; }
-    .aside-col .callout strong { color:#ff9933; }
+    /* 页面专属颜色 — 深橙主题 */
+    .title-area .bar { background:#ff6644; }
+    .aside-col .callout { border-left-color:#ff6644; }
+    .aside-col .callout strong { color:#ff6644; }
   </style>
 </head>
 <body>
@@ -212,12 +212,12 @@
     <!-- ===== title ===== -->
     <div class="title-area">
       <h1>
-        监督学习
-        <span class="en">Supervised Learning</span>
+        决策树
+        <span class="en">Decision Tree</span>
       </h1>
-      <div class="bar" style="background:#ff9933"></div>
+      <div class="bar" style="background:#ff6644"></div>
       <p class="brief">
-        通过标注数据学习输入到输出的映射关系，是机器学习最成熟的范式
+        通过树状结构进行决策，每个内部节点代表一个特征判断，叶子节点代表决策结果
       </p>
     </div>
 
@@ -232,7 +232,7 @@
         <div class="nav-title">目录</div>
         <a href="#definition">📖 定义</a>
         <a href="#math">📐 数学原理</a>
-        <a href="#methods">🔑 关键方法</a>
+        <a href="#concepts">🔑 关键概念</a>
         <a href="#related">🔗 关联</a>
       </nav>
 
@@ -241,55 +241,63 @@
 
         <section id="definition">
           <h2>📖 定义</h2>
-          <p><strong>Supervised Learning</strong> — 使用带标签的训练数据让模型学习从特征到标签的映射函数 \( f: X \to Y \)。核心假设是训练集与测试集独立同分布 (i.i.d.)。</p>
+          <p><strong>Decision Tree</strong> — 基于特征对样本空间进行递归划分的树形结构模型。可解释性极强，能处理分类和回归任务，是非线性模型和集成方法的基础组件。</p>
         </section>
 
         <section id="math">
           <h2>📐 数学原理</h2>
-          <p>给定训练集 \( \{(x_1,y_1),\dots,(x_n,y_n)\} \)，学习映射 \( f \) 使得损失最小化：</p>
-          <div class="formula">$$ \min_f \frac{1}{n}\sum_{i=1}^n \mathcal{L}(f(x_i), y_i) $$</div>
-          <h3>回归 — 均方误差 (MSE)</h3>
-          <div class="formula">$$ \mathcal{L}(y,\hat{y}) = (y - \hat{y})^2 $$</div>
-          <h3>分类 — 交叉熵 (Cross-Entropy)</h3>
-          <div class="formula">$$ \mathcal{L}(y,\hat{y}) = -y\log\hat{y} - (1-y)\log(1-\hat{y}) $$</div>
+          <h3>信息增益 (ID3)</h3>
+          <p>基于信息熵 \$H(D)\$ 计算分裂前后的信息增益：</p>
+          <div class="formula">$$Gain(D, a) = H(D) - \sum_{v}\frac{|D^v|}{|D|}H(D^v)$$</div>
+          <h3>增益率 (C4.5)</h3>
+          <p>对信息增益做归一化，缓解对多值特征的偏向：</p>
+          <div class="formula">$$GainRatio = \frac{Gain}{IV(a)}$$</div>
+          <p>其中 \$IV(a)\$ 是特征 \$a\$ 的固有值 (Intrinsic Value)。</p>
+          <h3>基尼系数 (CART)</h3>
+          <p>CART 回归/分类树使用基尼系数作为分裂标准：</p>
+          <div class="formula">$$Gini(D) = 1 - \sum_{k=1}^{K} p_k^2$$</div>
+          <h3>剪枝</h3>
+          <p>预剪枝（提前停止分裂）和后剪枝（生成后合并）两种策略，用于防止过拟合。</p>
         </section>
 
-        <section id="methods">
-          <h2>🔑 关键方法</h2>
+        <section id="concepts">
+          <h2>🔑 关键概念</h2>
           <ul>
-            <li><strong>回归类</strong> — 线性回归、SVM回归 (SVR)</li>
-            <li><strong>分类类</strong> — SVM、决策树、KNN、逻辑回归</li>
+            <li><strong>递归划分</strong> — 从根到叶逐层分裂</li>
+            <li><strong>纯度度量</strong> — 信息熵 / 基尼系数</li>
+            <li><strong>剪枝</strong> — 防止过拟合</li>
+            <li><strong>决策边界</strong> — 轴对齐的矩形划分</li>
           </ul>
         </section>
 
         <section id="related">
           <h2>🔗 关联</h2>
           <ul>
-            <li><strong>无监督学习</strong>（无标签）</li>
-            <li><strong>半监督学习</strong>（少量标签）</li>
-            <li><strong>强化学习</strong>（奖励信号）</li>
+            <li><strong>随机森林</strong>（Bagging + 决策树）</li>
+            <li><strong>XGBoost</strong>（Boosting + 决策树）</li>
+            <li><strong>CART 算法</strong>（分类与回归树）</li>
           </ul>
         </section>
 
       </main>
 
-      <!-- 右侧着重 -->
+      <!-- 右侧着重注意 -->
       <aside class="aside-col">
         <div class="aside-title">着重注意</div>
 
         <div class="callout">
           <strong>💡 要点</strong>
-          监督学习的质量高度依赖标签数据的质量和数量
+          决策树无需特征标准化，天然处理混合类型数据，可视化解释
         </div>
 
         <div class="callout warn">
           <strong>⚠️ 局限</strong>
-          需要大量人工标注，对未见过的分布 (out-of-distribution) 泛化能力有限
+          容易过拟合，对数据微小变化敏感(高方差)，轴对齐划分限制
         </div>
 
         <div class="callout tip">
           <strong>🔧 实践</strong>
-          数据增强和正则化是缓解过拟合的关键手段
+          限制最大深度(max_depth)是最有效的防过拟合手段，小树(3-5层)常用作集成基学习器
         </div>
 
       </aside>
@@ -298,7 +306,7 @@
 
     <!-- ===== 统一尾部 ===== -->
     <div class="footer">
-      知识图谱 3D · 算法底座 · 监督学习
+      知识图谱 3D · 算法底座 · 决策树
     </div>
 
   </div>

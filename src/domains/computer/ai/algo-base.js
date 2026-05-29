@@ -15,7 +15,7 @@ export default {
     id: 'algo-base',
     label: '算法底座',
     color: '#e5734a',
-    description: '让机器从数据中涌现智能的方法论总称',
+    description: '构成 AI 能力的底层算法体系，覆盖传统机器学习、深度学习、强化学习三大范式',
     children: subs.map(d => d.root),
   },
   relations: subs.flatMap(d => d.relations || []),

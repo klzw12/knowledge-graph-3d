@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>无监督学习 — 知识图谱 3D</title>
+  <title>监督学习 — 知识图谱 3D</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
@@ -197,10 +197,10 @@
     }
   </style>
   <style>
-    /* 页面专属颜色 — 金色主题 */
-    .title-area .bar { background:#e8c840; }
-    .aside-col .callout { border-left-color:#e8c840; }
-    .aside-col .callout strong { color:#e8c840; }
+    /* 页面专属颜色 — 橙色主题 */
+    .title-area .bar { background:#ff9933; }
+    .aside-col .callout { border-left-color:#ff9933; }
+    .aside-col .callout strong { color:#ff9933; }
   </style>
 </head>
 <body>
@@ -212,12 +212,12 @@
     <!-- ===== title ===== -->
     <div class="title-area">
       <h1>
-        无监督学习
-        <span class="en">Unsupervised Learning</span>
+        监督学习
+        <span class="en">Supervised Learning</span>
       </h1>
-      <div class="bar" style="background:#e8c840"></div>
+      <div class="bar" style="background:#ff9933"></div>
       <p class="brief">
-        从无标签数据中发现隐藏的结构和模式
+        通过标注数据学习输入到输出的映射关系，是机器学习最成熟的范式
       </p>
     </div>
 
@@ -241,33 +241,33 @@
 
         <section id="definition">
           <h2>📖 定义</h2>
-          <p><strong>Unsupervised Learning</strong> — 在只有输入数据 \( X \)、没有对应标签 \( y \) 的情况下，让模型自动发现数据中的结构、分布或模式。</p>
+          <p><strong>Supervised Learning</strong> — 使用带标签的训练数据让模型学习从特征到标签的映射函数 $ f: X \to Y $。核心假设是训练集与测试集独立同分布 (i.i.d.)。</p>
         </section>
 
         <section id="math">
           <h2>📐 数学原理</h2>
-          <h3>聚类目标</h3>
-          <p>将 \( n \) 个样本划分到 \( K \) 个簇，使得簇内相似度最大、簇间相似度最小。</p>
-          <div class="formula">$$ \text{聚类: } \min \sum_{i=1}^K \sum_{x\in C_i} \|x - \mu_i\|^2 $$</div>
-          <h3>降维目标</h3>
-          <p>找到低维表示保留数据的主要信息。</p>
+          <p>给定训练集 $ \{(x_1,y_1),\dots,(x_n,y_n)\} $，学习映射 $ f $ 使得损失最小化：</p>
+          <div class="formula">$$ \min_f \frac{1}{n}\sum_{i=1}^n \mathcal{L}(f(x_i), y_i) $$</div>
+          <h3>回归 — 均方误差 (MSE)</h3>
+          <div class="formula">$$ \mathcal{L}(y,\hat{y}) = (y - \hat{y})^2 $$</div>
+          <h3>分类 — 交叉熵 (Cross-Entropy)</h3>
+          <div class="formula">$$ \mathcal{L}(y,\hat{y}) = -y\log\hat{y} - (1-y)\log(1-\hat{y}) $$</div>
         </section>
 
         <section id="methods">
           <h2>🔑 关键方法</h2>
           <ul>
-            <li><strong>聚类</strong> — K-Means、DBSCAN、层次聚类</li>
-            <li><strong>降维</strong> — PCA、t-SNE、UMAP</li>
-            <li><strong>密度估计</strong> — GMM</li>
+            <li><strong>回归类</strong> — 线性回归、SVM回归 (SVR)</li>
+            <li><strong>分类类</strong> — SVM、决策树、KNN、逻辑回归</li>
           </ul>
         </section>
 
         <section id="related">
           <h2>🔗 关联</h2>
           <ul>
-            <li><strong>监督学习</strong>（需要标签）</li>
-            <li><strong>半监督学习</strong></li>
-            <li><strong>自监督学习</strong></li>
+            <li><strong>无监督学习</strong>（无标签）</li>
+            <li><strong>半监督学习</strong>（少量标签）</li>
+            <li><strong>强化学习</strong>（奖励信号）</li>
           </ul>
         </section>
 
@@ -279,17 +279,17 @@
 
         <div class="callout">
           <strong>💡 要点</strong>
-          无监督学习的评估比监督学习困难，因为没有 ground truth
+          监督学习的质量高度依赖标签数据的质量和数量
         </div>
 
         <div class="callout warn">
           <strong>⚠️ 局限</strong>
-          结果解释性差，不同初始化可能得到完全不同结果
+          需要大量人工标注，对未见过的分布 (out-of-distribution) 泛化能力有限
         </div>
 
         <div class="callout tip">
           <strong>🔧 实践</strong>
-          通常先做无监督探索（聚类/降维）再决定标注策略
+          数据增强和正则化是缓解过拟合的关键手段
         </div>
 
       </aside>
@@ -298,7 +298,7 @@
 
     <!-- ===== 统一尾部 ===== -->
     <div class="footer">
-      知识图谱 3D · 算法底座 · 无监督学习
+      知识图谱 3D · 算法底座 · 监督学习
     </div>
 
   </div>

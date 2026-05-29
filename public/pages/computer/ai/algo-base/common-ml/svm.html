@@ -251,13 +251,13 @@
         <section id="math">
           <h2>📐 数学原理</h2>
           <h3>硬间隔 SVM</h3>
-          <p>最大化间隔等价于最小化 \\(\\|\\mathbf{w}\\|\\)：</p>
+          <p>最大化间隔等价于最小化 \$\\|\\mathbf{w}\\|\$：</p>
           <div class="formula">$$\min_{\mathbf{w},b} \frac{1}{2}\|\mathbf{w}\|^2 \quad \text{s.t.} \quad y_i(\mathbf{w}^\mathsf{T}\mathbf{x}_i + b) \geq 1, \forall i$$</div>
           <h3>软间隔（允许误分类）</h3>
-          <p>引入松弛变量 \\(\\xi_i\\)，由参数 C 控制惩罚力度：</p>
+          <p>引入松弛变量 \$\\xi_i\$，由参数 C 控制惩罚力度：</p>
           <div class="formula">$$\min_{\mathbf{w},b,\boldsymbol{\xi}} \frac{1}{2}\|\mathbf{w}\|^2 + C\sum_{i=1}^n \xi_i$$</div>
           <h3>核技巧</h3>
-          <p>通过核函数 \\(K(\\mathbf{x}_i,\\mathbf{x}_j)\\) 隐式映射到高维空间。常用核：线性核、多项式核、RBF 高斯核</p>
+          <p>通过核函数 \$K(\\mathbf{x}_i,\\mathbf{x}_j)\$ 隐式映射到高维空间。常用核：线性核、多项式核、RBF 高斯核</p>
           <div class="formula">$$K(\mathbf{x}_i, \mathbf{x}_j) = \exp(-\gamma\|\mathbf{x}_i - \mathbf{x}_j\|^2)$$</div>
         </section>
 
