@@ -16,7 +16,7 @@ export default {
     label: '计算机科学',
     color: '#4d96ff',
     description: '计算机科学与技术',
-    src: 'pages/computer.html',
+    src: '/pages/computer.html',
     content: { summary: '研究计算与信息处理的基础学科，现代技术的理论引擎。', tags: ['大类'] },
     children: subs.map(d => d.root),
   },

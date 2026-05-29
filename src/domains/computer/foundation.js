@@ -10,7 +10,7 @@ export default {
     label: '数学',
     color: '#eab308',
     description: 'AI 算法的数学根基',
-    src: 'pages/computer/foundation.html',
+    src: '/pages/computer/foundation.html',
     content: { summary: '一切自然科学的基石与通用语言，AI 算法的理论源头。', tags: ['基础'] },
     children: [
       {

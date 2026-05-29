@@ -24,7 +24,7 @@ export const graphData = {
     label: '知识图谱',
     color: '#ffffff',
     description: '我的知识体系',
-    src: '_template.html',
+    src: '/_template.html',
     children: categories.map(c => c.root),
   },
   relations: categories.flatMap(c => c.relations || []),
