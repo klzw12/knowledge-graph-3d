@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>决策树 — 知识图谱 3D</title>
+  <title>感知机 — 知识图谱 3D</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
@@ -197,20 +197,10 @@
     }
   </style>
   <style>
-    /* 页面专属颜色 — 深橙主题 */
-    .title-area .bar { background:#ff6644; }
-    .aside-col .callout { border-left-color:#ff6644; }
-    .aside-col .callout strong { color:#ff6644; }
-  </style>
-  <style>
-    /* 演进树 */
-    .evo-tree{display:flex;align-items:flex-start;gap:0;padding:16px 0}
-    .evo-root{display:flex;align-items:center;justify-content:center;min-width:96px;height:42px;padding:0 18px;border-radius:8px;font-weight:600;font-size:14px;position:relative;flex-shrink:0;margin-top:4px;background:rgba(255,102,68,.1);border:1px solid rgba(255,102,68,.25);color:rgba(255,255,255,.85)}
-    .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
-    .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
-    .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-child strong{color:rgba(255,255,255,.7);font-weight:600}
+    /* 页面专属颜色 — 砖红主题 */
+    .title-area .bar { background:#c74050; }
+    .aside-col .callout { border-left-color:#c74050; }
+    .aside-col .callout strong { color:#c74050; }
   </style>
 </head>
 <body>
@@ -222,12 +212,12 @@
     <!-- ===== title ===== -->
     <div class="title-area">
       <h1>
-        决策树
-        <span class="en">Decision Tree</span>
+        感知机
+        <span class="en">Perceptron</span>
       </h1>
-      <div class="bar" style="background:#ff6644"></div>
+      <div class="bar" style="background:#c74050"></div>
       <p class="brief">
-        通过树状结构进行决策，每个内部节点代表一个特征判断，叶子节点代表决策结果
+        最简单的线性二分类模型，神经网络的原始雏形，1957年 Rosenblatt 提出
       </p>
     </div>
 
@@ -242,7 +232,6 @@
         <div class="nav-title">目录</div>
         <a href="#definition">📖 定义</a>
         <a href="#math">📐 数学原理</a>
-        <a href="#evolution">🌳 演进树</a>
         <a href="#concepts">🔑 关键概念</a>
         <a href="#related">🔗 关联</a>
       </nav>
@@ -252,52 +241,37 @@
 
         <section id="definition">
           <h2>📖 定义</h2>
-          <p><strong>Decision Tree</strong> — 基于特征对样本空间进行递归划分的树形结构模型。可解释性极强，能处理分类和回归任务，是非线性模型和集成方法的基础组件。</p>
+          <p><strong>Perceptron</strong> — 由 Frank Rosenblatt 于 1957 年提出的线性二分类模型。输入加权求和后通过阶跃函数输出 ±1。虽然简单，但它是现代神经网络的基础雏形。历史上曾引发第一次 AI 热潮与寒冬。</p>
         </section>
 
         <section id="math">
           <h2>📐 数学原理</h2>
-          <h3>信息增益 (ID3)</h3>
-          <p>基于信息熵 \$H(D)\$ 计算分裂前后的信息增益：</p>
-          <div class="formula">$$Gain(D, a) = H(D) - \sum_{v}\frac{|D^v|}{|D|}H(D^v)$$</div>
-          <h3>增益率 (C4.5)</h3>
-          <p>对信息增益做归一化，缓解对多值特征的偏向：</p>
-          <div class="formula">$$GainRatio = \frac{Gain}{IV(a)}$$</div>
-          <p>其中 \$IV(a)\$ 是特征 \$a\$ 的固有值 (Intrinsic Value)。</p>
-          <h3>基尼系数 (CART)</h3>
-          <p>CART 回归/分类树使用基尼系数作为分裂标准：</p>
-          <div class="formula">$$Gini(D) = 1 - \sum_{k=1}^{K} p_k^2$$</div>
-          <h3>剪枝</h3>
-          <p>预剪枝（提前停止分裂）和后剪枝（生成后合并）两种策略，用于防止过拟合。</p>
-        </section>
-
-        <section id="evolution">
-          <h2>🌳 演进树 (Evolution Tree)</h2>
-          <div class="evo-tree">
-            <div class="evo-root">决策树</div>
-            <div class="evo-branch">
-              <div class="evo-child"><strong>Bagging方向:</strong> 随机森林 (Random Forest)</div>
-              <div class="evo-child"><strong>Boosting方向:</strong> AdaBoost → GBDT → XGBoost</div>
-            </div>
-          </div>
+          <h3>模型形式</h3>
+          <div class="formula">$$\hat{y} = \text{sign}(\mathbf{w}^\mathsf{T}\mathbf{x} + b)$$</div>
+          <p>其中 sign 是阶跃函数（输出 ±1）。</p>
+          <h3>学习规则</h3>
+          <p>每次遇到误分类样本就更新权重：</p>
+          <div class="formula">$$\mathbf{w} \leftarrow \mathbf{w} + \eta\cdot y_i\cdot\mathbf{x}_i$$</div>
+          <h3>收敛定理</h3>
+          <p>若数据线性可分，感知机在有限步内保证收敛（Rosenblatt, 1962）。</p>
         </section>
 
         <section id="concepts">
           <h2>🔑 关键概念</h2>
           <ul>
-            <li><strong>递归划分</strong> — 从根到叶逐层分裂</li>
-            <li><strong>纯度度量</strong> — 信息熵 / 基尼系数</li>
-            <li><strong>剪枝</strong> — 防止过拟合</li>
-            <li><strong>决策边界</strong> — 轴对齐的矩形划分</li>
+            <li><strong>阶跃函数</strong> — 非连续激活</li>
+            <li><strong>线性可分</strong> — 收敛的前提条件</li>
+            <li><strong>Minsky 批判</strong> — 1969 年指出无法解决 XOR 问题，导致第一次 AI 寒冬</li>
+            <li><strong>多层感知机</strong> — 突破单层局限，走向深度学习</li>
           </ul>
         </section>
 
         <section id="related">
           <h2>🔗 关联</h2>
           <ul>
-            <li><strong>随机森林</strong>（Bagging + 决策树）</li>
-            <li><strong>XGBoost</strong>（Boosting + 决策树）</li>
-            <li><strong>CART 算法</strong>（分类与回归树）</li>
+            <li><strong>逻辑回归</strong>（同为线性分类器）</li>
+            <li><strong>SVM</strong>（最大间隔改进）</li>
+            <li><strong>多层感知机 / 深度学习</strong>（演进方向）</li>
           </ul>
         </section>
 
@@ -309,22 +283,17 @@
 
         <div class="callout">
           <strong>💡 要点</strong>
-          决策树无需特征标准化，天然处理混合类型数据，可视化解释
+          感知机的收敛性证明是机器学习理论的早期里程碑
         </div>
 
         <div class="callout warn">
           <strong>⚠️ 局限</strong>
-          容易过拟合，对数据微小变化敏感(高方差)，轴对齐划分限制
+          只能处理线性可分问题，XOR 问题直接暴露了它的天花板
         </div>
 
         <div class="callout tip">
           <strong>🔧 实践</strong>
-          限制最大深度(max_depth)是最有效的防过拟合手段，小树(3-5层)常用作集成基学习器
-        </div>
-
-        <div class="callout" style="border-left-color:#ff6644;">
-          <strong>🌳 演进</strong>
-          决策树的两大演进方向：Bagging 集成（随机森林）降低方差，Boosting 集成（AdaBoost→GBDT→XGBoost）降低偏差
+          单层感知机已很少使用，但它作为理解神经网络的起点极有价值
         </div>
 
       </aside>
@@ -333,7 +302,7 @@
 
     <!-- ===== 统一尾部 ===== -->
     <div class="footer">
-      知识图谱 3D · 算法底座 · 决策树
+      知识图谱 3D · 算法底座 · 感知机
     </div>
 
   </div>

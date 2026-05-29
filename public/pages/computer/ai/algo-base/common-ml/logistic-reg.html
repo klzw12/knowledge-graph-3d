@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>决策树 — 知识图谱 3D</title>
+  <title>逻辑回归 — 知识图谱 3D</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
@@ -197,20 +197,10 @@
     }
   </style>
   <style>
-    /* 页面专属颜色 — 深橙主题 */
-    .title-area .bar { background:#ff6644; }
-    .aside-col .callout { border-left-color:#ff6644; }
-    .aside-col .callout strong { color:#ff6644; }
-  </style>
-  <style>
-    /* 演进树 */
-    .evo-tree{display:flex;align-items:flex-start;gap:0;padding:16px 0}
-    .evo-root{display:flex;align-items:center;justify-content:center;min-width:96px;height:42px;padding:0 18px;border-radius:8px;font-weight:600;font-size:14px;position:relative;flex-shrink:0;margin-top:4px;background:rgba(255,102,68,.1);border:1px solid rgba(255,102,68,.25);color:rgba(255,255,255,.85)}
-    .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
-    .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
-    .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-child strong{color:rgba(255,255,255,.7);font-weight:600}
+    /* 页面专属颜色 — 朱红主题 */
+    .title-area .bar { background:#e8483a; }
+    .aside-col .callout { border-left-color:#e8483a; }
+    .aside-col .callout strong { color:#e8483a; }
   </style>
 </head>
 <body>
@@ -222,12 +212,12 @@
     <!-- ===== title ===== -->
     <div class="title-area">
       <h1>
-        决策树
-        <span class="en">Decision Tree</span>
+        逻辑回归
+        <span class="en">Logistic Regression</span>
       </h1>
-      <div class="bar" style="background:#ff6644"></div>
+      <div class="bar" style="background:#e8483a"></div>
       <p class="brief">
-        通过树状结构进行决策，每个内部节点代表一个特征判断，叶子节点代表决策结果
+        基于线性模型的二分类方法，通过 Sigmoid 函数输出概率，工业界最广泛使用的分类算法
       </p>
     </div>
 
@@ -242,7 +232,6 @@
         <div class="nav-title">目录</div>
         <a href="#definition">📖 定义</a>
         <a href="#math">📐 数学原理</a>
-        <a href="#evolution">🌳 演进树</a>
         <a href="#concepts">🔑 关键概念</a>
         <a href="#related">🔗 关联</a>
       </nav>
@@ -252,52 +241,34 @@
 
         <section id="definition">
           <h2>📖 定义</h2>
-          <p><strong>Decision Tree</strong> — 基于特征对样本空间进行递归划分的树形结构模型。可解释性极强，能处理分类和回归任务，是非线性模型和集成方法的基础组件。</p>
+          <p><strong>Logistic Regression</strong> — 虽然名字带"回归"，实际上是分类算法。在线性回归的基础上套用 Sigmoid 函数 $$\sigma(z) = \frac{1}{1+e^{-z}}$$ 将输出映射到 [0,1] 区间，解释为概率。源自线性回归的演进。</p>
         </section>
 
         <section id="math">
           <h2>📐 数学原理</h2>
-          <h3>信息增益 (ID3)</h3>
-          <p>基于信息熵 \$H(D)\$ 计算分裂前后的信息增益：</p>
-          <div class="formula">$$Gain(D, a) = H(D) - \sum_{v}\frac{|D^v|}{|D|}H(D^v)$$</div>
-          <h3>增益率 (C4.5)</h3>
-          <p>对信息增益做归一化，缓解对多值特征的偏向：</p>
-          <div class="formula">$$GainRatio = \frac{Gain}{IV(a)}$$</div>
-          <p>其中 \$IV(a)\$ 是特征 \$a\$ 的固有值 (Intrinsic Value)。</p>
-          <h3>基尼系数 (CART)</h3>
-          <p>CART 回归/分类树使用基尼系数作为分裂标准：</p>
-          <div class="formula">$$Gini(D) = 1 - \sum_{k=1}^{K} p_k^2$$</div>
-          <h3>剪枝</h3>
-          <p>预剪枝（提前停止分裂）和后剪枝（生成后合并）两种策略，用于防止过拟合。</p>
-        </section>
-
-        <section id="evolution">
-          <h2>🌳 演进树 (Evolution Tree)</h2>
-          <div class="evo-tree">
-            <div class="evo-root">决策树</div>
-            <div class="evo-branch">
-              <div class="evo-child"><strong>Bagging方向:</strong> 随机森林 (Random Forest)</div>
-              <div class="evo-child"><strong>Boosting方向:</strong> AdaBoost → GBDT → XGBoost</div>
-            </div>
-          </div>
+          <h3>模型形式</h3>
+          <div class="formula">$$P(y=1|x) = \frac{1}{1+e^{-(\mathbf{w}^\mathsf{T}\mathbf{x}+b)}}$$</div>
+          <h3>损失函数</h3>
+          <p>交叉熵（对数损失）：</p>
+          <div class="formula">$$\mathcal{L}(\mathbf{w}) = -\frac{1}{n}\sum_{i=1}^n [y_i\log\hat{y}_i + (1-y_i)\log(1-\hat{y}_i)]$$</div>
         </section>
 
         <section id="concepts">
           <h2>🔑 关键概念</h2>
           <ul>
-            <li><strong>递归划分</strong> — 从根到叶逐层分裂</li>
-            <li><strong>纯度度量</strong> — 信息熵 / 基尼系数</li>
-            <li><strong>剪枝</strong> — 防止过拟合</li>
-            <li><strong>决策边界</strong> — 轴对齐的矩形划分</li>
+            <li><strong>Sigmoid 函数</strong> — 将线性输出压到概率</li>
+            <li><strong>决策边界</strong> — P=0.5 的分界线</li>
+            <li><strong>多分类</strong> — Softmax 回归（多项逻辑回归）</li>
+            <li><strong>正则化</strong> — L1/L2 防止过拟合</li>
           </ul>
         </section>
 
         <section id="related">
           <h2>🔗 关联</h2>
           <ul>
-            <li><strong>随机森林</strong>（Bagging + 决策树）</li>
-            <li><strong>XGBoost</strong>（Boosting + 决策树）</li>
-            <li><strong>CART 算法</strong>（分类与回归树）</li>
+            <li><strong>线性回归</strong>（直接演进来源）</li>
+            <li><strong>SVM</strong>（线性分类对比）</li>
+            <li><strong>Softmax</strong>（多分类扩展）</li>
           </ul>
         </section>
 
@@ -309,22 +280,17 @@
 
         <div class="callout">
           <strong>💡 要点</strong>
-          决策树无需特征标准化，天然处理混合类型数据，可视化解释
+          逻辑回归的"回归"是历史命名，实质是分类。输出概率可解释性强
         </div>
 
         <div class="callout warn">
           <strong>⚠️ 局限</strong>
-          容易过拟合，对数据微小变化敏感(高方差)，轴对齐划分限制
+          决策边界是线性的，非线性需特征工程
         </div>
 
         <div class="callout tip">
           <strong>🔧 实践</strong>
-          限制最大深度(max_depth)是最有效的防过拟合手段，小树(3-5层)常用作集成基学习器
-        </div>
-
-        <div class="callout" style="border-left-color:#ff6644;">
-          <strong>🌳 演进</strong>
-          决策树的两大演进方向：Bagging 集成（随机森林）降低方差，Boosting 集成（AdaBoost→GBDT→XGBoost）降低偏差
+          逻辑回归是二分类问题的默认基线，先跑它再对比复杂模型
         </div>
 
       </aside>
@@ -333,7 +299,7 @@
 
     <!-- ===== 统一尾部 ===== -->
     <div class="footer">
-      知识图谱 3D · 算法底座 · 决策树
+      知识图谱 3D · 算法底座 · 逻辑回归
     </div>
 
   </div>

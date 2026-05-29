@@ -20,6 +20,10 @@ export default {
           { id: 'svm', label: 'SVM', color: '#ff7755', src: '/pages/computer/ai/algo-base/common-ml/svm.html' },
           { id: 'decision-tree', label: '决策树', color: '#ff6644', src: '/pages/computer/ai/algo-base/common-ml/decision-tree.html' },
           { id: 'knn', label: 'KNN', color: '#ff5533', src: '/pages/computer/ai/algo-base/common-ml/knn.html' },
+          { id: 'logistic-reg', label: '逻辑回归', color: '#e8483a', src: '/pages/computer/ai/algo-base/common-ml/logistic-reg.html' },
+          { id: 'naive-bayes', label: '朴素贝叶斯', color: '#d73a4a', src: '/pages/computer/ai/algo-base/common-ml/naive-bayes.html' },
+          { id: 'perceptron', label: '感知机', color: '#c74050', src: '/pages/computer/ai/algo-base/common-ml/perceptron.html' },
+          { id: 'lda', label: 'LDA', color: '#b84555', src: '/pages/computer/ai/algo-base/common-ml/lda.html' },
         ],
       },
       {

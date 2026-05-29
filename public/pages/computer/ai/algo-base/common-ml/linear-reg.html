@@ -202,6 +202,17 @@
     .aside-col .callout { border-left-color:#ff8866; }
     .aside-col .callout strong { color:#ff8866; }
   </style>
+  <style>
+    /* 演进树 */
+    .evo-tree{display:flex;align-items:flex-start;gap:0;padding:16px 0}
+    .evo-root{display:flex;align-items:center;justify-content:center;min-width:96px;height:42px;padding:0 18px;border-radius:8px;font-weight:600;font-size:14px;position:relative;flex-shrink:0;margin-top:4px;background:rgba(255,136,102,.1);border:1px solid rgba(255,136,102,.25);color:rgba(255,255,255,.85)}
+    .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
+    .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
+    .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
+    .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
+    .evo-child.star{background:rgba(255,200,50,.08);border-color:rgba(255,200,50,.2);color:rgba(255,255,255,.8)}
+    .evo-note{font-size:11px;color:rgba(255,200,50,.6);font-style:italic;margin-left:4px}
+  </style>
 </head>
 <body>
 
@@ -232,6 +243,7 @@
         <div class="nav-title">目录</div>
         <a href="#definition">📖 定义</a>
         <a href="#math">📐 数学原理</a>
+        <a href="#evolution">🌳 演进树</a>
         <a href="#concepts">🔑 关键概念</a>
         <a href="#related">🔗 关联</a>
       </nav>
@@ -259,6 +271,21 @@
           <h3>解析解</h3>
           <p>正规方程 (Normal Equation)：</p>
           <div class="formula">$$\mathbf{w} = (\mathbf{X}^\mathsf{T}\mathbf{X})^{-1}\mathbf{X}^\mathsf{T}\mathbf{y}$$</div>
+        </section>
+
+        <section id="evolution">
+          <h2>🌳 演进树 (Evolution Tree)</h2>
+          <div class="evo-tree">
+            <div class="evo-root">线性回归</div>
+            <div class="evo-branch">
+              <div class="evo-child">岭回归 (Ridge)</div>
+              <div class="evo-child">Lasso</div>
+              <div class="evo-child">弹性网络 (ElasticNet)</div>
+              <div class="evo-child">多项式回归</div>
+              <div class="evo-child">贝叶斯线性回归</div>
+              <div class="evo-child star">⭐ 逻辑回归 <span class="evo-note">范式跃迁: 回归→分类</span></div>
+            </div>
+          </div>
         </section>
 
         <section id="concepts">
@@ -299,6 +326,11 @@
         <div class="callout tip">
           <strong>🔧 实践</strong>
           用之前先做特征标准化，检查残差是否满足正态性和同方差性
+        </div>
+
+        <div class="callout" style="border-left-color:#ff8866;">
+          <strong>🌳 演进</strong>
+          线性回归衍生出 Ridge、Lasso、弹性网络等正则化变体，并通过 Sigmoid 函数催生了逻辑回归（回归→分类的范式跃迁）
         </div>
 
       </aside>
