@@ -10,6 +10,7 @@ export default {
     label: '数据结构与算法',
     color: '#00cec9',
     description: '计算机程序的基石：数据的组织、存储与操作方式',
+    src: '/pages/computer/dsa.html',
     content: { summary: '程序效率之源，计算机科学的灵魂。决定了算法的时间与空间边界。', tags: ['基础', '核心'] },
     children: [
       {

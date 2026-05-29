@@ -10,6 +10,7 @@ export default {
     label: '语言与框架',
     color: '#8b5cf6',
     description: 'AI 领域的编程语言和框架',
+    src: '/pages/computer/languages.html',
     content: { summary: '将算法构想转化为可运行代码的工具生态，AI 开发者的兵器谱。', tags: ['工具'] },
     children: [
       { id: 'python', label: 'Python', color: '#3776AB', description: 'AI 第一语言' },

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>线性代数 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html,body {
+      width:100%; min-height:100vh;
+      background:#080818;
+      color:rgba(255,255,255,.85);
+      font:400 15px/1.7 'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    }
+    a { color:inherit; text-decoration:none; }
+
+    /* ---- 返回 ---- */
+    .back-link {
+      position:fixed; top:16px; left:20px; z-index:100;
+      font-size:13px; color:rgba(255,255,255,.35); transition:all .2s;
+    }
+    .back-link:hover { color:rgba(255,255,255,.7); }
+
+    /* ===== 整体容器 ===== */
+    .page {
+      max-width:1200px;
+      margin:0 auto;
+      padding:60px 20px 0;
+    }
+
+    /* ===== title ===== */
+    .title-area {
+      padding:0 0 20px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      margin-bottom:28px;
+    }
+    .title-area h1 {
+      font-size:28px; font-weight:700;
+      display:flex; align-items:baseline; gap:12px;
+    }
+    .title-area .en {
+      font-size:16px; font-weight:400; color:rgba(255,255,255,.35);
+    }
+    .title-area .bar {
+      width:40px; height:4px; border-radius:2px;
+      margin:10px 0 14px;
+    }
+    .title-area .brief {
+      font-size:14px; color:rgba(255,255,255,.5); max-width:640px;
+    }
+
+    /* ===== 三栏布局 ===== */
+    .layout {
+      display:flex; gap:24px;
+      align-items:flex-start;
+    }
+
+    /* ---- 左侧导航 ---- */
+    .nav-col {
+      flex:0 0 180px;
+      position:sticky; top:60px;
+    }
+    .nav-col .nav-title {
+      font-size:12px; font-weight:600; text-transform:uppercase;
+      color:rgba(255,255,255,.25); letter-spacing:1px;
+      margin-bottom:12px;
+    }
+    .nav-col a {
+      display:block;
+      font-size:13px; line-height:2;
+      color:rgba(255,255,255,.35);
+      transition:color .15s;
+    }
+    .nav-col a:hover { color:rgba(255,255,255,.7); }
+
+    /* ---- 中间正文 ---- */
+    .main-col {
+      flex:1; min-width:0;
+    }
+    .main-col section {
+      margin-bottom:28px;
+    }
+    .main-col section h2 {
+      font-size:17px; font-weight:600;
+      margin-bottom:10px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .main-col section h3 {
+      font-size:14px; font-weight:600;
+      margin:16px 0 8px;
+      color:rgba(255,255,255,.7);
+    }
+    .main-col section p {
+      font-size:14px; line-height:1.9;
+      color:rgba(255,255,255,.55);
+      margin-bottom:8px;
+    }
+    .main-col section p:last-child { margin-bottom:0; }
+
+    /* 公式 */
+    .formula {
+      background:rgba(0,0,0,.25);
+      border-radius:8px;
+      padding:14px 18px;
+      margin:10px 0;
+      overflow-x:auto;
+      text-align:center;
+    }
+    .formula .katex { color:rgba(255,255,255,.85); }
+
+    /* 列表 */
+    .main-col section ul {
+      list-style:none; padding:0;
+    }
+    .main-col section ul li {
+      font-size:14px; line-height:1.9;
+      color:rgba(255,255,255,.5);
+      padding-left:16px; position:relative;
+    }
+    .main-col section ul li::before {
+      content:'•'; position:absolute; left:2px;
+      color:rgba(255,255,255,.2);
+    }
+
+    /* ---- 右侧着重 ---- */
+    .aside-col {
+      flex:0 0 220px;
+      position:sticky; top:60px;
+    }
+    .aside-col .aside-title {
+      font-size:12px; font-weight:600; text-transform:uppercase;
+      color:rgba(255,255,255,.2); letter-spacing:1px;
+      margin-bottom:12px;
+    }
+    .aside-col .callout {
+      background:rgba(212,160,0,.06);
+      border-left:3px solid #d4a000;
+      border-radius:0 8px 8px 0;
+      padding:12px 14px;
+      margin-bottom:12px;
+      font-size:13px; line-height:1.7;
+      color:rgba(255,255,255,.55);
+    }
+    .aside-col .callout strong {
+      display:block; font-size:12px;
+      color:#d4a000; margin-bottom:4px;
+    }
+    .aside-col .callout.tip {
+      border-left-color:#4d96ff;
+    }
+    .aside-col .callout.tip strong { color:#4d96ff; }
+    .aside-col .callout.warn {
+      border-left-color:#eab308;
+    }
+    .aside-col .callout.warn strong { color:#eab308; }
+
+    /* ===== 统一尾部 ===== */
+    .footer {
+      margin-top:48px;
+      padding:20px 0 40px;
+      border-top:1px solid rgba(255,255,255,.04);
+      text-align:center;
+      font-size:12px; color:rgba(255,255,255,.15);
+    }
+
+    @media (max-width:800px) {
+      .layout { flex-direction:column; }
+      .nav-col, .aside-col { flex:none; position:static; width:100%; }
+      .nav-col { display:flex; gap:12px; flex-wrap:wrap; }
+      .nav-col .nav-title { display:none; }
+      .nav-col a { font-size:12px; padding:4px 10px; background:rgba(255,255,255,.03); border-radius:6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        线性代数
+        <span class="en">Linear Algebra</span>
+      </h1>
+      <div class="bar" style="background:#d4a000"></div>
+      <p class="brief">
+        向量、矩阵及其变换的理论，深度学习的计算基础
+      </p>
+    </div>
+
+    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#definition">📖 定义</a>
+        <a href="#concepts">📐 核心概念</a>
+        <a href="#related">🔗 关联</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <section id="definition">
+          <h2>📖 定义</h2>
+          <p><strong>Linear Algebra</strong> — 研究向量、向量空间、线性变换和矩阵理论的数学分支。在 AI 中，数据以向量/张量形式存在，模型训练本质上是矩阵运算。</p>
+        </section>
+
+        <section id="concepts">
+          <h2>📐 核心概念</h2>
+          <ul>
+            <li><strong>向量与向量空间</strong> — 数据的基本表示形式，构成 AI 中所有输入的数学基础</li>
+            <li><strong>矩阵运算</strong>（加减乘除/转置）— 批量处理数据的核心操作，神经网络前向传播的实质</li>
+            <li><strong>特征值与特征向量</strong> — PCA（主成分分析）的数学核心，揭示数据的主要变化方向</li>
+            <li><strong>奇异值分解 SVD</strong> — 降维与推荐系统的核心技术，对任意矩阵均可分解</li>
+            <li><strong>张量</strong> — 深度学习中的多维数组，图片（3D）、视频（4D）等复杂数据的统一表示</li>
+          </ul>
+        </section>
+
+        <section id="related">
+          <h2>🔗 关联</h2>
+          <ul>
+            <li>深度学习 — 所有运算归结为张量运算（矩阵乘法）</li>
+            <li>PCA / 推荐系统 — 依赖 SVD 分解进行降维和特征提取</li>
+            <li>线性回归 — 通过矩阵求解 $ \mathbf{w} = (X^\mathsf{T}X)^{-1}X^\mathsf{T}\mathbf{y} $ 得到解析解</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重注意 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          深度学习的所有运算都可以归结为矩阵乘法和激活函数的组合
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 局限</strong>
+          线性模型表达能力有限，需要结合非线性激活函数
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 实践</strong>
+          掌握矩阵乘法、特征分解、SVD 三个核心工具即可覆盖 90% 的 AI 场景
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 算法底座 · 线性代数
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

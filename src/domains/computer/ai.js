@@ -15,6 +15,7 @@ export default {
     label: '人工智能',
     color: '#ff6b6b',
     description: '让机器模拟人类智能的学科',
+    src: '/pages/computer/ai.html',
     content: { summary: '赋予机器感知、推理与决策能力的学科，计算机科学最具变革性的分支。', tags: ['核心'] },
     children: subs.map(d => d.root),
   },

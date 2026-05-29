@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>微积分 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html,body {
+      width:100%; min-height:100vh;
+      background:#080818;
+      color:rgba(255,255,255,.85);
+      font:400 15px/1.7 'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    }
+    a { color:inherit; text-decoration:none; }
+
+    /* ---- 返回 ---- */
+    .back-link {
+      position:fixed; top:16px; left:20px; z-index:100;
+      font-size:13px; color:rgba(255,255,255,.35); transition:all .2s;
+    }
+    .back-link:hover { color:rgba(255,255,255,.7); }
+
+    /* ===== 整体容器 ===== */
+    .page {
+      max-width:1200px;
+      margin:0 auto;
+      padding:60px 20px 0;
+    }
+
+    /* ===== title ===== */
+    .title-area {
+      padding:0 0 20px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      margin-bottom:28px;
+    }
+    .title-area h1 {
+      font-size:28px; font-weight:700;
+      display:flex; align-items:baseline; gap:12px;
+    }
+    .title-area .en {
+      font-size:16px; font-weight:400; color:rgba(255,255,255,.35);
+    }
+    .title-area .bar {
+      width:40px; height:4px; border-radius:2px;
+      margin:10px 0 14px;
+    }
+    .title-area .brief {
+      font-size:14px; color:rgba(255,255,255,.5); max-width:640px;
+    }
+
+    /* ===== 三栏布局 ===== */
+    .layout {
+      display:flex; gap:24px;
+      align-items:flex-start;
+    }
+
+    /* ---- 左侧导航 ---- */
+    .nav-col {
+      flex:0 0 180px;
+      position:sticky; top:60px;
+    }
+    .nav-col .nav-title {
+      font-size:12px; font-weight:600; text-transform:uppercase;
+      color:rgba(255,255,255,.25); letter-spacing:1px;
+      margin-bottom:12px;
+    }
+    .nav-col a {
+      display:block;
+      font-size:13px; line-height:2;
+      color:rgba(255,255,255,.35);
+      transition:color .15s;
+    }
+    .nav-col a:hover { color:rgba(255,255,255,.7); }
+
+    /* ---- 中间正文 ---- */
+    .main-col {
+      flex:1; min-width:0;
+    }
+    .main-col section {
+      margin-bottom:28px;
+    }
+    .main-col section h2 {
+      font-size:17px; font-weight:600;
+      margin-bottom:10px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .main-col section h3 {
+      font-size:14px; font-weight:600;
+      margin:16px 0 8px;
+      color:rgba(255,255,255,.7);
+    }
+    .main-col section p {
+      font-size:14px; line-height:1.9;
+      color:rgba(255,255,255,.55);
+      margin-bottom:8px;
+    }
+    .main-col section p:last-child { margin-bottom:0; }
+
+    /* 公式 */
+    .formula {
+      background:rgba(0,0,0,.25);
+      border-radius:8px;
+      padding:14px 18px;
+      margin:10px 0;
+      overflow-x:auto;
+      text-align:center;
+    }
+    .formula .katex { color:rgba(255,255,255,.85); }
+
+    /* 列表 */
+    .main-col section ul {
+      list-style:none; padding:0;
+    }
+    .main-col section ul li {
+      font-size:14px; line-height:1.9;
+      color:rgba(255,255,255,.5);
+      padding-left:16px; position:relative;
+    }
+    .main-col section ul li::before {
+      content:'•'; position:absolute; left:2px;
+      color:rgba(255,255,255,.2);
+    }
+
+    /* ---- 右侧着重 ---- */
+    .aside-col {
+      flex:0 0 220px;
+      position:sticky; top:60px;
+    }
+    .aside-col .aside-title {
+      font-size:12px; font-weight:600; text-transform:uppercase;
+      color:rgba(255,255,255,.2); letter-spacing:1px;
+      margin-bottom:12px;
+    }
+    .aside-col .callout {
+      background:rgba(192,160,0,.06);
+      border-left:3px solid #c0a000;
+      border-radius:0 8px 8px 0;
+      padding:12px 14px;
+      margin-bottom:12px;
+      font-size:13px; line-height:1.7;
+      color:rgba(255,255,255,.55);
+    }
+    .aside-col .callout strong {
+      display:block; font-size:12px;
+      color:#c0a000; margin-bottom:4px;
+    }
+    .aside-col .callout.tip {
+      border-left-color:#4d96ff;
+    }
+    .aside-col .callout.tip strong { color:#4d96ff; }
+    .aside-col .callout.warn {
+      border-left-color:#eab308;
+    }
+    .aside-col .callout.warn strong { color:#eab308; }
+
+    /* ===== 统一尾部 ===== */
+    .footer {
+      margin-top:48px;
+      padding:20px 0 40px;
+      border-top:1px solid rgba(255,255,255,.04);
+      text-align:center;
+      font-size:12px; color:rgba(255,255,255,.15);
+    }
+
+    @media (max-width:800px) {
+      .layout { flex-direction:column; }
+      .nav-col, .aside-col { flex:none; position:static; width:100%; }
+      .nav-col { display:flex; gap:12px; flex-wrap:wrap; }
+      .nav-col .nav-title { display:none; }
+      .nav-col a { font-size:12px; padding:4px 10px; background:rgba(255,255,255,.03); border-radius:6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        微积分
+        <span class="en">Calculus</span>
+      </h1>
+      <div class="bar" style="background:#c0a000"></div>
+      <p class="brief">
+        函数的变化率与累积量研究，梯度优化的数学根源
+      </p>
+    </div>
+
+    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#definition">📖 定义</a>
+        <a href="#concepts">📐 核心概念</a>
+        <a href="#related">🔗 关联</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <section id="definition">
+          <h2>📖 定义</h2>
+          <p><strong>Calculus</strong> — 研究函数变化率（微分）和累积量（积分）的数学分支。在 AI 中，微分通过梯度下降驱动模型学习，积分出现在概率论中的期望计算。</p>
+        </section>
+
+        <section id="concepts">
+          <h2>📐 核心概念</h2>
+          <ul>
+            <li><strong>导数与梯度</strong> — 函数变化率的度量，梯度下降算法的基础，指引参数调整方向</li>
+            <li><strong>偏导数</strong> — 多变量函数对单一变量的敏感度，神经网络中每个权重独立求导的依据</li>
+            <li><strong>链式法则</strong> — 复合函数求导的规则，反向传播（Backpropagation）的理论核心</li>
+            <li><strong>多元微积分</strong> — 处理高维空间中的变化与优化问题，深度学习训练场景的数学框架</li>
+          </ul>
+        </section>
+
+        <section id="related">
+          <h2>🔗 关联</h2>
+          <ul>
+            <li>深度学习 — 反向传播的每一层梯度计算都依赖链式法则</li>
+            <li>最优化 — 梯度下降及其变体是微积分在 AI 中最直接的应用</li>
+            <li>概率统计 — 连续型概率分布的期望和方差计算依赖积分</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重注意 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          链式法则是反向传播的数学本质，理解它就能理解深度学习如何学习
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 局限</strong>
+          梯度消失/爆炸问题是深层网络训练的数学瓶颈
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 实践</strong>
+          关键是理解导数的"变化率"含义和链式法则的"复合函数求导"思想，不必纠结于解析积分
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 算法底座 · 微积分
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

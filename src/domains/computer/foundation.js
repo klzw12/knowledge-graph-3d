@@ -10,13 +10,14 @@ export default {
     label: '数学',
     color: '#eab308',
     description: 'AI 算法的数学根基',
-    src: '/pages/computer/foundation.html',
+    src: '/pages/foundation.html',
     content: { summary: '一切自然科学的基石与通用语言，AI 算法的理论源头。', tags: ['基础'] },
     children: [
       {
-        id: 'linear-algebra',
+{ id: 'linear-algebra',
         label: '线性代数',
         color: '#d4a000',
+        src: '/pages/foundation/linear-algebra.html',
         children: [
           { id: 'matrix', label: '矩阵运算', color: '#c09000' },
           { id: 'eigen', label: '特征值分解', color: '#ac8000' },
@@ -24,27 +25,30 @@ export default {
         ],
       },
       {
-        id: 'calculus',
+{ id: 'calculus',
         label: '微积分',
         color: '#c0a000',
+        src: '/pages/foundation/calculus.html',
         children: [
           { id: 'derivative', label: '导数与梯度', color: '#ac8c00' },
           { id: 'chain-rule', label: '链式法则', color: '#987800' },
         ],
       },
       {
-        id: 'probability',
+{ id: 'probability',
         label: '概率与统计',
         color: '#b09800',
+        src: '/pages/foundation/probability.html',
         children: [
           { id: 'bayes', label: '贝叶斯定理', color: '#9c8400' },
           { id: 'distribution', label: '概率分布', color: '#887000' },
         ],
       },
       {
-        id: 'optimization',
+{ id: 'optimization',
         label: '最优化',
         color: '#a09000',
+        src: '/pages/foundation/optimization.html',
         children: [
           { id: 'gd', label: '梯度下降', color: '#8c7c00' },
           { id: 'convex', label: '凸优化', color: '#786800' },
