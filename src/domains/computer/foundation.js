@@ -14,7 +14,7 @@ export default {
     content: { summary: '一切自然科学的基石与通用语言，AI 算法的理论源头。', tags: ['基础'] },
     children: [
       {
-{ id: 'linear-algebra',
+        id: 'linear-algebra',
         label: '线性代数',
         color: '#d4a000',
         src: '/pages/foundation/linear-algebra.html',
@@ -25,7 +25,7 @@ export default {
         ],
       },
       {
-{ id: 'calculus',
+        id: 'calculus',
         label: '微积分',
         color: '#c0a000',
         src: '/pages/foundation/calculus.html',
@@ -35,7 +35,7 @@ export default {
         ],
       },
       {
-{ id: 'probability',
+        id: 'probability',
         label: '概率与统计',
         color: '#b09800',
         src: '/pages/foundation/probability.html',
@@ -45,7 +45,7 @@ export default {
         ],
       },
       {
-{ id: 'optimization',
+        id: 'optimization',
         label: '最优化',
         color: '#a09000',
         src: '/pages/foundation/optimization.html',
