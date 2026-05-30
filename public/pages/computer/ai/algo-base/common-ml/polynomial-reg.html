@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>多项式回归 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html,body {
+      width:100%; min-height:100vh;
+      background:#080818;
+      color:rgba(255,255,255,.85);
+      font:400 15px/1.7 'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    }
+    a { color:inherit; text-decoration:none; }
+
+    /* ---- 返回 ---- */
+    .back-link {
+      position:fixed; top:16px; left:20px; z-index:100;
+      font-size:13px; color:rgba(255,255,255,.35); transition:all .2s;
+    }
+    .back-link:hover { color:rgba(255,255,255,.7); }
+
+    /* ===== 整体容器 ===== */
+    .page {
+      max-width:1200px;
+      margin:0 auto;
+      padding:60px 20px 0;
+    }
+
+    /* ===== title ===== */
+    .title-area {
+      padding:0 0 20px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      margin-bottom:28px;
+    }
+    .title-area h1 {
+      font-size:28px; font-weight:700;
+      display:flex; align-items:baseline; gap:12px;
+    }
+    .title-area .en {
+      font-size:16px; font-weight:400; color:rgba(255,255,255,.35);
+    }
+    .title-area .bar {
+      width:40px; height:4px; border-radius:2px;
+      margin:10px 0 14px;
+    }
+    .title-area .brief {
+      font-size:14px; color:rgba(255,255,255,.5); max-width:640px;
+    }
+
+    /* ===== 参考来源 ===== */
+    .paper-line {
+      margin-bottom:20px;
+      font-size:13px;
+    }
+    .paper-line a {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 14px;
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:8px;
+      color:rgba(255,255,255,.5);
+      transition:all .2s;
+    }
+    .paper-line a:hover {
+      border-color:rgba(255,255,255,.2);
+      color:rgba(255,255,255,.8);
+      background:rgba(255,255,255,.03);
+    }
+
+    /* ===== 三栏布局 ===== */
+    .layout {
+      display:flex; gap:24px;
+      align-items:flex-start;
+    }
+
+    /* ---- 左侧导航 ---- */
+    .nav-col {
+      flex:0 0 180px;
+      position:sticky; top:60px;
+    }
+    .nav-col .nav-title {
+      font-size:12px; font-weight:600; text-transform:uppercase;
+      color:rgba(255,255,255,.25); letter-spacing:1px;
+      margin-bottom:12px;
+    }
+    .nav-col a {
+      display:block;
+      font-size:13px; line-height:2;
+      color:rgba(255,255,255,.35);
+      transition:color .15s;
+    }
+    .nav-col a:hover { color:rgba(255,255,255,.7); }
+
+    /* ---- 中间正文 ---- */
+    .main-col {
+      flex:1; min-width:0;
+    }
+    .main-col section {
+      margin-bottom:28px;
+    }
+    .main-col section h2 {
+      font-size:17px; font-weight:600;
+      margin-bottom:10px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .main-col section h3 {
+      font-size:14px; font-weight:600;
+      margin:16px 0 8px;
+      color:rgba(255,255,255,.7);
+    }
+    .main-col section p {
+      font-size:14px; line-height:1.9;
+      color:rgba(255,255,255,.55);
+      margin-bottom:8px;
+    }
+    .main-col section p:last-child { margin-bottom:0; }
+    .main-col section p strong {
+      color:rgba(255,255,255,.75);
+    }
+
+    /* 表格 */
+    .main-col .table-wrap {
+      overflow-x:auto;
+      margin:10px 0;
+    }
+    .main-col table {
+      width:100%; border-collapse:collapse;
+      font-size:13px;
+    }
+    .main-col table th {
+      background:rgba(255,255,255,.04);
+      color:rgba(255,255,255,.5);
+      font-weight:600; text-align:left;
+      padding:8px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .main-col table td {
+      padding:7px 12px;
+      border-bottom:1px solid rgba(255,255,255,.04);
+      color:rgba(255,255,255,.55);
+    }
+    .main-col table td:first-child {
+      font-weight:500; color:rgba(255,255,255,.65);
+    }
+    .main-col table tr:hover td {
+      background:rgba(255,255,255,.02);
+    }
+    .main-col table .formula-inline {
+      font-family:'Courier New',monospace;
+      font-size:13px;
+      color:#f59e0b;
+    }
+
+    /* 公式 */
+    .formula {
+      background:rgba(0,0,0,.25);
+      border-radius:8px;
+      padding:14px 18px;
+      margin:10px 0;
+      overflow-x:auto;
+      text-align:center;
+    }
+    .formula .katex { color:rgba(255,255,255,.85); }
+
+    /* 列表 */
+    .main-col section ul {
+      list-style:none; padding:0;
+    }
+    .main-col section ul li {
+      font-size:14px; line-height:1.9;
+      color:rgba(255,255,255,.5);
+      padding-left:16px; position:relative;
+    }
+    .main-col section ul li::before {
+      content:'•'; position:absolute; left:2px;
+      color:rgba(255,255,255,.2);
+    }
+
+    /* 有序列表 */
+    .main-col section ol {
+      padding-left:20px;
+      font-size:14px; line-height:2.2;
+      color:rgba(255,255,255,.55);
+    }
+
+    /* 代码块 */
+    .code-block {
+      background:rgba(0,0,0,.3);
+      border-radius:8px;
+      padding:14px 18px;
+      margin:10px 0;
+      font:13px/1.8 'Cascadia Code','Fira Code','Consolas',monospace;
+      color:rgba(255,255,255,.7);
+      overflow-x:auto;
+    }
+    .code-block .comment { color:rgba(255,255,255,.25); font-style:italic; }
+
+    /* 示例框 */
+    .example-box {
+      background:rgba(245,158,11,.04);
+      border:1px solid rgba(245,158,11,.12);
+      border-radius:8px;
+      padding:14px 18px;
+      margin:10px 0;
+    }
+    .example-box p {
+      font-size:13px;
+      color:rgba(255,255,255,.6);
+    }
+    .example-box .example-label {
+      font-size:11px; font-weight:600; text-transform:uppercase;
+      color:#f59e0b; letter-spacing:1px;
+      margin-bottom:6px;
+    }
+
+    /* ---- 右侧着重 ---- */
+    .aside-col {
+      flex:0 0 220px;
+      position:sticky; top:60px;
+    }
+    .aside-col .aside-title {
+      font-size:12px; font-weight:600; text-transform:uppercase;
+      color:rgba(255,255,255,.2); letter-spacing:1px;
+      margin-bottom:12px;
+    }
+    .aside-col .callout {
+      background:rgba(245,158,11,.06);
+      border-left:3px solid #f59e0b;
+      border-radius:0 8px 8px 0;
+      padding:12px 14px;
+      margin-bottom:12px;
+      font-size:13px; line-height:1.7;
+      color:rgba(255,255,255,.55);
+    }
+    .aside-col .callout strong {
+      display:block; font-size:12px;
+      color:#f59e0b; margin-bottom:4px;
+    }
+    .aside-col .callout.tip {
+      border-left-color:#4d96ff;
+    }
+    .aside-col .callout.tip strong { color:#4d96ff; }
+    .aside-col .callout.warn {
+      border-left-color:#eab308;
+    }
+    .aside-col .callout.warn strong { color:#eab308; }
+
+    /* ===== 统一尾部 ===== */
+    .footer {
+      margin-top:48px;
+      padding:20px 0 40px;
+      border-top:1px solid rgba(255,255,255,.04);
+      text-align:center;
+      font-size:12px; color:rgba(255,255,255,.15);
+    }
+
+    @media (max-width:800px) {
+      .layout { flex-direction:column; }
+      .nav-col, .aside-col { flex:none; position:static; width:100%; }
+      .nav-col { display:flex; gap:12px; flex-wrap:wrap; }
+      .nav-col .nav-title { display:none; }
+      .nav-col a { font-size:12px; padding:4px 10px; background:rgba(255,255,255,.03); border-radius:6px; }
+    }
+  </style>
+  <style>
+    /* 页面专属颜色 — 琥珀色主题 */
+    .title-area .bar { background:#f59e0b; }
+    .aside-col .callout { border-left-color:#f59e0b; }
+    .aside-col .callout strong { color:#f59e0b; }
+  </style>
+  <style>
+    /* 演进树 */
+    .evo-tree{display:flex;align-items:flex-start;gap:0;padding:16px 0}
+    .evo-root{display:flex;align-items:center;justify-content:center;min-width:96px;height:42px;padding:0 18px;border-radius:8px;font-weight:600;font-size:14px;position:relative;flex-shrink:0;margin-top:4px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:rgba(255,255,255,.85)}
+    .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
+    .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
+    .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
+    .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
+    .evo-child.star{background:rgba(255,200,50,.08);border-color:rgba(255,200,50,.2);color:rgba(255,255,255,.8)}
+    .evo-note{font-size:11px;color:rgba(255,200,50,.6);font-style:italic;margin-left:4px}
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        多项式回归
+        <span class="en">Polynomial Regression</span>
+      </h1>
+      <div class="bar" style="background:#f59e0b"></div>
+      <p class="brief">
+        在线性回归的基础上引入特征的高次项（$x^2, x^3, \dots$），使模型能够拟合非线性关系。
+        但其对参数的线性本质不变——参数仍然是线性的，因此仍属于线性模型家族。
+      </p>
+    </div>
+
+    <!-- ===== 参考来源 ===== -->
+    <div class="paper-line">
+      <a href="https://developers.google.cn/machine-learning/crash-course/polynomial-regression" target="_blank" rel="noopener">
+        📘 Google Machine Learning Crash Course — Polynomial Regression
+      </a>
+    </div>
+
+    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#definition">📖 定义</a>
+        <a href="#math">📐 数学原理</a>
+        <a href="#complexity">📈 复杂度与过拟合</a>
+        <a href="#degree">🎯 度数选择</a>
+        <a href="#practice">🔧 实践要点</a>
+        <a href="#evolution">🌳 演进关系</a>
+        <a href="#concepts">🔑 关键概念</a>
+        <a href="#related">🔗 关联</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 定义 ===== -->
+        <section id="definition">
+          <h2>📖 定义</h2>
+          <p><strong>多项式回归 (Polynomial Regression)</strong> 是线性回归的一种扩展，通过在特征中加入高次项（$x^2, x^3, \ldots, x^n$），使模型能够拟合数据中的<strong>非线性关系</strong>。</p>
+          <p>关键洞察：虽然我们给模型提供了"非线性"的特征变换，但模型<strong>对参数 $w$ 仍然是线性的</strong>。这意味着我们可以使用与线性回归完全相同的优化算法（如梯度下降、最小二乘法）来训练模型。</p>
+          <p>多项式回归的核心思想是<strong>基函数展开 (Basis Function Expansion)</strong>——将原始特征 $x$ 通过一组非线性基函数 $\phi(x)$ 映射到高维空间，然后在这个新的特征空间中拟合一个线性模型。</p>
+          <div class="example-box">
+            <div class="example-label">💡 直观理解</div>
+            <p>面对一个呈弧形分布的数据集（如温度与发电量的关系），直线永远无法拟合出"先升后降"的曲线趋势。但加入 $x^2$ 项后，模型就能产生抛物线的弯曲形状，从而捕捉这种非线性模式。</p>
+          </div>
+        </section>
+
+        <!-- ===== 数学原理 ===== -->
+        <section id="math">
+          <h2>📐 数学原理</h2>
+
+          <h3>模型形式</h3>
+          <p>一元多项式回归（单特征，$n$ 次多项式）：</p>
+          <div class="formula">$$\hat{y} = b + w_1 x + w_2 x^2 + w_3 x^3 + \cdots + w_n x^n$$</div>
+          <p>也可写为向量形式的基函数展开：</p>
+          <div class="formula">$$\hat{y} = \mathbf{w}^\mathsf{T} \boldsymbol{\phi}(x) + b$$</div>
+          <p>其中基函数向量 $\boldsymbol{\phi}(x)$ 定义为：</p>
+          <div class="formula">$$\boldsymbol{\phi}(x) = \begin{bmatrix} x & x^2 & x^3 & \cdots & x^n \end{bmatrix}^\mathsf{T}$$</div>
+
+          <h3>多特征多项式回归</h3>
+          <p>当有多个特征时，不仅每个特征可以加入高次项，还可以加入<strong>特征交互项 (interaction terms)</strong>，如 $x_1 x_2$。二元二次多项式：</p>
+          <div class="formula">$$\hat{y} = b + w_1 x_1 + w_2 x_2 + w_3 x_1^2 + w_4 x_2^2 + w_5 x_1 x_2$$</div>
+
+          <h3>本质：仍是线性模型</h3>
+          <p>这是一个重要的概念区分：多项式回归的<strong>参数是线性的</strong>，但<strong>特征是经过非线性变换</strong>的。模型关于参数 $w$ 的偏导数仍然是常数：</p>
+          <div class="formula">$$\frac{\partial \hat{y}}{\partial w_k} = x^k$$</div>
+          <p>因此，线性回归中的所有优化方法（正规方程、梯度下降）都可以直接应用到多项式回归上。损失函数的凸性也得以保留。</p>
+
+          <h3>损失函数</h3>
+          <p>使用与线性回归相同的 MSE 损失：</p>
+          <div class="formula">$$\mathcal{L}(\mathbf{w}) = \frac{1}{n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2$$</div>
+          <p>参数更新规则也完全一致（梯度下降）：</p>
+          <div class="formula">$$w_j := w_j - \alpha \cdot \frac{\partial \mathcal{L}}{\partial w_j}$$</div>
+
+          <div class="example-box">
+            <div class="example-label">🧮 示例</div>
+            <p>假设模型为 $\hat{y} = 1 + 0.5x - 0.1x^2 + 0.02x^3$，当 $x=10$：</p>
+            <p>$\hat{y} = 1 + 0.5(10) - 0.1(100) + 0.02(1000) = 1 + 5 - 10 + 20 = <strong>16</strong>$</p>
+            <p>三次项 $x^3$ 虽然数值巨大，但权重 $w_3=0.02$ 很小，控制了该项的影响力。这正是数值稳定性问题的来源。</p>
+          </div>
+        </section>
+
+        <!-- ===== 模型复杂度与过拟合 ===== -->
+        <section id="complexity">
+          <h2>📈 模型复杂度与过拟合</h2>
+
+          <p>多项式的度数（degree）直接决定模型的<strong>复杂度</strong>。选择合适的度数是多项式回归中最关键的权衡。</p>
+
+          <h3>度数对拟合的影响</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>度数</th><th>拟合效果</th><th>现象</th><th>诊断</th></tr>
+              <tr>
+                <td><strong>过低</strong> (degree=1)</td>
+                <td>欠拟合 (Underfitting)</td>
+                <td>直线无法捕捉曲线趋势</td>
+                <td>训练集和验证集的损失都很高</td>
+              </tr>
+              <tr>
+                <td><strong>适度</strong> (degree=2~4)</td>
+                <td>拟合良好</td>
+                <td>曲线贴合数据真实分布</td>
+                <td>验证集损失最低</td>
+              </tr>
+              <tr>
+                <td><strong>过高</strong> (degree=10+)</td>
+                <td>过拟合 (Overfitting)</td>
+                <td>曲线剧烈震荡，精确穿过每个训练点</td>
+                <td>训练损失极低但验证损失飙升</td>
+              </tr>
+            </table>
+          </div>
+
+          <h3>过拟合的典型表现</h3>
+          <p>当多项式度数过高时，模型会"记住"训练数据中的每一个点，包括<strong>噪声</strong>。结果是一条在训练点间剧烈波动的曲线，在两端尤其不稳定（Runge 现象）：</p>
+          <ul>
+            <li><strong>训练损伤</strong>：接近零，甚至完美拟合所有训练点</li>
+            <li><strong>验证/测试损伤</strong>：非常高，模型在新数据上完全失效</li>
+            <li><strong>权重膨胀</strong>：高次项的权重数值极大，互相抵消以精确拟合训练点</li>
+            <li><strong>边界发散</strong>：在训练数据范围之外，预测值剧烈偏离</li>
+          </ul>
+
+          <div class="example-box">
+            <div class="example-label">⚠️ Runge 现象</div>
+            <p>当使用高次多项式（如 degree=15）对等距点进行插值时，曲线在区间两端会出现剧烈震荡。例如对函数 $f(x) = 1/(1+25x^2)$ 在 $[-1,1]$ 上的等距采样点做高次多项式拟合，两端误差会发散到无穷大。这是多项式回归过度拟合的经典警示。</p>
+          </div>
+
+          <h3>偏差-方差权衡</h3>
+          <p>多项式度数选择本质上是<strong>偏差-方差权衡 (Bias-Variance Tradeoff)</strong> 的体现：</p>
+          <ul>
+            <li><strong>低度数</strong> → 高偏差（模型假设太强），低方差（结果稳定但偏离真实）</li>
+            <li><strong>适度度数</strong> → 偏差和方差达到最佳平衡</li>
+            <li><strong>高度数</strong> → 低偏差（可拟合复杂模式），高方差（对数据微小变化极其敏感）</li>
+          </ul>
+        </section>
+
+        <!-- ===== 度数选择 ===== -->
+        <section id="degree">
+          <h2>🎯 度数选择</h2>
+
+          <p>选择最佳多项式度数是一个<strong>模型选择 (Model Selection)</strong> 问题。没有通用的最优度数——它取决于数据的复杂度和样本量。</p>
+
+          <h3>验证曲线法</h3>
+          <p>最直接的方法：对不同的度数（degree=1,2,...,D）分别训练模型，然后在<strong>验证集</strong>上评估性能：</p>
+          <ol>
+            <li>将数据集划分为训练集和验证集（如 80%/20%）</li>
+            <li>对 degree=1 到 degree=10（或更高），训练模型并计算验证集损失</li>
+            <li>绘制"度数 vs 验证损失"曲线：找到验证损失最低的度数</li>
+            <li>用该度数在完整数据集上重新训练最终模型</li>
+          </ol>
+
+          <h3>交叉验证法</h3>
+          <p>当数据量有限时，使用 <strong>K 折交叉验证</strong> 能得到更稳定的度数选择：</p>
+          <ul>
+            <li>将数据集分成 K 份（通常 K=5 或 K=10）</li>
+            <li>每次用 K-1 份训练、1 份验证，重复 K 次</li>
+            <li>对每个度数，取 K 次验证损失的平均值</li>
+            <li>选择平均验证损失最低的度数</li>
+          </ul>
+
+          <h3>信息准则法</h3>
+          <p>对于传统统计背景，也可使用 AIC（Akaike Information Criterion）或 BIC（Bayesian Information Criterion）来选择度数，它们在拟合优度和模型复杂度之间施加惩罚：</p>
+          <div class="formula">$$\text{AIC} = 2k - 2\ln(\hat{L})$$</div>
+          <div class="formula">$$\text{BIC} = k\ln(n) - 2\ln(\hat{L})$$</div>
+          <p>其中 $k$ 是参数数量（即 degree+1），$n$ 是样本数，$\hat{L}$ 是似然函数的最大值。AIC/BIC 值越低越好。</p>
+
+          <div class="example-box">
+            <div class="example-label">💡 经验法则</div>
+            <p>在实践中，<strong>从 degree=2 开始尝试</strong>，逐步增加。大多数真实世界的非线性关系可以用 degree=2~4 的多项式拟合。除非有非常强的理论依据，否则避免使用 degree=10 以上的多项式。</p>
+          </div>
+        </section>
+
+        <!-- ===== 实践要点 ===== -->
+        <section id="practice">
+          <h2>🔧 实践要点</h2>
+
+          <h3>特征缩放至关重要</h3>
+          <p>这是多项式回归中<strong>最重要</strong>的实践经验。当引入高次项后，不同次方的特征取值差异巨大：</p>
+          <div class="table-wrap">
+            <table>
+              <tr><th>原始值 $x$</th><th>$x^2$</th><th>$x^3$</th><th>$x^4$</th></tr>
+              <tr><td>0.1</td><td>0.01</td><td>0.001</td><td>0.0001</td></tr>
+              <tr><td>1.0</td><td>1.0</td><td>1.0</td><td>1.0</td></tr>
+              <tr><td>10</td><td>100</td><td>1,000</td><td>10,000</td></tr>
+              <tr><td>100</td><td>10,000</td><td>1,000,000</td><td>100,000,000</td></tr>
+            </table>
+          </div>
+          <p>不进行特征缩放会导致：</p>
+          <ul>
+            <li>梯度下降收敛极慢——不同维度的梯度量级相差巨大</li>
+            <li>数值不稳定——过大或过小的数值导致浮点溢出或下溢</li>
+            <li>正则化失效——L1/L2 惩罚对量级不同的特征不均衡</li>
+          </ul>
+          <p><strong>建议</strong>：对每个多项式特征进行 <strong>标准化（Z-score）</strong> 或缩放到 $[-1, 1]$ 范围。通常在生成多项式特征后进行。</p>
+
+          <h3>配合正则化</h3>
+          <p>多项式回归的高次项天然容易导致过拟合。与正则化方法配合使用是标准做法：</p>
+          <ul>
+            <li><strong>Ridge (L2)</strong>：对所有权重施加平方惩罚，平滑地抑制过大的系数。最常用。</li>
+            <li><strong>Lasso (L1)</strong>：对权重施加绝对值惩罚，可实现特征选择（将某些高次项系数置零）。</li>
+            <li><strong>ElasticNet</strong>：L1+L2 的组合，兼取两者优点。</li>
+          </ul>
+          <p>正则化后的损失函数：</p>
+          <div class="formula">$$\mathcal{L}_{\text{reg}} = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2 + \lambda\sum_{j=1}^{p}|w_j|^q$$</div>
+
+          <h3>生成多项式特征的 Python 示例</h3>
+          <div class="code-block">
+<span class="comment"># 使用 sklearn 生成多项式特征</span>
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import LinearRegression
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+
+<span class="comment"># 创建流水线：多项式特征 → 标准化 → 线性回归</span>
+model = Pipeline([
+    ('poly', PolynomialFeatures(degree=3, include_bias=False)),
+    ('scale', StandardScaler()),
+    ('reg', LinearRegression())
+])
+
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+          </div>
+
+          <h3>其他实践建议</h3>
+          <ul>
+            <li><strong>从低度数开始</strong>：degree=2 试验起，验证集性能不再提升时停止增加</li>
+            <li><strong>注意外插表现</strong>：多项式回归在训练数据范围外的预测极不可靠（高次项会急剧发散）</li>
+            <li><strong>检查残差图</strong>：如果残差呈现明显的系统模式（如 U 形），说明当前度数不足</li>
+            <li><strong>考虑正交多项式</strong>：对高次项使用正交多项式（如 Legendre 多项式）可以减少数值共线性问题</li>
+            <li><strong>数据量</strong>：多项式回归需要比线性回归更多的训练数据——每增加一个度数，模型复杂度增一维</li>
+          </ul>
+        </section>
+
+        <!-- ===== 演进关系 ===== -->
+        <section id="evolution">
+          <h2>🌳 演进关系</h2>
+          <p>多项式回归在线性回归的基础上增加了非线性拟合能力，但它也有自身的局限——对整体性曲线使用全局多项式，导致边界不稳定。这催生了更灵活的非线性扩展方法。</p>
+          <div class="evo-tree">
+            <div class="evo-root">线性回归</div>
+            <div class="evo-branch">
+              <div class="evo-child star">⭐ 多项式回归 <span class="evo-note">加入高次项拟合非线性</span></div>
+              <div class="evo-child">岭回归 (Ridge) <span class="evo-note">L2 正则化</span></div>
+              <div class="evo-child">Lasso <span class="evo-note">L1 正则化</span></div>
+              <div class="evo-child">样条回归 (Spline) <span class="evo-note">分段多项式, 更灵活</span></div>
+              <div class="evo-child">GAM <span class="evo-note">广义加性模型</span></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 关键概念 ===== -->
+        <section id="concepts">
+          <h2>🔑 关键概念</h2>
+          <ul>
+            <li><strong>多项式度数 (Degree)</strong> — 模型中使用的最高的指数。degree=2 为二次（抛物线），degree=3 为三次（S 形曲线）。度数越高，模型越灵活也越危险。</li>
+            <li><strong>基函数展开 (Basis Function Expansion)</strong> — 将原始特征 $x$ 通过一组基函数映射到新的特征空间，然后在这个空间中拟合线性模型。多项式是其中一种基函数选择。</li>
+            <li><strong>特征交互 (Feature Interaction)</strong> — 多特征多项式中的交叉项（如 $x_1 x_2$），让模型能捕捉特征之间的相乘效应。交互项数量随特征数 $p$ 和度数 $d$ 呈 $O(p^d)$ 增长。</li>
+            <li><strong>过拟合 (Overfitting)</strong> — 高次多项式过度适应训练数据（包括噪声）的现象。表现为训练损失极低但泛化能力差，边界发散。</li>
+            <li><strong>数值稳定性 (Numerical Stability)</strong> — 高次项的巨大数值范围导致的浮点计算精度问题。特征缩放是主要的缓解手段。</li>
+            <li><strong>正交多项式 (Orthogonal Polynomials)</strong> — 如 Legendre、Chebyshev 多项式，设计为在特定区间上正交。使用正交多项式可以减少各项之间的多重共线性。</li>
+            <li><strong>Runge 现象</strong> — 高次多项式插值在区间两端剧烈震荡的现象，是高次数过拟合的典型症状。</li>
+            <li><strong>参数线性 (Parameter Linearity)</strong> — 多项式回归的核心属性：模型关于参数 $w$ 是线性的，因此可使用线性回归的全部优化工具。</li>
+          </ul>
+        </section>
+
+        <!-- ===== 关联 ===== -->
+        <section id="related">
+          <h2>🔗 关联</h2>
+          <ul>
+            <li><strong>线性回归</strong> — 多项式回归的基础。当 degree=1 时退化为普通线性回归。理解线性回归的损失函数、梯度下降、超参数调优等是掌握多项式回归的前提。</li>
+            <li><strong>Ridge / Lasso 回归</strong> — 正则化方法与多项式回归是天作之合。高次项天然容易过拟合，正则化提供了有效的抑制手段。在实践中几乎总是联合使用。</li>
+            <li><strong>样条回归 (Spline Regression)</strong> — 多项式回归的"局部化"升级版。用分段低次多项式（样条）替代全局高次多项式，在每个小段内拟合低次曲线并在连接点光滑衔接。解决全局多项式边界不稳定的问题。</li>
+            <li><strong>广义加性模型 (GAM)</strong> — 更大的框架：每个特征通过一个非线性光滑函数 $f_j(x_j)$ 建模，这些函数可以是样条，也可以是多项式。加性结构意味着 $E[Y] = f_1(x_1) + f_2(x_2) + \cdots + f_p(x_p)$，比全交互的多项式回归更高效。</li>
+            <li><strong>核方法与 SVM</strong> — 从不同的角度解决"非线性特征映射"问题。核技巧通过核函数隐式地在高维空间中计算内积，避免了显式地生成高次特征。</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重注意 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout" style="border-left-color:#f59e0b;">
+          <strong>💡 要点</strong>
+          多项式回归仍然属于<strong>线性模型</strong>——参数 $w$ 是线性的。这意味你可以用线性回归的全部优化工具（正规方程、梯度下降），损失函数仍是凸的，保证能找到全局最优解。
+        </div>
+
+        <div class="callout warn" style="border-left-color:#eab308;">
+          <strong>⚠️ 局限</strong>
+          高次项导致数值范围爆炸（如 $x=100$ 时 $x^{10}=1\times10^{20}$）；外插能力差，在训练数据范围外的预测不可靠；全局多项式曲线在两端（Runge 现象）剧烈震荡；需要比线性回归更多的数据。
+        </div>
+
+        <div class="callout tip" style="border-left-color:#4d96ff;">
+          <strong>🔧 实践</strong>
+          必须做特征缩放（标准步）；始终配合正则化（Ridge/Lasso）控制过拟合；从 degree=2 开始尝试，用验证曲线确定最佳度数；检查残差图诊断是否需要更高次；处理交互特征时注意特征数量爆发式增长。
+        </div>
+
+        <div class="callout" style="border-left-color:#f59e0b;">
+          <strong>🌳 演进</strong>
+          多项式回归是通向更灵活方法的中间站——<strong>样条回归</strong>（分段低次多项式）解决全局多项式不稳定的问题；<strong>广义加性模型 (GAM)</strong> 对每个特征使用独立的光滑函数，是更灵活、可解释性更强的非线性扩展。
+        </div>
+
+        <div class="callout" style="border-left-color:#eab308;">
+          <strong>📚 参考</strong>
+          本页内容基于 <a href="https://developers.google.cn/machine-learning/crash-course/polynomial-regression" target="_blank" style="color:#f59e0b;text-decoration:underline;">Google ML Crash Course</a> 整理
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 算法底座 · 多项式回归 · 参考 Google ML Crash Course
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

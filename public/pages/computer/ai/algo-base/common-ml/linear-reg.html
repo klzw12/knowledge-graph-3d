@@ -54,7 +54,7 @@
       font-size:14px; color:rgba(255,255,255,.5); max-width:640px;
     }
 
-    /* ===== 论文地址 ===== */
+    /* ===== 参考来源 ===== */
     .paper-line {
       margin-bottom:20px;
       font-size:13px;
@@ -120,6 +120,42 @@
       margin-bottom:8px;
     }
     .main-col section p:last-child { margin-bottom:0; }
+    .main-col section p strong {
+      color:rgba(255,255,255,.75);
+    }
+
+    /* 表格 */
+    .main-col .table-wrap {
+      overflow-x:auto;
+      margin:10px 0;
+    }
+    .main-col table {
+      width:100%; border-collapse:collapse;
+      font-size:13px;
+    }
+    .main-col table th {
+      background:rgba(255,255,255,.04);
+      color:rgba(255,255,255,.5);
+      font-weight:600; text-align:left;
+      padding:8px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .main-col table td {
+      padding:7px 12px;
+      border-bottom:1px solid rgba(255,255,255,.04);
+      color:rgba(255,255,255,.55);
+    }
+    .main-col table td:first-child {
+      font-weight:500; color:rgba(255,255,255,.65);
+    }
+    .main-col table tr:hover td {
+      background:rgba(255,255,255,.02);
+    }
+    .main-col table .formula-inline {
+      font-family:'Courier New',monospace;
+      font-size:13px;
+      color:#e5734a;
+    }
 
     /* 公式 */
     .formula {
@@ -146,6 +182,36 @@
       color:rgba(255,255,255,.2);
     }
 
+    /* 代码块 */
+    .code-block {
+      background:rgba(0,0,0,.3);
+      border-radius:8px;
+      padding:14px 18px;
+      margin:10px 0;
+      font:13px/1.8 'Cascadia Code','Fira Code','Consolas',monospace;
+      color:rgba(255,255,255,.7);
+      overflow-x:auto;
+    }
+    .code-block .comment { color:rgba(255,255,255,.25); font-style:italic; }
+
+    /* 示例框 */
+    .example-box {
+      background:rgba(255,136,102,.04);
+      border:1px solid rgba(255,136,102,.12);
+      border-radius:8px;
+      padding:14px 18px;
+      margin:10px 0;
+    }
+    .example-box p {
+      font-size:13px;
+      color:rgba(255,255,255,.6);
+    }
+    .example-box .example-label {
+      font-size:11px; font-weight:600; text-transform:uppercase;
+      color:#ff8866; letter-spacing:1px;
+      margin-bottom:6px;
+    }
+
     /* ---- 右侧着重 ---- */
     .aside-col {
       flex:0 0 220px;
@@ -169,7 +235,6 @@
       display:block; font-size:12px;
       color:#e5734a; margin-bottom:4px;
     }
-    /* callout 颜色变体在具体页面覆写 */
     .aside-col .callout.tip {
       border-left-color:#4d96ff;
     }
@@ -228,12 +293,17 @@
       </h1>
       <div class="bar" style="background:#ff8866"></div>
       <p class="brief">
-        通过拟合直线/超平面描述自变量与因变量的线性关系，最基础的回归模型
+        通过拟合直线/超平面描述自变量与因变量之间的线性关系，最基础的回归模型。
+        用统计方法寻找特征与标签之间的定量关系。
       </p>
     </div>
 
-    <!-- ===== 论文地址（无） ===== -->
-    <div class="paper-line" style="display:none"></div>
+    <!-- ===== 参考来源 (替代论文) ===== -->
+    <div class="paper-line">
+      <a href="https://developers.google.cn/machine-learning/crash-course/linear-regression" target="_blank" rel="noopener">
+        📘 Google Machine Learning Crash Course — Linear Regression
+      </a>
+    </div>
 
     <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
     <div class="layout">
@@ -243,6 +313,9 @@
         <div class="nav-title">目录</div>
         <a href="#definition">📖 定义</a>
         <a href="#math">📐 数学原理</a>
+        <a href="#loss">📉 损失函数</a>
+        <a href="#gradient-descent">⬇️ 梯度下降</a>
+        <a href="#hyperparams">⚙️ 超参数</a>
         <a href="#evolution">🌳 演进树</a>
         <a href="#concepts">🔑 关键概念</a>
         <a href="#related">🔗 关联</a>
@@ -251,28 +324,187 @@
       <!-- 中间正文 -->
       <main class="main-col">
 
+        <!-- ===== 定义 ===== -->
         <section id="definition">
           <h2>📖 定义</h2>
-          <p><strong>Linear Regression</strong> — 假设目标变量 y 与特征 x 之间存在线性关系，通过学习权重 w 和偏置 b 来最小化预测值与真实值之间的误差。是统计学和机器学习的基石模型。</p>
+          <p><strong>Linear Regression</strong> 是一种统计技术，用于寻找变量之间的关系。在机器学习语境中，线性回归寻找<strong>特征 (feature)</strong> 与<strong>标签 (label)</strong> 之间的线性关系。</p>
+          <p>例如：预测汽车的燃油效率（英里/加仑）与车重（千磅）之间的关系：</p>
+          <div class="table-wrap">
+            <table>
+              <tr><th>车重（千磅, 特征 x）</th><th>燃油效率（mpg, 标签 y）</th></tr>
+              <tr><td>3.50</td><td>18</td></tr>
+              <tr><td>3.69</td><td>15</td></tr>
+              <tr><td>3.44</td><td>18</td></tr>
+              <tr><td>3.43</td><td>16</td></tr>
+              <tr><td>4.34</td><td>15</td></tr>
+              <tr><td>4.42</td><td>14</td></tr>
+              <tr><td>2.37</td><td>24</td></tr>
+            </table>
+          </div>
+          <p>根据这些数据点，我们可以在散点图上拟合出一条"最佳拟合线"作为预测模型。训练过程就是找出这条线的<strong>斜率 (weight)</strong> 和 <strong>截距 (bias)</strong>。</p>
         </section>
 
+        <!-- ===== 数学原理 ===== -->
         <section id="math">
           <h2>📐 数学原理</h2>
+
           <h3>模型形式</h3>
-          <p>简单线性回归（单变量）：</p>
-          <div class="formula">$$y = wx + b$$</div>
-          <p>多元线性回归：</p>
+          <p><strong>简单线性回归</strong>（单变量，一个特征）：</p>
+          <div class="formula">$$y' = b + w_1 x_1$$</div>
+          <p>其中：<strong>y'</strong> 是预测标签，<strong>b</strong> 是偏置（bias/y-截距），<strong>w₁</strong> 是权重（weight/斜率），<strong>x₁</strong> 是特征值。</p>
+
+          <p><strong>多元线性回归</strong>（多特征）：</p>
+          <div class="formula">$$y' = b + w_1 x_1 + w_2 x_2 + \cdots + w_n x_n$$</div>
           <div class="formula">$$\hat{y} = \mathbf{w}^\mathsf{T}\mathbf{x} + b$$</div>
-          <p>矩阵形式：</p>
-          <div class="formula">$$\mathbf{y} = \mathbf{X}\mathbf{w}$$</div>
-          <h3>损失函数</h3>
-          <p>均方误差 (MSE)：</p>
-          <div class="formula">$$\mathcal{L}(\mathbf{w}) = \frac{1}{n}\|\mathbf{y} - \mathbf{X}\mathbf{w}\|^2$$</div>
-          <h3>解析解</h3>
-          <p>正规方程 (Normal Equation)：</p>
-          <div class="formula">$$\mathbf{w} = (\mathbf{X}^\mathsf{T}\mathbf{X})^{-1}\mathbf{X}^\mathsf{T}\mathbf{y}$$</div>
+
+          <div class="example-box">
+            <div class="example-label">💡 示例</div>
+            <p>在车重预测燃油效率的例子中：偏置 b = 34（y 轴截距），权重 w₁ = −4.6（斜率）。</p>
+            <p>模型：<strong>y' = 34 + (−4.6)(x₁)</strong></p>
+            <p>一辆 4000 磅的车（x₁ = 4.0），预测燃油效率为 34 + (−4.6)(4.0) = <strong>15.6 mpg</strong>。</p>
+          </div>
         </section>
 
+        <!-- ===== 损失函数 ===== -->
+        <section id="loss">
+          <h2>📉 损失函数 (Loss)</h2>
+          <p><strong>损失</strong> 是一个数值度量，描述模型的预测有多"错误"。损失衡量模型预测与真实标签之间的<strong>距离</strong>。
+            训练模型的目标就是将损失降到最低。</p>
+          <p>损失只关心距离，不关心方向（正负号），所以需要消去符号。两种常用方法：取绝对值、或取平方。</p>
+
+          <h3>损失类型一览</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>损失类型</th><th>定义</th><th>公式</th></tr>
+              <tr>
+                <td><strong>L₁ Loss</strong></td>
+                <td>预测与真实值之差的绝对值之和</td>
+                <td class="formula-inline">Σ|actual − predicted|</td>
+              </tr>
+              <tr>
+                <td><strong>MAE</strong><br/><span style="font-size:12px;color:rgba(255,255,255,.3)">Mean Absolute Error</span></td>
+                <td>L₁ Loss 的均值</td>
+                <td class="formula-inline">(1/N) Σ|actual − predicted|</td>
+              </tr>
+              <tr>
+                <td><strong>L₂ Loss</strong></td>
+                <td>预测与真实值之差的平方和</td>
+                <td class="formula-inline">Σ(actual − predicted)²</td>
+              </tr>
+              <tr>
+                <td><strong>MSE</strong><br/><span style="font-size:12px;color:rgba(255,255,255,.3)">Mean Squared Error</span></td>
+                <td>L₂ Loss 的均值</td>
+                <td class="formula-inline">(1/N) Σ(actual − predicted)²</td>
+              </tr>
+              <tr>
+                <td><strong>RMSE</strong><br/><span style="font-size:12px;color:rgba(255,255,255,.3)">Root MSE</span></td>
+                <td>MSE 的平方根（与预测值同量纲）</td>
+                <td class="formula-inline">√MSE</td>
+              </tr>
+            </table>
+          </div>
+
+          <h3>MSE 公式（常用）</h3>
+          <div class="formula">$$\mathcal{L}(\mathbf{w}) = \frac{1}{n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2$$</div>
+
+          <h3>L₁ vs L₂ 的选择</h3>
+          <p><strong>平方的作用</strong>：当预测偏差很大时，平方会使损失更大；当偏差很小（&lt;1）时，平方使损失更小。L₂ Loss 对<strong>异常值 (outliers)</strong> 的惩罚远大于 L₁ Loss。</p>
+          <p><strong>MAE vs RMSE</strong>：MAE 代表平均预测误差，RMSE 代表误差的"弥散程度"，对大误差更敏感。MSE 使模型向异常值靠近，MAE 则不受异常值过度影响。</p>
+          <p><strong>推荐</strong>：处理多个样本时，建议对所有样本的损失取平均（无论使用 MAE、MSE 还是 RMSE）。</p>
+
+          <div class="example-box">
+            <div class="example-label">🧮 计算示例</div>
+            <p>模型：y' = 34 + (−4.6)(x₁)。实际：一辆 2370 磅的车（x₁=2.37）燃油效率为 24 mpg。</p>
+            <p>预测值 = 34 + (−4.6)(2.37) = <strong>23.1 mpg</strong></p>
+            <p>L₂ Loss = (24 − 23.1)² = <strong>0.81</strong></p>
+          </div>
+        </section>
+
+        <!-- ===== 梯度下降 ===== -->
+        <section id="gradient-descent">
+          <h2>⬇️ 梯度下降 (Gradient Descent)</h2>
+          <p><strong>梯度下降</strong> 是一种迭代式数学优化技术，通过反复更新权重和偏置来找到<strong>损失最低</strong>的模型参数。</p>
+
+          <h3>迭代过程</h3>
+          <p>模型从随机初始化的权重和偏置（接近 0）开始，重复以下步骤：</p>
+          <ol style="list-style:decimal;padding-left:20px;font-size:14px;line-height:2.2;color:rgba(255,255,255,.55);">
+            <li>用当前权重和偏置计算<strong>损失</strong></li>
+            <li>确定<strong>方向</strong>（梯度方向）——朝哪个方向调整参数可以减少损失</li>
+            <li>将权重和偏置向降低损失的方向<strong>移动一小步</strong></li>
+            <li>返回步骤 1，反复迭代直至模型<strong>收敛</strong></li>
+          </ol>
+
+          <h3>损失曲线 (Loss Curve)</h3>
+          <p>训练过程中的损失曲线展示损失随迭代次数的变化。典型的损失曲线呈<strong>先陡降 → 逐渐趋缓 → 最终平缓</strong>的模式：</p>
+          <ul>
+            <li><strong>早期迭代</strong>：损失急剧下降，模型快速改善</li>
+            <li><strong>中期迭代</strong>：损失逐渐下降，改进幅度变小</li>
+            <li><strong>收敛</strong>：损失线变平，模型达到最低损失点</li>
+          </ul>
+
+          <h3>凸函数与收敛</h3>
+          <p>线性回归的损失函数总是<strong>凸的 (convex)</strong>，这意味着它只有一个全局最小值。当梯度下降收敛时，可以确信找到了使损失最小的权重和偏置。</p>
+          <p>可以把梯度下降想象成一个<strong>球滚下坡</strong>：每次迭代就是在坡上迈出一步，最终停在谷底（全局最低点）。</p>
+          <p class="note" style="font-size:13px;color:rgba(255,255,255,.35);margin-top:4px;">⚠️ 注意：模型几乎从不会找到恰好让损失归零的精确值，而是找到非常接近的值。损失恰好为 0 通常意味着过拟合。</p>
+        </section>
+
+        <!-- ===== 超参数 ===== -->
+        <section id="hyperparams">
+          <h2>⚙️ 超参数 (Hyperparameters)</h2>
+          <p><strong>超参数</strong> 是你在训练前设定的变量，控制训练过程的各个方面。与<strong>参数</strong>（权重和偏置，由模型自动计算）不同，超参数需要你手动调节。</p>
+
+          <h3>学习率 (Learning Rate)</h3>
+          <p>学习率是一个浮点数，控制模型<strong>收敛的速度</strong>。模型将梯度乘以学习率来确定下一步的步长。</p>
+          <ul>
+            <li><strong>太小的学习率</strong>：每一步修改极小，需要极多迭代才能收敛</li>
+            <li><strong>适中的学习率</strong>：快速稳定收敛</li>
+            <li><strong>太大的学习率</strong>：模型无法收敛，损失曲线上下震荡甚至发散</li>
+          </ul>
+          <p>理想的学习率是"问题相关"的（problem-dependent），通常需要试错调整。</p>
+
+          <h3>批次大小 (Batch Size)</h3>
+          <p>批次大小是指模型在每次更新权重和偏置前处理的<strong>样本数量</strong>。三种常见模式：</p>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>批次策略</th><th>每轮处理样本数</th><th>特点</th></tr>
+              <tr>
+                <td><strong>Full-Batch</strong></td>
+                <td>全部样本</td>
+                <td>计算精确，但大数据集上不实用</td>
+              </tr>
+              <tr>
+                <td><strong>SGD</strong><br/><span style="font-size:12px;color:rgba(255,255,255,.3)">Stochastic GD</span></td>
+                <td>1 个样本（随机选取）</td>
+                <td>收敛可行但非常"嘈杂"，损失曲线抖动明显</td>
+              </tr>
+              <tr>
+                <td><strong>Mini-Batch SGD</strong></td>
+                <td>1 ~ N 之间的任意数字</td>
+                <td>折中方案，实际中最常用。例如 batch_size=32</td>
+              </tr>
+            </table>
+          </div>
+
+          <p>小批次行为类似 SGD，大批次行为类似 Full-Batch。批次大小还受可用计算资源限制。</p>
+          <p class="note" style="font-size:13px;color:rgba(255,255,255,.35);margin-top:4px;">💡 一定程度的"噪声"其实是有益的——它能帮助模型更好地泛化。</p>
+
+          <h3>Epoch（轮次）</h3>
+          <p>1 个 <strong>epoch</strong> 意味着模型已经处理完训练集中<strong>每个样本一次</strong>。例如：1000 个样本、batch_size=100 的情况下，需要 10 次迭代完成 1 个 epoch。</p>
+          <p>训练通常需要多个 epochs。一般来说，更多 epochs 产生更好的模型，但训练时间也更长。</p>
+
+          <h3>三种策略的参数更新频率对比</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>批次策略</th><th>1000 样本 × 20 epochs</th><th>参数更新次数</th></tr>
+              <tr><td>Full-Batch</td><td>每 epoch 更新 1 次</td><td>20 次</td></tr>
+              <tr><td>Mini-Batch（batch=100）</td><td>每 epoch 更新 10 次</td><td>200 次</td></tr>
+              <tr><td>SGD（batch=1）</td><td>每 epoch 更新 1000 次</td><td>20,000 次</td></tr>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== 演进树 ===== -->
         <section id="evolution">
           <h2>🌳 演进树 (Evolution Tree)</h2>
           <div class="evo-tree">
@@ -288,22 +520,32 @@
           </div>
         </section>
 
+        <!-- ===== 关键概念 ===== -->
         <section id="concepts">
           <h2>🔑 关键概念</h2>
           <ul>
-            <li><strong>最小二乘法</strong> — 使残差平方和最小</li>
-            <li><strong>梯度下降</strong> — 在大规模数据上的数值优化方法</li>
-            <li><strong>决定系数 R²</strong> — 模型拟合优度的度量</li>
-            <li><strong>过拟合与正则化</strong> — Ridge(L2)、Lasso(L1) 回归</li>
+            <li><strong>权重 (Weight / w)</strong> — 模型参数，即特征对预测的影响力。类比直线方程中的斜率 m。训练过程中计算得出。</li>
+            <li><strong>偏置 (Bias / b)</strong> — 模型参数，即当所有特征为 0 时的预测值。类比 y-截距。也称 w₀。训练过程中计算得出。</li>
+            <li><strong>最小二乘法</strong> — 使残差平方和最小的参数求解方法</li>
+            <li><strong>梯度下降</strong> — 大规模数据上的数值优化方法，迭代寻找最优参数</li>
+            <li><strong>学习率</strong> — 控制梯度下降每次步长大小的超参数</li>
+            <li><strong>决定系数 R²</strong> — 模型拟合优度的度量（0~1）</li>
+            <li><strong>过拟合与正则化</strong> — Ridge (L2)、Lasso (L1) 通过在损失中添加惩罚项来抑制过拟合</li>
+            <li><strong>损失曲线 (Loss Curve)</strong> — 横轴为迭代次数、纵轴为损失，用于判断模型是否收敛</li>
+            <li><strong>凸函数 (Convex Function)</strong> — 线性回归的损失面是凸的，确保梯度下降能找到全局最小值</li>
+            <li><strong>异常值 (Outlier)</strong> — MSE 对异常值更敏感（模型朝异常值偏移），MAE 鲁棒性更强</li>
           </ul>
         </section>
 
+        <!-- ===== 关联 ===== -->
         <section id="related">
           <h2>🔗 关联</h2>
           <ul>
-            <li><strong>逻辑回归</strong>（分类任务）</li>
-            <li><strong>Ridge / Lasso 回归</strong>（正则化变体）</li>
+            <li><strong>逻辑回归</strong>（通过 Sigmoid 函数将线性输出映射到 [0,1]，用于分类任务）</li>
+            <li><strong>Ridge / Lasso / ElasticNet 回归</strong>（正则化变体，防止过拟合）</li>
             <li><strong>SVM 回归 (SVR)</strong>（间隔最大化回归）</li>
+            <li><strong>多项式回归</strong>（加入特征的高次项，捕捉非线性关系）</li>
+            <li><strong>梯度下降变体</strong>（带动量、Adam、RMSProp 等）</li>
           </ul>
         </section>
 
@@ -315,31 +557,35 @@
 
         <div class="callout">
           <strong>💡 要点</strong>
-          线性回归的解析解(O(n³))在大数据上不可行，此时用梯度下降
+          线性回归的解析解（正规方程）复杂度 O(n³)，在大数据上不可行，此时用梯度下降等数值方法
         </div>
 
         <div class="callout warn">
           <strong>⚠️ 局限</strong>
-          只能捕捉线性关系，对异常值敏感
+          只能捕捉线性关系；对异常值敏感（尤其使用 MSE 时）；需要满足残差正态性和同方差性假设
         </div>
 
         <div class="callout tip">
           <strong>🔧 实践</strong>
-          用之前先做特征标准化，检查残差是否满足正态性和同方差性
+          训练前做特征标准化/归一化；用学习率调度；选择合适的 batch size（常用 32/64）；用小批量 SGD 而非全批量；观察损失曲线判断收敛
         </div>
 
         <div class="callout" style="border-left-color:#ff8866;">
           <strong>🌳 演进</strong>
-          线性回归衍生出 Ridge、Lasso、弹性网络等正则化变体，并通过 Sigmoid 函数催生了逻辑回归（回归→分类的范式跃迁）
+          线性回归衍生出 Ridge、Lasso、ElasticNet 等正则化变体，并通过 Sigmoid 函数催生了逻辑回归（回归→分类的范式跃迁）
         </div>
 
+        <div class="callout" style="border-left-color:#eab308;">
+          <strong>📚 参考</strong>
+          本页内容基于 <a href="https://developers.google.cn/machine-learning/crash-course/linear-regression" target="_blank" style="color:#eab308;text-decoration:underline;">Google ML Crash Course</a> 整理
+        </div>
       </aside>
 
     </div>
 
     <!-- ===== 统一尾部 ===== -->
     <div class="footer">
-      知识图谱 3D · 算法底座 · 线性回归
+      知识图谱 3D · 算法底座 · 线性回归 · 参考 Google ML Crash Course
     </div>
 
   </div>
