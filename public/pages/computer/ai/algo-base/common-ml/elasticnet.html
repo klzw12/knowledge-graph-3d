@@ -1,591 +1,243 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>弹性网络 — 知识图谱 3D</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
-  </script>
+     1|<!DOCTYPE html>
+     2|<html lang="zh-CN">
+     3|<head>
+     4|  <meta charset="UTF-8" />
+     5|  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     6|  <title>弹性网络 — 知识图谱 3D</title>
+     7|  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+     8|  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+     9|  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    10|    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+    11|  </script>
+    12|  
+   264|  
+   270|  
+   285|  <link rel="stylesheet" href="../../../css/common.css" />
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html,body {
-      width:100%; min-height:100vh;
-      background:#080818;
-      color:rgba(255,255,255,.85);
-      font:400 15px/1.7 'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
-    }
-    a { color:inherit; text-decoration:none; }
-
-    /* ---- 返回 ---- */
-    .back-link {
-      position:fixed; top:16px; left:20px; z-index:100;
-      font-size:13px; color:rgba(255,255,255,.35); transition:all .2s;
-    }
-    .back-link:hover { color:rgba(255,255,255,.7); }
-
-    /* ===== 整体容器 ===== */
-    .page {
-      max-width:1200px;
-      margin:0 auto;
-      padding:60px 20px 0;
-    }
-
-    /* ===== title ===== */
-    .title-area {
-      padding:0 0 20px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      margin-bottom:28px;
-    }
-    .title-area h1 {
-      font-size:28px; font-weight:700;
-      display:flex; align-items:baseline; gap:12px;
-    }
-    .title-area .en {
-      font-size:16px; font-weight:400; color:rgba(255,255,255,.35);
-    }
-    .title-area .bar {
-      width:40px; height:4px; border-radius:2px;
-      margin:10px 0 14px;
-    }
-    .title-area .brief {
-      font-size:14px; color:rgba(255,255,255,.5); max-width:640px;
-    }
-
-    /* ===== 参考来源 ===== */
-    .paper-line {
-      margin-bottom:20px;
-      font-size:13px;
-    }
-    .paper-line a {
-      display:inline-flex; align-items:center; gap:6px;
-      padding:6px 14px;
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:8px;
-      color:rgba(255,255,255,.5);
-      transition:all .2s;
-    }
-    .paper-line a:hover {
-      border-color:rgba(255,255,255,.2);
-      color:rgba(255,255,255,.8);
-      background:rgba(255,255,255,.03);
-    }
-
-    /* ===== 三栏布局 ===== */
-    .layout {
-      display:flex; gap:24px;
-      align-items:flex-start;
-    }
-
-    /* ---- 左侧导航 ---- */
-    .nav-col {
-      flex:0 0 180px;
-      position:sticky; top:60px;
-    }
-    .nav-col .nav-title {
-      font-size:12px; font-weight:600; text-transform:uppercase;
-      color:rgba(255,255,255,.25); letter-spacing:1px;
-      margin-bottom:12px;
-    }
-    .nav-col a {
-      display:block;
-      font-size:13px; line-height:2;
-      color:rgba(255,255,255,.35);
-      transition:color .15s;
-    }
-    .nav-col a:hover { color:rgba(255,255,255,.7); }
-
-    /* ---- 中间正文 ---- */
-    .main-col {
-      flex:1; min-width:0;
-    }
-    .main-col section {
-      margin-bottom:28px;
-    }
-    .main-col section h2 {
-      font-size:17px; font-weight:600;
-      margin-bottom:10px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .main-col section h3 {
-      font-size:14px; font-weight:600;
-      margin:16px 0 8px;
-      color:rgba(255,255,255,.7);
-    }
-    .main-col section p {
-      font-size:14px; line-height:1.9;
-      color:rgba(255,255,255,.55);
-      margin-bottom:8px;
-    }
-    .main-col section p:last-child { margin-bottom:0; }
-    .main-col section p strong {
-      color:rgba(255,255,255,.75);
-    }
-
-    /* 表格 */
-    .main-col .table-wrap {
-      overflow-x:auto;
-      margin:10px 0;
-    }
-    .main-col table {
-      width:100%; border-collapse:collapse;
-      font-size:13px;
-    }
-    .main-col table th {
-      background:rgba(255,255,255,.04);
-      color:rgba(255,255,255,.5);
-      font-weight:600; text-align:left;
-      padding:8px 12px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .main-col table td {
-      padding:7px 12px;
-      border-bottom:1px solid rgba(255,255,255,.04);
-      color:rgba(255,255,255,.55);
-    }
-    .main-col table td:first-child {
-      font-weight:500; color:rgba(255,255,255,.65);
-    }
-    .main-col table tr:hover td {
-      background:rgba(255,255,255,.02);
-    }
-    .main-col table .formula-inline {
-      font-family:'Courier New',monospace;
-      font-size:13px;
-      color:#a855f7;
-    }
-
-    /* 公式 */
-    .formula {
-      background:rgba(0,0,0,.25);
-      border-radius:8px;
-      padding:14px 18px;
-      margin:10px 0;
-      overflow-x:auto;
-      text-align:center;
-    }
-    .formula .katex { color:rgba(255,255,255,.85); }
-
-    /* 列表 */
-    .main-col section ul {
-      list-style:none; padding:0;
-    }
-    .main-col section ul li {
-      font-size:14px; line-height:1.9;
-      color:rgba(255,255,255,.5);
-      padding-left:16px; position:relative;
-    }
-    .main-col section ul li::before {
-      content:'•'; position:absolute; left:2px;
-      color:rgba(255,255,255,.2);
-    }
-
-    /* 代码块 */
-    .code-block {
-      background:rgba(0,0,0,.3);
-      border-radius:8px;
-      padding:14px 18px;
-      margin:10px 0;
-      font:13px/1.8 'Cascadia Code','Fira Code','Consolas',monospace;
-      color:rgba(255,255,255,.7);
-      overflow-x:auto;
-    }
-    .code-block .comment { color:rgba(255,255,255,.25); font-style:italic; }
-
-    /* 示例框 */
-    .example-box {
-      background:rgba(168,85,247,.04);
-      border:1px solid rgba(168,85,247,.12);
-      border-radius:8px;
-      padding:14px 18px;
-      margin:10px 0;
-    }
-    .example-box p {
-      font-size:13px;
-      color:rgba(255,255,255,.6);
-    }
-    .example-box .example-label {
-      font-size:11px; font-weight:600; text-transform:uppercase;
-      color:#a855f7; letter-spacing:1px;
-      margin-bottom:6px;
-    }
-
-    /* ---- 右侧着重 ---- */
-    .aside-col {
-      flex:0 0 220px;
-      position:sticky; top:60px;
-    }
-    .aside-col .aside-title {
-      font-size:12px; font-weight:600; text-transform:uppercase;
-      color:rgba(255,255,255,.2); letter-spacing:1px;
-      margin-bottom:12px;
-    }
-    .aside-col .callout {
-      background:rgba(168,85,247,.06);
-      border-left:3px solid #a855f7;
-      border-radius:0 8px 8px 0;
-      padding:12px 14px;
-      margin-bottom:12px;
-      font-size:13px; line-height:1.7;
-      color:rgba(255,255,255,.55);
-    }
-    .aside-col .callout strong {
-      display:block; font-size:12px;
-      color:#a855f7; margin-bottom:4px;
-    }
-    .aside-col .callout.tip {
-      border-left-color:#4d96ff;
-    }
-    .aside-col .callout.tip strong { color:#4d96ff; }
-    .aside-col .callout.warn {
-      border-left-color:#eab308;
-    }
-    .aside-col .callout.warn strong { color:#eab308; }
-
-    /* ===== 统一尾部 ===== */
-    .footer {
-      margin-top:48px;
-      padding:20px 0 40px;
-      border-top:1px solid rgba(255,255,255,.04);
-      text-align:center;
-      font-size:12px; color:rgba(255,255,255,.15);
-    }
-
-    @media (max-width:800px) {
-      .layout { flex-direction:column; }
-      .nav-col, .aside-col { flex:none; position:static; width:100%; }
-      .nav-col { display:flex; gap:12px; flex-wrap:wrap; }
-      .nav-col .nav-title { display:none; }
-      .nav-col a { font-size:12px; padding:4px 10px; background:rgba(255,255,255,.03); border-radius:6px; }
-    }
-  </style>
-  <style>
-    /* 页面专属颜色 — 紫色主题 */
-    .title-area .bar { background:#a855f7; }
-    .aside-col .callout { border-left-color:#a855f7; }
-    .aside-col .callout strong { color:#a855f7; }
-  </style>
-  <style>
-    /* 演进树 — 紫色主题 */
-    .evo-tree{display:flex;align-items:flex-start;gap:0;padding:16px 0}
-    .evo-root{display:flex;align-items:center;justify-content:center;min-width:120px;height:42px;padding:0 18px;border-radius:8px;font-weight:600;font-size:14px;position:relative;flex-shrink:0;margin-top:4px;background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.25);color:rgba(255,255,255,.85)}
-    .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
-    .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
-    .evo-child a{color:inherit;text-decoration:none}
-    .evo-child a:hover{color:rgba(255,255,255,.85)}
-    .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-child.star{background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.25);color:rgba(255,255,255,.8)}
-    .evo-child.star a{color:inherit}
-    .evo-child.star a:hover{color:#fff}
-    .evo-note{font-size:11px;color:rgba(168,85,247,.6);font-style:italic;margin-left:4px}
+265|    /* 页面专属颜色 — 紫色主题 */
+   266|    .title-area .bar { background:#a855f7; }
+   267|    .aside-col .callout { border-left-color:#a855f7; }
+   268|    .aside-col .callout strong { color:#a855f7; }
+   269|
+/* evo-root 主题色 */
+.evo-root{background:rgba(168,85,247,.1);border:1px solid rgba(168,85,247,.25);color:rgba(255,255,255,.85)}
+/* evo-note 主题色 */
+.evo-note{font-size:11px;color:rgba(168,85,247,.6);font-style:italic;margin-left:4px}
   </style>
 </head>
-<body>
-
-  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
-
-  <div class="page">
-
-    <!-- ===== title ===== -->
-    <div class="title-area">
-      <h1>
-        弹性网络
-        <span class="en">Elastic Net</span>
-      </h1>
-      <div class="bar" style="background:#a855f7"></div>
-      <p class="brief">
-        融合 L1（Lasso）和 L2（Ridge）两种正则化的线性回归模型。
-        在特征数量远大于样本数的高维场景中同时实现特征选择与组效应。
-      </p>
-    </div>
-
-    <!-- ===== 参考来源 ===== -->
-    <div class="paper-line">
-      <a href="https://doi.org/10.1111/j.1467-9868.2005.00503.x" target="_blank" rel="noopener">
-        📄 Regularization and Variable Selection via the Elastic Net (Zou &amp; Hastie, 2005)
-      </a>
-    </div>
-
-    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
-    <div class="layout">
-
-      <!-- 左侧导航 -->
-      <nav class="nav-col">
-        <div class="nav-title">目录</div>
-        <a href="#definition">📖 定义</a>
-        <a href="#math">📐 数学原理</a>
-        <a href="#why">🎯 为什么需要 ElasticNet</a>
-        <a href="#alpha">📊 参数 α 的意义</a>
-        <a href="#evolution">🌳 演进关系</a>
-        <a href="#concepts">🔑 关键概念</a>
-        <a href="#related">🔗 关联</a>
-      </nav>
-
-      <!-- 中间正文 -->
-      <main class="main-col">
-
-        <!-- ===== 定义 ===== -->
-        <section id="definition">
-          <h2>📖 定义</h2>
-          <p><strong>弹性网络 (Elastic Net)</strong> 是一种线性回归的<strong>正则化变体</strong>，由 Hui Zou 和 Trevor Hastie 于 2005 年提出。它将 L1 正则化（Lasso）和 L2 正则化（Ridge）的惩罚项以加权和的形式合并到损失函数中，兼收两者之长。</p>
-          <p>从数学上说，弹性网络在最小化均方误差 (MSE) 的同时，对模型权重施加 <strong>L1 + L2 混合约束</strong>。这种双重正则化带来的两个核心特性是：</p>
-          <ul>
-            <li><strong>稀疏性 (Sparsity)</strong> — 来自 L1 项，可以将不重要特征的权重强制归零，实现自动特征选择</li>
-            <li><strong>组效应 (Grouping Effect)</strong> — 来自 L2 项，使强相关特征的权重要么同时保留、要么同时移除，而不是像 Lasso 那样随机选择其中一个</li>
-          </ul>
-          <p>弹性网络的创新之处在于：它不是简单地在回归损失后加上一个惩罚项，而是设计了同时包含 <strong>L1 范数</strong>和 <strong>L2 范数平方</strong>的"弹性"惩罚，通过两个参数调节各自的强度。这种设计使得它在处理<strong>高维数据（特征数 > 样本数）</strong>和<strong>强相关特征群组</strong>时，表现优于单纯的 Lasso 或 Ridge。</p>
-          <p>直观理解：L1 正则化像是一把"高效的手术刀"——精准但可能过于激进；L2 正则化像是一副"均匀的紧箍咒"——稳定但缺乏取舍能力。弹性网络将二者结合，得到了既<strong>能剔除非必要特征</strong>又<strong>能稳定处理相关特征群</strong>的模型。</p>
-        </section>
-
-        <!-- ===== 数学原理 ===== -->
-        <section id="math">
-          <h2>📐 数学原理</h2>
-
-          <h3>损失函数定义</h3>
-          <p>弹性网络的损失函数由三部分组成：数据拟合项（MSE）、L1 惩罚项和 L2 惩罚项。最直接的表达形式为：</p>
-          <div class="formula">$$\mathcal{L}(\mathbf{w}) = \frac{1}{2n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2 + \lambda_1\sum_{j=1}^{p}|w_j| + \lambda_2\sum_{j=1}^{p}w_j^2$$</div>
-          <p>其中：</p>
-          <ul>
-            <li>$\frac{1}{2n}\sum(y_i - \hat{y}_i)^2$ — 均方误差（除以 2 是为了求导方便）</li>
-            <li>$\lambda_1\sum|w_j|$ — L1 惩罚项（系数 $\lambda_1 \ge 0$ 控制 L1 强度）</li>
-            <li>$\lambda_2\sum w_j^2$ — L2 惩罚项（系数 $\lambda_2 \ge 0$ 控制 L2 强度）</li>
-            <li>$n$ 为样本数，$p$ 为特征数</li>
-          </ul>
-
-          <h3>等价参数化形式</h3>
-          <p>为了方便调参，弹性网络通常使用另一种等价的参数化形式，引入一个<strong>混合参数 $\alpha$</strong> 和<strong>总正则化强度 $\lambda$</strong>：</p>
-          <div class="formula">$$\mathcal{L}(\mathbf{w}) = \frac{1}{2n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2 + \lambda\Bigl[(1-\alpha)\sum_{j=1}^{p}|w_j| + \alpha\sum_{j=1}^{p}w_j^2\Bigr]$$</div>
-          <p>在这种形式中：</p>
-          <ul>
-            <li>$\lambda \ge 0$ — 总体正则化强度，越大则权重越趋向于 0</li>
-            <li>$\alpha \in [0, 1]$ — L1 和 L2 的混合比例</li>
-            <li>$\alpha = 0$ 时退化为纯 <strong>Lasso</strong></li>
-            <li>$\alpha = 1$ 时退化为纯 <strong>Ridge</strong></li>
-          </ul>
-
-          <h3>与朴素 Elastic Net 的缩放差异</h3>
-          <p>许多实现（包括 Scikit-learn）使用的形式略微不同，加入了缩放因子 $1 - \alpha$ 使得 $\lambda$ 在各 $\alpha$ 取值下可比：</p>
-          <div class="formula">$$\mathcal{L}(\mathbf{w}) = \frac{1}{2n}\text{MSE} + \lambda\Bigl(\frac{1-\alpha}{2}\sum_{j=1}^{p}|w_j| + \frac{\alpha}{2}\sum_{j=1}^{p}w_j^2\Bigr)$$</div>
-          <p>这种约定下，$\alpha = 0.5$ 表示 L1 和 L2 的贡献大致相等。不同库的实现细节略有不同，使用前应查阅文档确认具体公式。</p>
-
-          <div class="example-box">
-            <div class="example-label">🧮 可视化理解</div>
-            <p>Ridge 的约束区域是一个<strong>圆形</strong>（L2 球），Lasso 的约束区域是一个<strong>菱形</strong>（L1 球）。弹性网络的约束形状介于两者之间——当 L1 占主导时趋近菱形，L2 占主导时趋近圆形。这就像在一个"四角被磨圆了的菱形"内部寻找最优解。</p>
-            <p>最优解出现在 MSE 的等高线与约束区域的<strong>首次接触点</strong>。菱形尖角接触坐标轴更容易产生<strong>稀疏解</strong>（某些权重为零），圆形曲面则使相关特征的系数趋向<strong>均衡</strong>。</p>
-          </div>
-
-          <h3>求解方法</h3>
-          <p>弹性网络的目标函数是<strong>凸函数</strong>——L1 项为凸，L2 项为严格凸，MSE 为凸，所以整体严格凸。这意味着有唯一的全局最优解。常用的求解算法包括：</p>
-          <ul>
-            <li><strong>坐标下降 (Coordinate Descent)</strong> — 逐维迭代优化，每次固定其他维度优化一个 $w_j$，是 Lasso 和 Elastic Net 最主流的求解方法</li>
-            <li><strong>最小角回归 (LARS)</strong> — 基于角度的逐步选择算法，效率高且可同时输出全路径解</li>
-            <li><strong>随机梯度下降 (SGD)</strong> — 适合大规模数据，通过在线方式逐样本更新</li>
-          </ul>
-          <p>坐标下降法在弹性网络中尤其高效，因为 Elastic Net 的逐维子问题有<strong>闭式解</strong>（软阈值算子 + L2 收缩的组合）。</p>
-        </section>
-
-        <!-- ===== 为什么需要 ElasticNet ===== -->
-        <section id="why">
-          <h2>🎯 为什么需要 ElasticNet</h2>
-
-          <h3>Lasso 的两个关键局限</h3>
-          <p>Lasso（L1 正则化）虽然在特征选择上表现出色，但在某些场景下存在<strong>结构性缺陷</strong>：</p>
-
-          <p><strong>1. 特征数量限制</strong></p>
-          <p>当数据维度极高时（$p \gg n$，即特征数远大于样本数），Lasso 最多只能选择 $n$ 个非零特征。这是一个硬性上限——无论数据中实际上有多少个重要特征，Lasso 都无法选出超过样本数的非零系数。例如，100 个样本、10000 个特征的数据集中，Lasso 最多只能选 100 个特征，即使真实模型需要 200 个特征。</p>
-
-          <p><strong>2. 相关特征组的随机选择</strong></p>
-          <p>当多个特征彼此高度相关时（如基因表达数据中处于同一通路的一群基因），Lasso 倾向于<strong>随机选择其中一个</strong>，而将其他相关特征的系数压为 0。这意味着：</p>
-          <ul>
-            <li>最终选出的特征可能并非真正"最重要"的那个，只是随机结果</li>
-            <li>模型的可解释性和稳定性下降（换一份数据可能选出完全不同的特征子集）</li>
-            <li>丢失了相关特征组中包含的群体信息</li>
-          </ul>
-
-          <h3>ElasticNet 的解决之道</h3>
-          <p>弹性网络从两个角度克服了上述局限：</p>
-
-          <p><strong>应对特征数量限制</strong> — 加入 L2 项后，整体损失函数的<strong>严格凸性</strong>（Ridge 提供）使得优化问题的解不再受"最多选 n 个非零系数"的限制。L2 项的正则化效应使得特征选择不再受样本数的硬性约束。</p>
-
-          <p><strong>实现组效应 (Grouping Effect)</strong> — L2 正则化鼓励相关特征的系数彼此靠近：如果两个特征高度相关且都包含有用信息，L1 只会倾向保留一个而舍弃另一个，但 L2 会"拉着"它们的系数一起变大或一起缩小。结果是<strong>高度相关的特征群要么一起被选入模型，要么一起被排除</strong>，而非随机挑选。</p>
-
-          <div class="example-box">
-            <div class="example-label">💡 典型案例</div>
-            <p>在基因表达数据分析中，同一生物通路中的多个基因表达水平往往高度相关。如果使用 Lasso，它会随机选择一个基因而排除其他，丢失了该通路的生物信息。ElasticNet 能够同时保留整个通路的相关基因，使得模型在生物学意义上更合理、预测更稳定。</p>
-          </div>
-        </section>
-
-        <!-- ===== 参数 α 的意义 ===== -->
-        <section id="alpha">
-          <h2>📊 参数 α 的意义</h2>
-          <p><strong>$\alpha$</strong> 是弹性网络的核心超参数，控制 L1 与 L2 正则化的混合比例。其取值范围为 $[0, 1]$，两端对应着两种经典算法：</p>
-
-          <div class="table-wrap">
-            <table>
-              <tr><th>$\alpha$ 取值</th><th>等价模型</th><th>行为特征</th></tr>
-              <tr>
-                <td>$\alpha = 0$</td>
-                <td><strong>Lasso</strong></td>
-                <td>纯 L1 正则化，强特征选择能力，可能随机剔除相关特征</td>
-              </tr>
-              <tr>
-                <td>$\alpha = 1$</td>
-                <td><strong>Ridge</strong></td>
-                <td>纯 L2 正则化，稳定处理相关特征但不产生稀疏解</td>
-              </tr>
-              <tr>
-                <td>$0 < \alpha < 1$</td>
-                <td><strong>Elastic Net</strong></td>
-                <td>混合行为，兼具特征选择与组效应</td>
-              </tr>
-            </table>
-          </div>
-
-          <h3>α 取值的影响</h3>
-          <p><strong>$\alpha$ 接近 0</strong>（接近 Lasso）：模型偏向产生<strong>稀疏解</strong>，大量特征的权重被归零。适合你确信绝大多数特征是噪声、只有少数特征真正有意义的场景。但代价是强相关特征间的"随机选择"问题仍然存在。</p>
-          <p><strong>$\alpha$ 接近 1</strong>（接近 Ridge）：所有特征权重都被"均匀收缩"但不会归零，<strong>组效应显著</strong>。适合特征间存在复杂相关性、需要保持所有特征贡献的场景。缺点是模型变得不够简洁，所有特征都被保留。</p>
-          <p><strong>$\alpha$ 在中间值</strong>（如 0.5）：这是弹性网络最"独特"的区域——既施加足够的 L1 压力来剔除无关特征，又利用 L2 的均匀收缩力来实现组效应。实际应用中，$\alpha = 0.5$ 常被用作<strong>默认起点</strong>，然后通过交叉验证搜索最优点。</p>
-
-          <h3>通常如何选择 α</h3>
-          <p>实际调参策略推荐：</p>
-          <ul>
-            <li>先用 $\alpha = 0.5$ 作为<strong>基线</strong>，配合交叉验证优化 $\lambda$</li>
-            <li>如果希望更稀疏的模型（更多权重归零），降低 $\alpha$（朝 Lasso 方向）</li>
-            <li>如果希望更强的组效应（相关特征群共同保留），提高 $\alpha$（朝 Ridge 方向）</li>
-            <li>在最终模型中，可以使用网格搜索（Grid Search）在 $\alpha$ 和 $\lambda$ 的二维网格上联合调参</li>
-          </ul>
-
-          <div class="formula">$$\text{调参网格：}\quad \alpha \in \{0.1, 0.3, 0.5, 0.7, 0.9\},\quad \lambda \in [10^{-4}, 10^{2}]$$</div>
-
-          <h3>二次超参数 λ 的含义</h3>
-          <p><strong>$\lambda$</strong> 控制整体的正则化惩罚强度：</p>
-          <ul>
-            <li><strong>$\lambda$ 很大</strong> — 惩罚项占主导，所有权重都被强力推向 0（过高的正则化，模型欠拟合）</li>
-            <li><strong>$\lambda$ 很小</strong> — 几乎不计入惩罚，模型趋向普通线性回归（可能过拟合）</li>
-            <li><strong>$\lambda$ 适中</strong> — 在偏差和方差之间取得最佳平衡</li>
-          </ul>
-          <p>通常通过<strong>交叉验证</strong>（如 5 折 CV）在 $\lambda$ 的取值路径上搜索最小验证误差对应的 $\lambda$。许多实现（如 Scikit-learn 的 <code>ElasticNetCV</code>）内置了沿 $\lambda$ 路径的搜索。</p>
-        </section>
-
-        <!-- ===== 演进关系 ===== -->
-        <section id="evolution">
-          <h2>🌳 演进关系 (Evolution)</h2>
-          <p>弹性网络是正则化回归演进的集大成者，站在 Ridge 和 Lasso 的肩膀上实现了关键创新：</p>
-
-          <div class="evo-tree">
-            <div class="evo-root"><a href="linear-reg.html" style="color:inherit;text-decoration:none">线性回归</a></div>
-            <div class="evo-branch">
-              <div class="evo-child star">⭐ <a href="ridge.html">岭回归 (Ridge)</a> <span class="evo-note">L2 正则化 · 1970</span></div>
-              <div class="evo-child star">⭐ <a href="lasso.html">Lasso</a> <span class="evo-note">L1 正则化 · 1996</span></div>
-              <div class="evo-child" style="background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.3);color:rgba(255,255,255,.9);font-weight:600;">🌈 <a href="elasticnet.html">ElasticNet</a> <span class="evo-note">L1+L2 融合 · 2005</span></div>
-            </div>
-          </div>
-
-          <h3>从 Ridge 到 Lasso</h3>
-          <p>1970 年提出的 <strong>Ridge 回归</strong>（Hoerl & Kennard）首次将 L2 惩罚引入线性回归，解决了特征间多重共线性问题，使得病态矩阵仍可求逆。然而 Ridge 不能将系数精确归为零，所以不产生稀疏解。</p>
-          <p>1996 年 <strong>Lasso</strong>（Tibshirani）用 L1 惩罚替代 L2，通过绝对值的几何特性（菱形尖角触及坐标轴）实现了系数<strong>精确归零</strong>，开创了嵌入式特征选择的方法论。但如前述，Lasso 在高维和组相关特征场景下有局限。</p>
-
-          <h3>ElasticNet 的融合创新</h3>
-          <p>2005 年 Zou 和 Hastie 在论文 <em>"Regularization and Variable Selection via the Elastic Net"</em> 中证明：</p>
-          <ul>
-            <li><strong>形式上的融合</strong> — 将 L1 和 L2 惩罚以加权和的形式组合在一个损失函数中</li>
-            <li><strong>理论上的必然性</strong> — 证明在任何固定 $\lambda > 0$ 的条件下，当 $\alpha \to 0$ 时弹性网络的解趋于 Lasso；当 $\alpha \to 1$ 时趋于 Ridge</li>
-            <li><strong>组效应的理论保证</strong> — 论文给出了弹性网络解中组效应的理论边界：两个相关特征的系数差被 $\alpha$ 和 $\lambda$ 控制在一个范围之内</li>
-            <li><strong>特征选择上限的突破</strong> — 由于 L2 项的存在，弹性网络可以选出超过 $n$ 个非零特征</li>
-          </ul>
-
-          <h3>后续发展</h3>
-          <p>弹性网络的思想影响了后续一系列正则化方法：</p>
-          <ul>
-            <li><strong>组 Lasso (Group Lasso)</strong> — 在特征群的粒度上进行 L1 选择，而非单个特征</li>
-            <li><strong>稀疏组 Lasso (Sparse Group Lasso)</strong> — 同时进行组级和组内特征的选择</li>
-            <li><strong>自适应 Elastic Net</strong> — 对不同的特征赋予不同的惩罚权重</li>
-            <li><strong>弹性网络在深度学习中的应用</strong> — 作为神经网络中正则化的组合策略</li>
-          </ul>
-        </section>
-
-        <!-- ===== 关键概念 ===== -->
-        <section id="concepts">
-          <h2>🔑 关键概念</h2>
-          <ul>
-            <li><strong>混合比例 $\alpha$</strong> — 控制 L1 和 L2 惩罚在弹性网络中的权重比例。$\alpha=0$ 为纯 Lasso，$\alpha=1$ 为纯 Ridge</li>
-            <li><strong>总正则化强度 $\lambda$</strong> — 控制整个惩罚项对损失函数的贡献大小，越大越正则化</li>
-            <li><strong>L1 正则化 (Lasso)</strong> — 通过权重的绝对值之和施加惩罚，产生稀疏解（特征选择）</li>
-            <li><strong>L2 正则化 (Ridge)</strong> — 通过权重的平方和施加惩罚，均匀收缩系数，实现组效应</li>
-            <li><strong>组效应 (Grouping Effect)</strong> — 强相关特征的系数趋向于同时增大或同时缩小，而非随机选择。这是 ElasticNet 相比 Lasso 的独有优势</li>
-            <li><strong>双调参</strong> — ElasticNet 需要同时调节 $\alpha$（混合比例）和 $\lambda$（整体强度）两个超参数，调参空间是二维的</li>
-            <li><strong>坐标下降</strong> — 求解 ElasticNet 最主流的优化算法，逐维迭代更新权重</li>
-            <li><strong>软阈值算子</strong> — L1 正则化带来的逐维闭式解，形如 $w_j = \text{sign}(z_j)(|z_j| - \gamma)_+$</li>
-            <li><strong>稀疏性 (Sparsity)</strong> — 模型中不重要特征的权重被精确归零，简化模型并提升可解释性</li>
-            <li><strong>特征选择上限突破</strong> — 因 L2 项的严格凸性，ElasticNet 在 $p \gg n$ 时可以选出超过 $n$ 个非零特征</li>
-            <li><strong>交叉验证路径</strong> — Scikit-learn 的 ElasticNetCV 沿 $\lambda$ 路径进行高效交叉验证，自动选择最优 $\lambda$</li>
-            <li><strong>等高线与约束区域</strong> — 弹性网络的约束区域介于 Lasso 的菱形和 Ridge 的圆形之间，是"磨圆角的菱形"</li>
-          </ul>
-        </section>
-
-        <!-- ===== 关联 ===== -->
-        <section id="related">
-          <h2>🔗 关联</h2>
-          <ul>
-            <li><strong>线性回归</strong>（无正则化的基础模型，弹性网络的起点）</li>
-            <li><strong>Ridge 回归 (L2)</strong>（L2 正则化，解决多重共线性但不产生稀疏解）</li>
-            <li><strong>Lasso (L1)</strong>（L1 正则化，实现特征选择但存在 $n$ 个特征上限和随机选择问题）</li>
-            <li><strong>组 Lasso (Group Lasso)</strong>（在特征群级别进行稀疏选择，弹性网络的直接后继演化）</li>
-            <li><strong>稀疏组 Lasso (Sparse Group Lasso)</strong>（组合级和组内双层稀疏选择，弹性网络的广义版本）</li>
-            <li><strong>自适应 Lasso (Adaptive Lasso)</strong>（对每个特征施加不同权重的惩罚，弹性网络的思想也可以自适应化）</li>
-            <li><strong>双调参策略</strong>（弹性网络需要同时在 $\alpha$ 和 $\lambda$ 两个维度上调参，比 Ridge/Lasso 多一个超参数维度）</li>
-          </ul>
-        </section>
-
-      </main>
-
-      <!-- 右侧着重注意 -->
-      <aside class="aside-col">
-        <div class="aside-title">着重注意</div>
-
-        <div class="callout">
-          <strong>💡 要点</strong>
-          ElasticNet 克服了 Lasso 在高维+强相关特征下的局限性：突破特征选择上限（可选出超过 n 个特征），并通过组效应使相关特征同时入选或同时排除，而非随机挑选
-        </div>
-
-        <div class="callout warn">
-          <strong>⚠️ 局限</strong>
-          需要同时调两个超参数 $\lambda$ 和 $\alpha$，调参空间是二维的，搜索成本高于 Lasso 或 Ridge；当特征间的相关性很弱时，ElasticNet 相比 Lasso 的优势不明显
-        </div>
-
-        <div class="callout tip">
-          <strong>🔧 实践</strong>
-          常用 $\alpha=0.5$ 起步，用交叉验证搜索 $\lambda$；使用标准化后的特征（正则化对尺度敏感）；Scikit-learn 的 ElasticNetCV 可自动沿 $\lambda$ 路径搜索
-        </div>
-
-        <div class="callout" style="border-left-color:#a855f7;">
-          <strong>🌳 演进</strong>
-          融合 Ridge 的稳定性（L2 均匀收缩、组效应）和 Lasso 的稀疏性（L1 特征选择），在 2005 年由 Zou & Hastie 正式提出
-        </div>
-
-        <div class="callout" style="border-left-color:#eab308;">
-          <strong>📚 参考</strong>
-          本页内容基于原始论文 <a href="https://doi.org/10.1111/j.1467-9868.2005.00503.x" target="_blank" style="color:#eab308;text-decoration:underline;">"Regularization and Variable Selection via the Elastic Net"</a> (Zou &amp; Hastie, 2005) 整理
-        </div>
-      </aside>
-
-    </div>
-
-    <!-- ===== 统一尾部 ===== -->
-    <div class="footer">
-      知识图谱 3D · 算法底座 · 弹性网络 (Elastic Net) · Zou &amp; Hastie (2005)
-    </div>
-
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded',function(){
-      if(typeof renderMathInElement==='function')
-        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
-    });
-  </script>
-</body>
-</html>
+   286|<body>
+   287|
+   288|  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+   289|
+   290|  <div class="page">
+   291|
+   292|    <!-- ===== title ===== -->
+   293|    <div class="title-area">
+   294|      <h1>
+   295|        弹性网络
+   296|        <span class="en">Elastic Net</span>
+   297|      </h1>
+   298|      <div class="bar" style="background:#a855f7"></div>
+   299|      <p class="brief">
+   300|        融合 L1（Lasso）和 L2（Ridge）两种正则化的线性回归模型。
+   301|        在特征数量远大于样本数的高维场景中同时实现特征选择与组效应。
+   302|      </p>
+   303|    </div>
+   304|
+   305|    <!-- ===== 参考来源 ===== -->
+   306|    <div class="paper-line">
+   307|      <a href="https://doi.org/10.1111/j.1467-9868.2005.00503.x" target="_blank" rel="noopener">
+   308|        📄 Regularization and Variable Selection via the Elastic Net (Zou &amp; Hastie, 2005)
+   309|      </a>
+   310|    </div>
+   311|
+   312|    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
+   313|    <div class="layout">
+   314|
+   315|      <!-- 左侧导航 -->
+   316|      <nav class="nav-col">
+   317|        <div class="nav-title">目录</div>
+   318|        <a href="#definition">📖 定义</a>
+   319|        <a href="#math">📐 数学原理</a>
+   320|        <a href="#why">🎯 为什么需要 ElasticNet</a>
+   321|        <a href="#alpha">📊 参数 α 的意义</a>
+   322|        <a href="#evolution">🌳 演进关系</a>
+   323|        <a href="#concepts">🔑 关键概念</a>
+   324|        <a href="#related">🔗 关联</a>
+   325|      </nav>
+   326|
+   327|      <!-- 中间正文 -->
+   328|      <main class="main-col">
+   329|
+   330|        <!-- ===== 定义 ===== -->
+   331|        <section id="definition">
+   332|          <h2>📖 定义</h2>
+   333|          <p><strong>弹性网络 (Elastic Net)</strong> 是一种线性回归的<strong>正则化变体</strong>，由 Hui Zou 和 Trevor Hastie 于 2005 年提出。它将 L1 正则化（Lasso）和 L2 正则化（Ridge）的惩罚项以加权和的形式合并到损失函数中，兼收两者之长。</p>
+   334|          <p>从数学上说，弹性网络在最小化均方误差 (MSE) 的同时，对模型权重施加 <strong>L1 + L2 混合约束</strong>。这种双重正则化带来的两个核心特性是：</p>
+   335|          <ul>
+   336|            <li><strong>稀疏性 (Sparsity)</strong> — 来自 L1 项，可以将不重要特征的权重强制归零，实现自动特征选择</li>
+   337|            <li><strong>组效应 (Grouping Effect)</strong> — 来自 L2 项，使强相关特征的权重要么同时保留、要么同时移除，而不是像 Lasso 那样随机选择其中一个</li>
+   338|          </ul>
+   339|          <p>弹性网络的创新之处在于：它不是简单地在回归损失后加上一个惩罚项，而是设计了同时包含 <strong>L1 范数</strong>和 <strong>L2 范数平方</strong>的"弹性"惩罚，通过两个参数调节各自的强度。这种设计使得它在处理<strong>高维数据（特征数 > 样本数）</strong>和<strong>强相关特征群组</strong>时，表现优于单纯的 Lasso 或 Ridge。</p>
+   340|          <p>直观理解：L1 正则化像是一把"高效的手术刀"——精准但可能过于激进；L2 正则化像是一副"均匀的紧箍咒"——稳定但缺乏取舍能力。弹性网络将二者结合，得到了既<strong>能剔除非必要特征</strong>又<strong>能稳定处理相关特征群</strong>的模型。</p>
+   341|        </section>
+   342|
+   343|        <!-- ===== 数学原理 ===== -->
+   344|        <section id="math">
+   345|          <h2>📐 数学原理</h2>
+   346|
+   347|          <h3>损失函数定义</h3>
+   348|          <p>弹性网络的损失函数由三部分组成：数据拟合项（MSE）、L1 惩罚项和 L2 惩罚项。最直接的表达形式为：</p>
+   349|          <div class="formula">$$\mathcal{L}(\mathbf{w}) = \frac{1}{2n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2 + \lambda_1\sum_{j=1}^{p}|w_j| + \lambda_2\sum_{j=1}^{p}w_j^2$$</div>
+   350|          <p>其中：</p>
+   351|          <ul>
+   352|            <li>$\frac{1}{2n}\sum(y_i - \hat{y}_i)^2$ — 均方误差（除以 2 是为了求导方便）</li>
+   353|            <li>$\lambda_1\sum|w_j|$ — L1 惩罚项（系数 $\lambda_1 \ge 0$ 控制 L1 强度）</li>
+   354|            <li>$\lambda_2\sum w_j^2$ — L2 惩罚项（系数 $\lambda_2 \ge 0$ 控制 L2 强度）</li>
+   355|            <li>$n$ 为样本数，$p$ 为特征数</li>
+   356|          </ul>
+   357|
+   358|          <h3>等价参数化形式</h3>
+   359|          <p>为了方便调参，弹性网络通常使用另一种等价的参数化形式，引入一个<strong>混合参数 $\alpha$</strong> 和<strong>总正则化强度 $\lambda$</strong>：</p>
+   360|          <div class="formula">$$\mathcal{L}(\mathbf{w}) = \frac{1}{2n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2 + \lambda\Bigl[(1-\alpha)\sum_{j=1}^{p}|w_j| + \alpha\sum_{j=1}^{p}w_j^2\Bigr]$$</div>
+   361|          <p>在这种形式中：</p>
+   362|          <ul>
+   363|            <li>$\lambda \ge 0$ — 总体正则化强度，越大则权重越趋向于 0</li>
+   364|            <li>$\alpha \in [0, 1]$ — L1 和 L2 的混合比例</li>
+   365|            <li>$\alpha = 0$ 时退化为纯 <strong>Lasso</strong></li>
+   366|            <li>$\alpha = 1$ 时退化为纯 <strong>Ridge</strong></li>
+   367|          </ul>
+   368|
+   369|          <h3>与朴素 Elastic Net 的缩放差异</h3>
+   370|          <p>许多实现（包括 Scikit-learn）使用的形式略微不同，加入了缩放因子 $1 - \alpha$ 使得 $\lambda$ 在各 $\alpha$ 取值下可比：</p>
+   371|          <div class="formula">$$\mathcal{L}(\mathbf{w}) = \frac{1}{2n}\text{MSE} + \lambda\Bigl(\frac{1-\alpha}{2}\sum_{j=1}^{p}|w_j| + \frac{\alpha}{2}\sum_{j=1}^{p}w_j^2\Bigr)$$</div>
+   372|          <p>这种约定下，$\alpha = 0.5$ 表示 L1 和 L2 的贡献大致相等。不同库的实现细节略有不同，使用前应查阅文档确认具体公式。</p>
+   373|
+   374|          <div class="example-box">
+   375|            <div class="example-label">🧮 可视化理解</div>
+   376|            <p>Ridge 的约束区域是一个<strong>圆形</strong>（L2 球），Lasso 的约束区域是一个<strong>菱形</strong>（L1 球）。弹性网络的约束形状介于两者之间——当 L1 占主导时趋近菱形，L2 占主导时趋近圆形。这就像在一个"四角被磨圆了的菱形"内部寻找最优解。</p>
+   377|            <p>最优解出现在 MSE 的等高线与约束区域的<strong>首次接触点</strong>。菱形尖角接触坐标轴更容易产生<strong>稀疏解</strong>（某些权重为零），圆形曲面则使相关特征的系数趋向<strong>均衡</strong>。</p>
+   378|          </div>
+   379|
+   380|          <h3>求解方法</h3>
+   381|          <p>弹性网络的目标函数是<strong>凸函数</strong>——L1 项为凸，L2 项为严格凸，MSE 为凸，所以整体严格凸。这意味着有唯一的全局最优解。常用的求解算法包括：</p>
+   382|          <ul>
+   383|            <li><strong>坐标下降 (Coordinate Descent)</strong> — 逐维迭代优化，每次固定其他维度优化一个 $w_j$，是 Lasso 和 Elastic Net 最主流的求解方法</li>
+   384|            <li><strong>最小角回归 (LARS)</strong> — 基于角度的逐步选择算法，效率高且可同时输出全路径解</li>
+   385|            <li><strong>随机梯度下降 (SGD)</strong> — 适合大规模数据，通过在线方式逐样本更新</li>
+   386|          </ul>
+   387|          <p>坐标下降法在弹性网络中尤其高效，因为 Elastic Net 的逐维子问题有<strong>闭式解</strong>（软阈值算子 + L2 收缩的组合）。</p>
+   388|        </section>
+   389|
+   390|        <!-- ===== 为什么需要 ElasticNet ===== -->
+   391|        <section id="why">
+   392|          <h2>🎯 为什么需要 ElasticNet</h2>
+   393|
+   394|          <h3>Lasso 的两个关键局限</h3>
+   395|          <p>Lasso（L1 正则化）虽然在特征选择上表现出色，但在某些场景下存在<strong>结构性缺陷</strong>：</p>
+   396|
+   397|          <p><strong>1. 特征数量限制</strong></p>
+   398|          <p>当数据维度极高时（$p \gg n$，即特征数远大于样本数），Lasso 最多只能选择 $n$ 个非零特征。这是一个硬性上限——无论数据中实际上有多少个重要特征，Lasso 都无法选出超过样本数的非零系数。例如，100 个样本、10000 个特征的数据集中，Lasso 最多只能选 100 个特征，即使真实模型需要 200 个特征。</p>
+   399|
+   400|          <p><strong>2. 相关特征组的随机选择</strong></p>
+   401|          <p>当多个特征彼此高度相关时（如基因表达数据中处于同一通路的一群基因），Lasso 倾向于<strong>随机选择其中一个</strong>，而将其他相关特征的系数压为 0。这意味着：</p>
+   402|          <ul>
+   403|            <li>最终选出的特征可能并非真正"最重要"的那个，只是随机结果</li>
+   404|            <li>模型的可解释性和稳定性下降（换一份数据可能选出完全不同的特征子集）</li>
+   405|            <li>丢失了相关特征组中包含的群体信息</li>
+   406|          </ul>
+   407|
+   408|          <h3>ElasticNet 的解决之道</h3>
+   409|          <p>弹性网络从两个角度克服了上述局限：</p>
+   410|
+   411|          <p><strong>应对特征数量限制</strong> — 加入 L2 项后，整体损失函数的<strong>严格凸性</strong>（Ridge 提供）使得优化问题的解不再受"最多选 n 个非零系数"的限制。L2 项的正则化效应使得特征选择不再受样本数的硬性约束。</p>
+   412|
+   413|          <p><strong>实现组效应 (Grouping Effect)</strong> — L2 正则化鼓励相关特征的系数彼此靠近：如果两个特征高度相关且都包含有用信息，L1 只会倾向保留一个而舍弃另一个，但 L2 会"拉着"它们的系数一起变大或一起缩小。结果是<strong>高度相关的特征群要么一起被选入模型，要么一起被排除</strong>，而非随机挑选。</p>
+   414|
+   415|          <div class="example-box">
+   416|            <div class="example-label">💡 典型案例</div>
+   417|            <p>在基因表达数据分析中，同一生物通路中的多个基因表达水平往往高度相关。如果使用 Lasso，它会随机选择一个基因而排除其他，丢失了该通路的生物信息。ElasticNet 能够同时保留整个通路的相关基因，使得模型在生物学意义上更合理、预测更稳定。</p>
+   418|          </div>
+   419|        </section>
+   420|
+   421|        <!-- ===== 参数 α 的意义 ===== -->
+   422|        <section id="alpha">
+   423|          <h2>📊 参数 α 的意义</h2>
+   424|          <p><strong>$\alpha$</strong> 是弹性网络的核心超参数，控制 L1 与 L2 正则化的混合比例。其取值范围为 $[0, 1]$，两端对应着两种经典算法：</p>
+   425|
+   426|          <div class="table-wrap">
+   427|            <table>
+   428|              <tr><th>$\alpha$ 取值</th><th>等价模型</th><th>行为特征</th></tr>
+   429|              <tr>
+   430|                <td>$\alpha = 0$</td>
+   431|                <td><strong>Lasso</strong></td>
+   432|                <td>纯 L1 正则化，强特征选择能力，可能随机剔除相关特征</td>
+   433|              </tr>
+   434|              <tr>
+   435|                <td>$\alpha = 1$</td>
+   436|                <td><strong>Ridge</strong></td>
+   437|                <td>纯 L2 正则化，稳定处理相关特征但不产生稀疏解</td>
+   438|              </tr>
+   439|              <tr>
+   440|                <td>$0 < \alpha < 1$</td>
+   441|                <td><strong>Elastic Net</strong></td>
+   442|                <td>混合行为，兼具特征选择与组效应</td>
+   443|              </tr>
+   444|            </table>
+   445|          </div>
+   446|
+   447|          <h3>α 取值的影响</h3>
+   448|          <p><strong>$\alpha$ 接近 0</strong>（接近 Lasso）：模型偏向产生<strong>稀疏解</strong>，大量特征的权重被归零。适合你确信绝大多数特征是噪声、只有少数特征真正有意义的场景。但代价是强相关特征间的"随机选择"问题仍然存在。</p>
+   449|          <p><strong>$\alpha$ 接近 1</strong>（接近 Ridge）：所有特征权重都被"均匀收缩"但不会归零，<strong>组效应显著</strong>。适合特征间存在复杂相关性、需要保持所有特征贡献的场景。缺点是模型变得不够简洁，所有特征都被保留。</p>
+   450|          <p><strong>$\alpha$ 在中间值</strong>（如 0.5）：这是弹性网络最"独特"的区域——既施加足够的 L1 压力来剔除无关特征，又利用 L2 的均匀收缩力来实现组效应。实际应用中，$\alpha = 0.5$ 常被用作<strong>默认起点</strong>，然后通过交叉验证搜索最优点。</p>
+   451|
+   452|          <h3>通常如何选择 α</h3>
+   453|          <p>实际调参策略推荐：</p>
+   454|          <ul>
+   455|            <li>先用 $\alpha = 0.5$ 作为<strong>基线</strong>，配合交叉验证优化 $\lambda$</li>
+   456|            <li>如果希望更稀疏的模型（更多权重归零），降低 $\alpha$（朝 Lasso 方向）</li>
+   457|            <li>如果希望更强的组效应（相关特征群共同保留），提高 $\alpha$（朝 Ridge 方向）</li>
+   458|            <li>在最终模型中，可以使用网格搜索（Grid Search）在 $\alpha$ 和 $\lambda$ 的二维网格上联合调参</li>
+   459|          </ul>
+   460|
+   461|          <div class="formula">$$\text{调参网格：}\quad \alpha \in \{0.1, 0.3, 0.5, 0.7, 0.9\},\quad \lambda \in [10^{-4}, 10^{2}]$$</div>
+   462|
+   463|          <h3>二次超参数 λ 的含义</h3>
+   464|          <p><strong>$\lambda$</strong> 控制整体的正则化惩罚强度：</p>
+   465|          <ul>
+   466|            <li><strong>$\lambda$ 很大</strong> — 惩罚项占主导，所有权重都被强力推向 0（过高的正则化，模型欠拟合）</li>
+   467|            <li><strong>$\lambda$ 很小</strong> — 几乎不计入惩罚，模型趋向普通线性回归（可能过拟合）</li>
+   468|            <li><strong>$\lambda$ 适中</strong> — 在偏差和方差之间取得最佳平衡</li>
+   469|          </ul>
+   470|          <p>通常通过<strong>交叉验证</strong>（如 5 折 CV）在 $\lambda$ 的取值路径上搜索最小验证误差对应的 $\lambda$。许多实现（如 Scikit-learn 的 <code>ElasticNetCV</code>）内置了沿 $\lambda$ 路径的搜索。</p>
+   471|        </section>
+   472|
+   473|        <!-- ===== 演进关系 ===== -->
+   474|        <section id="evolution">
+   475|          <h2>🌳 演进关系 (Evolution)</h2>
+   476|          <p>弹性网络是正则化回归演进的集大成者，站在 Ridge 和 Lasso 的肩膀上实现了关键创新：</p>
+   477|
+   478|          <div class="evo-tree">
+   479|            <div class="evo-root"><a href="linear-reg.html" style="color:inherit;text-decoration:none">线性回归</a></div>
+   480|            <div class="evo-branch">
+   481|              <div class="evo-child star">⭐ <a href="ridge.html">岭回归 (Ridge)</a> <span class="evo-note">L2 正则化 · 1970</span></div>
+   482|              <div class="evo-child star">⭐ <a href="lasso.html">Lasso</a> <span class="evo-note">L1 正则化 · 1996</span></div>
+   483|              <div class="evo-child" style="background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.3);color:rgba(255,255,255,.9);font-weight:600;">🌈 <a href="elasticnet.html">ElasticNet</a> <span class="evo-note">L1+L2 融合 · 2005</span></div>
+   484|            </div>
+   485|          </div>
+   486|
+   487|          <h3>从 Ridge 到 Lasso</h3>
+   488|          <p>1970 年提出的 <strong>Ridge 回归</strong>（Hoerl & Kennard）首次将 L2 惩罚引入线性回归，解决了特征间多重共线性问题，使得病态矩阵仍可求逆。然而 Ridge 不能将系数精确归为零，所以不产生稀疏解。</p>
+   489|          <p>1996 年 <strong>Lasso</strong>（Tibshirani）用 L1 惩罚替代 L2，通过绝对值的几何特性（菱形尖角触及坐标轴）实现了系数<strong>精确归零</strong>，开创了嵌入式特征选择的方法论。但如前述，Lasso 在高维和组相关特征场景下有局限。</p>
+   490|
+   491|          <h3>ElasticNet 的融合创新</h3>
+   492|          <p>2005 年 Zou 和 Hastie 在论文 <em>"Regularization and Variable Selection via the Elastic Net"</em> 中证明：</p>
+   493|          <ul>
+   494|            <li><strong>形式上的融合</strong> — 将 L1 和 L2 惩罚以加权和的形式组合在一个损失函数中</li>
+   495|            <li><strong>理论上的必然性</strong> — 证明在任何固定 $\lambda > 0$ 的条件下，当 $\alpha \to 0$ 时弹性网络的解趋于 Lasso；当 $\alpha \to 1$ 时趋于 Ridge</li>
+   496|            <li><strong>组效应的理论保证</strong> — 论文给出了弹性网络解中组效应的理论边界：两个相关特征的系数差被 $\alpha$ 和 $\lambda$ 控制在一个范围之内</li>
+   497|            <li><strong>特征选择上限的突破</strong> — 由于 L2 项的存在，弹性网络可以选出超过 $n$ 个非零特征</li>
+   498|          </ul>
+   499|
+   500|          <h3>后续发展</h3>
+   501|

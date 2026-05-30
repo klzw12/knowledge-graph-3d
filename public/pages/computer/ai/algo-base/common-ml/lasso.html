@@ -1,629 +1,236 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lasso 回归 — 知识图谱 3D</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
-  </script>
+     1|<!DOCTYPE html>
+     2|<html lang="zh-CN">
+     3|<head>
+     4|  <meta charset="UTF-8" />
+     5|  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     6|  <title>Lasso 回归 — 知识图谱 3D</title>
+     7|  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+     8|  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+     9|  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    10|    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+    11|  </script>
+    12|  
+   271|  
+   277|  
+   292|  <link rel="stylesheet" href="../../../css/common.css" />
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html,body {
-      width:100%; min-height:100vh;
-      background:#080818;
-      color:rgba(255,255,255,.85);
-      font:400 15px/1.7 'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
-    }
-    a { color:inherit; text-decoration:none; }
-
-    /* ---- 返回 ---- */
-    .back-link {
-      position:fixed; top:16px; left:20px; z-index:100;
-      font-size:13px; color:rgba(255,255,255,.35); transition:all .2s;
-    }
-    .back-link:hover { color:rgba(255,255,255,.7); }
-
-    /* ===== 整体容器 ===== */
-    .page {
-      max-width:1200px;
-      margin:0 auto;
-      padding:60px 20px 0;
-    }
-
-    /* ===== title ===== */
-    .title-area {
-      padding:0 0 20px;
-      border-bottom:1px solid rgba(255,255,255,.06);
-      margin-bottom:28px;
-    }
-    .title-area h1 {
-      font-size:28px; font-weight:700;
-      display:flex; align-items:baseline; gap:12px;
-    }
-    .title-area .en {
-      font-size:16px; font-weight:400; color:rgba(255,255,255,.35);
-    }
-    .title-area .bar {
-      width:40px; height:4px; border-radius:2px;
-      margin:10px 0 14px;
-    }
-    .title-area .brief {
-      font-size:14px; color:rgba(255,255,255,.5); max-width:640px;
-    }
-
-    /* ===== 参考来源 ===== */
-    .paper-line {
-      margin-bottom:20px;
-      font-size:13px;
-    }
-    .paper-line a {
-      display:inline-flex; align-items:center; gap:6px;
-      padding:6px 14px;
-      border:1px solid rgba(255,255,255,.08);
-      border-radius:8px;
-      color:rgba(255,255,255,.5);
-      transition:all .2s;
-    }
-    .paper-line a:hover {
-      border-color:rgba(255,255,255,.2);
-      color:rgba(255,255,255,.8);
-      background:rgba(255,255,255,.03);
-    }
-
-    /* ===== 三栏布局 ===== */
-    .layout {
-      display:flex; gap:24px;
-      align-items:flex-start;
-    }
-
-    /* ---- 左侧导航 ---- */
-    .nav-col {
-      flex:0 0 180px;
-      position:sticky; top:60px;
-    }
-    .nav-col .nav-title {
-      font-size:12px; font-weight:600; text-transform:uppercase;
-      color:rgba(255,255,255,.25); letter-spacing:1px;
-      margin-bottom:12px;
-    }
-    .nav-col a {
-      display:block;
-      font-size:13px; line-height:2;
-      color:rgba(255,255,255,.35);
-      transition:color .15s;
-    }
-    .nav-col a:hover { color:rgba(255,255,255,.7); }
-
-    /* ---- 中间正文 ---- */
-    .main-col {
-      flex:1; min-width:0;
-    }
-    .main-col section {
-      margin-bottom:28px;
-    }
-    .main-col section h2 {
-      font-size:17px; font-weight:600;
-      margin-bottom:10px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .main-col section h3 {
-      font-size:14px; font-weight:600;
-      margin:16px 0 8px;
-      color:rgba(255,255,255,.7);
-    }
-    .main-col section p {
-      font-size:14px; line-height:1.9;
-      color:rgba(255,255,255,.55);
-      margin-bottom:8px;
-    }
-    .main-col section p:last-child { margin-bottom:0; }
-    .main-col section p strong {
-      color:rgba(255,255,255,.75);
-    }
-
-    /* 表格 */
-    .main-col .table-wrap {
-      overflow-x:auto;
-      margin:10px 0;
-    }
-    .main-col table {
-      width:100%; border-collapse:collapse;
-      font-size:13px;
-    }
-    .main-col table th {
-      background:rgba(255,255,255,.04);
-      color:rgba(255,255,255,.5);
-      font-weight:600; text-align:left;
-      padding:8px 12px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-    }
-    .main-col table td {
-      padding:7px 12px;
-      border-bottom:1px solid rgba(255,255,255,.04);
-      color:rgba(255,255,255,.55);
-    }
-    .main-col table td:first-child {
-      font-weight:500; color:rgba(255,255,255,.65);
-    }
-    .main-col table tr:hover td {
-      background:rgba(255,255,255,.02);
-    }
-    .main-col table .formula-inline {
-      font-family:'Courier New',monospace;
-      font-size:13px;
-      color:#50c878;
-    }
-
-    /* 公式 */
-    .formula {
-      background:rgba(0,0,0,.25);
-      border-radius:8px;
-      padding:14px 18px;
-      margin:10px 0;
-      overflow-x:auto;
-      text-align:center;
-    }
-    .formula .katex { color:rgba(255,255,255,.85); }
-
-    /* 列表 */
-    .main-col section ul {
-      list-style:none; padding:0;
-    }
-    .main-col section ul li {
-      font-size:14px; line-height:1.9;
-      color:rgba(255,255,255,.5);
-      padding-left:16px; position:relative;
-    }
-    .main-col section ul li::before {
-      content:'•'; position:absolute; left:2px;
-      color:rgba(255,255,255,.2);
-    }
-
-    /* 有序列表 */
-    .main-col section ol {
-      padding-left:20px;
-      font-size:14px; line-height:2.2;
-      color:rgba(255,255,255,.55);
-    }
-
-    /* 代码块 */
-    .code-block {
-      background:rgba(0,0,0,.3);
-      border-radius:8px;
-      padding:14px 18px;
-      margin:10px 0;
-      font:13px/1.8 'Cascadia Code','Fira Code','Consolas',monospace;
-      color:rgba(255,255,255,.7);
-      overflow-x:auto;
-    }
-    .code-block .comment { color:rgba(255,255,255,.25); font-style:italic; }
-
-    /* 示例框 */
-    .example-box {
-      background:rgba(80,200,120,.04);
-      border:1px solid rgba(80,200,120,.12);
-      border-radius:8px;
-      padding:14px 18px;
-      margin:10px 0;
-    }
-    .example-box p {
-      font-size:13px;
-      color:rgba(255,255,255,.6);
-    }
-    .example-box .example-label {
-      font-size:11px; font-weight:600; text-transform:uppercase;
-      color:#50c878; letter-spacing:1px;
-      margin-bottom:6px;
-    }
-
-    /* ---- 右侧着重 ---- */
-    .aside-col {
-      flex:0 0 220px;
-      position:sticky; top:60px;
-    }
-    .aside-col .aside-title {
-      font-size:12px; font-weight:600; text-transform:uppercase;
-      color:rgba(255,255,255,.2); letter-spacing:1px;
-      margin-bottom:12px;
-    }
-    .aside-col .callout {
-      background:rgba(80,200,120,.06);
-      border-left:3px solid #50c878;
-      border-radius:0 8px 8px 0;
-      padding:12px 14px;
-      margin-bottom:12px;
-      font-size:13px; line-height:1.7;
-      color:rgba(255,255,255,.55);
-    }
-    .aside-col .callout strong {
-      display:block; font-size:12px;
-      color:#50c878; margin-bottom:4px;
-    }
-    .aside-col .callout.tip {
-      border-left-color:#4d96ff;
-    }
-    .aside-col .callout.tip strong { color:#4d96ff; }
-    .aside-col .callout.warn {
-      border-left-color:#eab308;
-    }
-    .aside-col .callout.warn strong { color:#eab308; }
-
-    /* ===== 统一尾部 ===== */
-    .footer {
-      margin-top:48px;
-      padding:20px 0 40px;
-      border-top:1px solid rgba(255,255,255,.04);
-      text-align:center;
-      font-size:12px; color:rgba(255,255,255,.15);
-    }
-
-    @media (max-width:800px) {
-      .layout { flex-direction:column; }
-      .nav-col, .aside-col { flex:none; position:static; width:100%; }
-      .nav-col { display:flex; gap:12px; flex-wrap:wrap; }
-      .nav-col .nav-title { display:none; }
-      .nav-col a { font-size:12px; padding:4px 10px; background:rgba(255,255,255,.03); border-radius:6px; }
-    }
-  </style>
-  <style>
-    /* 页面专属颜色 — 绿色主题 */
-    .title-area .bar { background:#50c878; }
-    .aside-col .callout { border-left-color:#50c878; }
-    .aside-col .callout strong { color:#50c878; }
-  </style>
-  <style>
-    /* 演进树（与 linear-reg 保持风格统一） */
-    .evo-tree{display:flex;align-items:flex-start;gap:0;padding:16px 0}
-    .evo-root{display:flex;align-items:center;justify-content:center;min-width:96px;height:42px;padding:0 18px;border-radius:8px;font-weight:600;font-size:14px;position:relative;flex-shrink:0;margin-top:4px;background:rgba(80,200,120,.1);border:1px solid rgba(80,200,120,.25);color:rgba(255,255,255,.85)}
-    .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
-    .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
-    .evo-child a{color:inherit;text-decoration:none}
-    .evo-child a:hover{color:rgba(255,255,255,.85)}
-    .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-child.star{background:rgba(80,200,120,.08);border-color:rgba(80,200,120,.2);color:rgba(255,255,255,.8)}
-    .evo-child.star a{color:inherit}
-    .evo-child.star a:hover{color:#fff}
-    .evo-note{font-size:11px;color:rgba(80,200,120,.6);font-style:italic;margin-left:4px}
+272|    /* 页面专属颜色 — 绿色主题 */
+   273|    .title-area .bar { background:#50c878; }
+   274|    .aside-col .callout { border-left-color:#50c878; }
+   275|    .aside-col .callout strong { color:#50c878; }
+   276|
+/* evo-root 主题色 */
+.evo-root{background:rgba(80,200,120,.1);border:1px solid rgba(80,200,120,.25);color:rgba(255,255,255,.85)}
+/* evo-note 主题色 */
+.evo-note{font-size:11px;color:rgba(80,200,120,.6);font-style:italic;margin-left:4px}
   </style>
 </head>
-<body>
-
-  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
-
-  <div class="page">
-
-    <!-- ===== title ===== -->
-    <div class="title-area">
-      <h1>
-        Lasso 回归
-        <span class="en">LASSO Regression — Least Absolute Shrinkage and Selection Operator</span>
-      </h1>
-      <div class="bar" style="background:#50c878"></div>
-      <p class="brief">
-        在最小二乘法基础上加入 L1 正则化惩罚项，以权重绝对值之和约束模型复杂度。
-        不仅能够防止过拟合，更能自动将不重要的特征权重压缩至零，实现特征选择。
-      </p>
-    </div>
-
-    <!-- ===== 参考来源 ===== -->
-    <div class="paper-line">
-      <a href="https://doi.org/10.1111/j.2517-6161.1996.tb02080.x" target="_blank" rel="noopener">
-        📄 Regression Shrinkage and Selection via the Lasso (Tibshirani, 1996)
-      </a>
-    </div>
-
-    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
-    <div class="layout">
-
-      <!-- 左侧导航 -->
-      <nav class="nav-col">
-        <div class="nav-title">目录</div>
-        <a href="#definition">📖 定义</a>
-        <a href="#math">📐 数学原理</a>
-        <a href="#sparsity">🔍 稀疏性与特征选择</a>
-        <a href="#l1-vs-l2">📊 L1 vs L2 对比</a>
-        <a href="#evolution">🌳 演进关系</a>
-        <a href="#concepts">🔑 关键概念</a>
-        <a href="#related">🔗 关联</a>
-      </nav>
-
-      <!-- 中间正文 -->
-      <main class="main-col">
-
-        <!-- ===== 定义 ===== -->
-        <section id="definition">
-          <h2>📖 定义</h2>
-          <p><strong>Lasso 回归</strong>（Least Absolute Shrinkage and Selection Operator，最小绝对收缩与选择算子）由 Robert Tibshirani 于 1996 年提出，是一种在普通最小二乘（OLS）损失函数中加入 <strong>L1 正则化惩罚项</strong> 的线性回归方法。</p>
-
-          <p>与 Ridge 回归（L2 正则化）不同，Lasso 的 L1 惩罚项会将某些特征的权重精确压缩为 <strong>零</strong>，从而实现<strong>自动特征选择</strong>——这是 Lasso 最核心也最独特的性质。</p>
-
-          <p>换句话说：Lasso 同时做了两件事——<strong>拟合模型</strong>（最小化预测误差）和<strong>筛选特征</strong>（将不重要的系数置零），特别适合处理<strong>高维稀疏数据</strong>和<strong>特征数量远多于样本数量</strong>的场景。</p>
-
-          <div class="example-box">
-            <div class="example-label">💡 直觉理解</div>
-            <p>想象你要在 100 个可能的因素中预测房价，但真正有用的只有 5 个。普通线性回归会保留所有 100 个系数（即使它们很小且充满噪声），而 Lasso 会自动将 95 个无关特征的系数精确设为 0——只保留那 5 个关键特征。</p>
-          </div>
-
-          <h3>由来与命名</h3>
-          <p>"Lasso" 的全称揭示了它的三个核心动作：<strong>Least Absolute</strong>（最小绝对值 — 使用 L1 范数）、<strong>Shrinkage</strong>（收缩 — 将系数向零压缩）、<strong>Selection Operator</strong>（选择算子 — 将无关系数设为 0）。这个名称精准概括了 Lasso 的全部工作原理。</p>
-        </section>
-
-        <!-- ===== 数学原理 ===== -->
-        <section id="math">
-          <h2>📐 数学原理</h2>
-
-          <h3>损失函数</h3>
-          <p>Lasso 回归的目标函数由两部分组成：<strong>MSE 损失</strong> + <strong>L1 正则化惩罚项</strong>：</p>
-
-          <div class="formula">$$L(\mathbf{w}) = \text{MSE}(\mathbf{w}) + \lambda \sum_{j=1}^{p} |w_j|$$</div>
-
-          <p>其中 <strong>MSE</strong> 是均方误差项，衡量模型对训练数据的拟合程度；<strong>λ·Σ|wⱼ|</strong> 是 L1 正则化项，对所有权重的绝对值之和进行惩罚；<strong>λ ≥ 0</strong> 是正则化强度超参数，控制惩罚力度。展开形式为：</p>
-
-          <div class="formula">$$L(\mathbf{w}) = \frac{1}{2n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2 + \lambda\sum_{j=1}^{p}|w_j|$$</div>
-
-          <p>注意：惯例上偏置项 w₀（截距）<strong>不参与</strong>正则化惩罚，因为只对特征权重进行收缩。</p>
-
-          <h3>为什么 L1 能产生稀疏解？</h3>
-          <p>关键在于 <strong>L1 范数的几何形状</strong>。约束优化视角下，Lasso 等价于在满足 Σ|wⱼ| ≤ t 的条件下最小化 MSE。L1 正则化的约束区域是一个<strong>菱形（二维）或八面体（高维）</strong>，其顶点和棱边落在坐标轴上。</p>
-
-          <p>当 MSE 的等高线（椭圆）与菱形约束区域相切时，切点很容易落在<strong>坐标轴</strong>上，导致某些维度的权重恰好为 0。相比之下，L2 正则化的约束区域是<strong>圆形</strong>（平滑无尖角），切点极少落在坐标轴上，因此不会产生精确的零权重。</p>
-
-          <div class="example-box">
-            <div class="example-label">🧮 简单例子（二维）</div>
-            <p>假设只有两个特征 w₁ 和 w₂。Lasso 的约束是 |w₁| + |w₂| ≤ t（菱形）。MSE 的最低点若在菱形外部，则最优解会"贴"在菱形的角上——即 w₁ = 0 或 w₂ = 0 的位置。Ridge 的约束是 w₁² + w₂² ≤ t（圆），最优解<strong>几乎不可能</strong>落在坐标轴上，因此 Ridge 不会产生精确的零系数。</p>
-          </div>
-
-          <h3>优化求解</h3>
-          <p>由于 L1 范数在原点处<strong>不可导</strong>（|w| 在 w=0 处导数不存在），无法直接用标准的梯度下降法求解。Lasso 的优化主要有两种方法：</p>
-
-          <ul>
-            <li><strong>坐标下降法 (Coordinate Descent)</strong> — 最常用的方法。每次只优化一个特征 wⱼ，固定其他所有特征。对每个系数，利用软阈值公式（subgradient 条件）直接更新，单变量更新为闭式解，计算快速。sklearn 的 Lasso 实现即基于此。</li>
-            <li><strong>LARS (Least Angle Regression)</strong> — 由 Efron 等人提出。将 λ 从大到小逐步放松，沿着解路径前进，每次加入一个特征。计算效率极高，甚至可以输出完整解路径。</li>
-            <li><strong>子梯度下降 (Subgradient Descent)</strong> — 理论上可行，但收敛较慢，实践中较少使用。</li>
-          </ul>
-
-          <h3>软阈值公式（坐标下降核心）</h3>
-          <p>对 Lasso 目标函数关于 wⱼ 求子梯度并令其为零，得到坐标下降法的更新公式：</p>
-
-          <div class="formula">$$\hat{w}_j = S_{\lambda}\!\left(\frac{1}{n}\sum_{i=1}^{n} x_{ij}\,r_i^{(j)}\right)$$</div>
-
-          <p>其中 $r_i^{(j)} = y_i - \sum_{k \neq j} w_k x_{ik}$ 是去掉第 j 个特征后的残差，$S_{\lambda}(\cdot)$ 是<strong>软阈值算子</strong>：</p>
-
-          <div class="formula">$$S_{\lambda}(z) = \operatorname{sign}(z) \cdot \max\!\bigl(|z| - \lambda,\;0\bigr)$$</div>
-
-          <p>软阈值算子的含义很直观：当 |z| ≤ λ 时输出 0（特征被淘汰）；当 |z| > λ 时向原点收缩 λ 个单位。这一简单公式保证了 Lasso 解的<strong>稀疏性</strong>和<strong>收缩性</strong>。</p>
-        </section>
-
-        <!-- ===== 稀疏性与特征选择 ===== -->
-        <section id="sparsity">
-          <h2>🔍 稀疏性与特征选择</h2>
-
-          <h3>几何直觉</h3>
-          <p>理解 Lasso 特征选择能力的关键是观察 L1 约束区域的<strong>几何形状</strong>。在二维参数空间中，L1 约束 |w₁| + |w₂| ≤ t 是一个旋转 45° 的<strong>菱形</strong>。该菱形的四个"尖角"分别位于坐标轴上：(t,0)、(0,t)、(-t,0)、(0,-t)。</p>
-
-          <p>对于普通最小二乘解的等高线（椭圆）与这个菱形约束求交点时：</p>
-
-          <ul>
-            <li>由于椭圆的延伸方向通常不与坐标轴对齐，切点更可能落在<strong>尖角</strong>（坐标轴）上，而非边或内部</li>
-            <li>在尖角处，其中一个坐标分量恰好为零——这就是<strong>稀疏性</strong>的几何来源</li>
-            <li>在高维空间中，L1 约束区域是<strong>交叉多面体 (cross-polytope)</strong>，其顶点均在坐标轴上。切点落在这些顶点上的概率随维度增加而增大，因此高维稀疏性更为显著</li>
-          </ul>
-
-          <h3>Ridge 为什么做不到？</h3>
-          <p>对照来看，Ridge 的 L2 约束 w₁² + w₂² ≤ t 是一个<strong>圆盘</strong>。圆盘的边界是光滑的，没有任何尖角或棱边。当 MSE 的椭圆等高线与该圆盘相切时，切点几乎不可能精确落在坐标轴上——因为需要椭圆的主轴恰好与坐标轴完美对齐，这在实践中几乎不会发生。</p>
-
-          <p>因此 Ridge 虽然能<strong>收缩</strong>系数（使其变小），但<strong>不能</strong>将任何系数精确置零。</p>
-
-          <div class="table-wrap">
-            <table>
-              <tr><th>性质</th><th>Lasso (L1)</th><th>Ridge (L2)</th></tr>
-              <tr><td>约束区域形状</td><td>菱形 / 交叉多面体（有尖角）</td><td>圆盘 / 球体（光滑）</td></tr>
-              <tr><td>是否产生精确零系数</td><td>✅ 是 — 自动特征选择</td><td>❌ 否 — 只收缩不置零</td></tr>
-              <tr><td>解的稀疏度</td><td>稀疏（大部分系数为 0）</td><td>稠密（所有系数非零）</td></tr>
-              <tr><td>几何原理</td><td>切点落在菱形的角（坐标轴）上</td><td>切点落在圆的光滑边界上，极少落轴</td></tr>
-            </table>
-          </div>
-
-          <h3>特征选择的实际影响</h3>
-          <p>Lasso 的自动特征选择能力在以下场景中尤为重要：</p>
-
-          <ul>
-            <li><strong>高维数据</strong>（特征数 p 远大于样本数 n）：在 p &gt; n 的情况下，OLS 无唯一解，但 Lasso 依然能选出最多 n 个非零特征（λ 足够大时）</li>
-            <li><strong>噪声特征过滤</strong>：当数据中含有大量无关或冗余特征时，Lasso 自动忽略它们</li>
-            <li><strong>模型可解释性</strong>：只保留少数特征的模型更容易理解和解释</li>
-            <li><strong>降低过拟合</strong>：减少特征数量即降低模型复杂度，提升泛化能力</li>
-          </ul>
-
-          <div class="example-box">
-            <div class="example-label">⚠️ 特征组问题</div>
-            <p>Lasso 的一个重要局限：当一组高度相关的特征同时存在时，Lasso <strong>倾向于只从该组中随机选择一个</strong>，而将组内其他特征的系数置零。这会导致模型在相关特征子集上不稳定。ElasticNet（L1+L2 混合）通过加入 L2 惩罚部分解决了这个问题，使相关特征被同时保留（或同时剔除）。</p>
-          </div>
-        </section>
-
-        <!-- ===== L1 vs L2 对比 ===== -->
-        <section id="l1-vs-l2">
-          <h2>📊 L1 vs L2 对比</h2>
-
-          <h3>何时用 Lasso</h3>
-          <ul>
-            <li><strong>特征数量远多于样本</strong>（p ≫ n）：Lasso 能有效降维，选出最有用的特征子集</li>
-            <li><strong>你怀疑大多数特征都是无关的</strong>：Lasso 的稀疏解自动剔除无用特征，保留关键信号</li>
-            <li><strong>需要高可解释性</strong>：模型只依赖少数特征，容易向业务方解释</li>
-            <li><strong>做特征选择的预处理</strong>：先用 Lasso 选出候选特征，再用其他模型做精确拟合</li>
-          </ul>
-
-          <h3>何时用 Ridge</h3>
-          <ul>
-            <li><strong>所有特征都可能有用</strong>：Ridge 保留所有特征，只是对系数均匀收缩，不丢弃任何特征</li>
-            <li><strong>特征间存在多重共线性</strong>：Ridge 能有效稳定共线性下的系数估计</li>
-            <li><strong>预测精度优先，可解释性次要</strong>：Ridge 通常比 Lasso 有略低的预测方差</li>
-            <li><strong>特征数量中等</strong>（n ≫ p 且特征数量不大）：Ridge 的均匀收缩不会浪费太多</li>
-          </ul>
-
-          <h3>何时用 ElasticNet</h3>
-          <ul>
-            <li>Lasso 在相关特征组中"随机挑选单特征"的行为不可接受时</li>
-            <li>二者兼顾：既要稀疏性（L1），又要稳定处理特征分组（L2）</li>
-            <li>数据集特征之间分组相关结构明显时</li>
-          </ul>
-
-          <h3>完整对比表</h3>
-          <div class="table-wrap">
-            <table>
-              <tr><th>对比维度</th><th>Lasso (L1)</th><th>Ridge (L2)</th></tr>
-              <tr><td>正则化项</td><td>λ·Σ|wⱼ|</td><td>λ·Σwⱼ²</td></tr>
-              <tr><td>解的性质</td><td><strong>稀疏</strong>（部分系数 = 0）</td><td><strong>稠密</strong>（所有系数 ≠ 0）</td></tr>
-              <tr><td>特征选择</td><td>✅ 自动进行</td><td>❌ 不能</td></tr>
-              <tr><td>收敛速度</td><td>慢（非光滑优化）</td><td>快（光滑优化）</td></tr>
-              <tr><td>闭式解</td><td>❌ 无</td><td>✅ 有（正规方程变体）</td></tr>
-              <tr><td>高维适用 (p > n)</td><td>✅ 最多选 n 个非零系数</td><td>⚠️ 可解，但所有系数非零</td></tr>
-              <tr><td>相关特征组</td><td>随机选一个</td><td>均匀收缩全部保留</td></tr>
-              <tr><td>系数形状</td><td>尖峰（原点处不可导）</td><td>圆滑（处处可导）</td></tr>
-              <tr><td>惩罚力度对大型系数的影响</td><td>线性惩罚</td><td>平方惩罚（大系数受罚更重）</td></tr>
-              <tr><td>预测性能（通常）</td><td>特征稀疏时更好</td><td>特征稠密时更好</td></tr>
-            </table>
-          </div>
-
-          <h3>λ 的调参策略</h3>
-          <p>正则化强度 λ 是 Lasso 最重要的超参数，需要仔细调节：</p>
-
-          <ul>
-            <li><strong>λ = 0</strong>：退化为普通最小二乘（OLS），无正则化</li>
-            <li><strong>λ 趋近 ∞</strong>：所有权重被压缩到 0，模型退化为常数预测</li>
-            <li><strong>交叉验证选择 λ</strong>：最常用的是 k 折交叉验证，选择 CV 误差最小的 λ（或 1 个标准误内的最大 λ，即 lambda_1se，更稀疏的模型）</li>
-            <li><strong>λ 路径（Regularization Path）</strong>：从大到小生成一系列 λ 值，观察每个 λ 下系数的变化轨迹。这是诊断特征重要性的有力工具</li>
-          </ul>
-
-          <div class="example-box">
-            <div class="example-label">💡 实用建议</div>
-            <p>实践中最常用的方法是 sklearn 的 <code>LassoCV</code>，它会自动在 λ 路径上做交叉验证选择最优 λ。用 <code>warm start</code> 技术（以上次 λ 的解初始化本次优化）可以极大加速 λ 路径的搜索过程。</p>
-          </div>
-        </section>
-
-        <!-- ===== 演进关系 ===== -->
-        <section id="evolution">
-          <h2>🌳 演进关系</h2>
-
-          <p>Lasso 是线性回归家族中一个里程碑式的变体。下面展示从基础的线性回归到各种正则化方法的演进脉络：</p>
-
-          <div class="evo-tree">
-            <div class="evo-root"><a href="linear-reg.html" style="color:inherit;text-decoration:none">线性回归</a></div>
-            <div class="evo-branch">
-              <div class="evo-child"><a href="ridge.html">岭回归 (Ridge)</a></div>
-              <div class="evo-child star">⭐ <a href="lasso.html">Lasso (L1)</a></div>
-              <div class="evo-child"><a href="elasticnet.html">弹性网络 (ElasticNet)</a></div>
-              <div class="evo-child">LARS</div>
-              <div class="evo-child">自适应 Lasso (Adaptive Lasso)</div>
-              <div class="evo-child">组 Lasso (Group Lasso)</div>
-            </div>
-          </div>
-
-          <h3>Ridge vs Lasso 的对比</h3>
-          <div class="table-wrap">
-            <table>
-              <tr><th>特点</th><th>Ridge 回归 (L2)</th><th>Lasso 回归 (L1)</th></tr>
-              <tr><td>提出者</td><td>Hoerl &amp; Kennard (1970)</td><td>Tibshirani (1996)</td></tr>
-              <tr><td>惩罚项</td><td>权重平方和 λ·Σwⱼ²</td><td>权重绝对值之和 λ·Σ|wⱼ|</td></tr>
-              <tr><td>系数为零？</td><td>否（仅收缩，不置零）</td><td>✅ 是（精确零系数）</td></tr>
-              <tr><td>解的稳定性</td><td>稳定，闭式解</td><td>λ 变化时系数可能跳跃</td></tr>
-              <tr><td>几何形状</td><td>球体（光滑）</td><td>八面体（有尖角）</td></tr>
-              <tr><td>适用场景</td><td>多重共线性、全特征有用</td><td>高维稀疏、特征选择</td></tr>
-            </table>
-          </div>
-
-          <h3>衍生变体</h3>
-          <ul>
-            <li><strong>ElasticNet (弹性网络)</strong> — ZOU &amp; HASTIE (2005)：结合 L1 + L2 惩罚，既实现稀疏性（L1 长处）又稳定处理相关特征组（L2 长处）。损失函数为 MSE + λ₁Σ|wⱼ| + λ₂Σwⱼ²。</li>
-            <li><strong>Adaptive Lasso</strong> — ZOU (2006)：不同特征施加不同的惩罚权重，重要特征惩罚小、不重要特征惩罚大，提高变量选择的偏差一致性和 Oracle 性质。</li>
-            <li><strong>Group Lasso</strong> — YUAN &amp; LIN (2006)：特征以组为单位进行选择，要么整组保留、要么整组丢弃。适用于分类变量（one-hot 编码的虚拟变量组）。</li>
-            <li><strong>LARS (Least Angle Regression)</strong> — EFRON et al. (2004)：一种高效求解 Lasso 完整解路径的算法，计算量近似 OLS 的复杂度。</li>
-          </ul>
-        </section>
-
-        <!-- ===== 关键概念 ===== -->
-        <section id="concepts">
-          <h2>🔑 关键概念</h2>
-          <ul>
-            <li><strong>稀疏解 (Sparse Solution)</strong> — 解向量中大部分系数为 0 的解。Lasso 因 L1 惩罚项的几何特性天然产生稀疏解，这是它与 Ridge 最本质的区别。</li>
-            <li><strong>λ (Lambda / 正则化强度)</strong> — 控制 L1 惩罚力度的超参数。λ 越大，系数压缩越强，解越稀疏。最优 λ 通常通过交叉验证确定。</li>
-            <li><strong>L1 范数 (L1 Norm / Manhattan Norm)</strong> — 向量元素绝对值之和，即 ‖w‖₁ = Σ|wⱼ|。Lasso 的惩罚项正是基于 L1 范数。</li>
-            <li><strong>特征选择 (Feature Selection)</strong> — 从所有特征中自动选出对预测最有贡献的子集。Lasso 通过将无用特征系数置零实现"嵌入式"特征选择。</li>
-            <li><strong>子梯度 (Subgradient)</strong> — 对不可导点（如 |w| 在 w=0 处）使用的广义梯度概念。Lasso 优化中软阈值公式正是子梯度条件的产物。</li>
-            <li><strong>软阈值算子 (Soft-thresholding Operator)</strong> — S_λ(z) = sign(z)·max(|z|-λ, 0)。坐标下降法更新每个系数的核心公式，同时实现收缩和选零。</li>
-            <li><strong>正则化路径 (Regularization Path)</strong> — 随 λ 从大到小变化时，各系数取值的轨迹曲线。帮助观察哪些特征先被选入、哪些最后被淘汰。</li>
-            <li><strong>Oracle 性质 (Oracle Property)</strong> — 若模型在变量选择上能"认出"正确的稀疏结构（即真正重要的变量被选入，不重要的被排除），且估计效率与已知真实模型相同，则称其具有 Oracle 性质。Adaptive Lasso 满足此性质，普通 Lasso 不完全满足。</li>
-            <li><strong>收缩 (Shrinkage)</strong> — 将回归系数向零方向压缩。Lasso 和 Ridge 都会收缩系数，但 Lasso 的收缩附带置零效果。</li>
-            <li><strong>偏差-方差权衡 (Bias-Variance Tradeoff)</strong> — Lasso 通过引入正则化偏差（将系数向零压缩）来降低模型方差，在适当的 λ 下，总预测误差（偏差²+方差）小于 OLS。</li>
-            <li><strong>p ≫ n 问题</strong> — 当特征数远超样本数时，OLS 没有唯一解。Lasso 在此设定下依然有效，最多可选出 min(n, p) 个非零特征（λ 足够大时至多 n 个）。</li>
-            <li><strong>Warm Start (热启动)</strong> — 使用前一个 λ 的解作为当前 λ 优化的初始值。在搜索 λ 路径时，warm start 能大幅加速坐标下降的收敛速度。</li>
-          </ul>
-        </section>
-
-        <!-- ===== 关联 ===== -->
-        <section id="related">
-          <h2>🔗 关联</h2>
-          <ul>
-            <li><strong>线性回归 (Linear Regression)</strong> — Lasso 的基础。当 λ = 0 时 Lasso 退化为普通最小二乘回归。</li>
-            <li><strong>Ridge 回归 (Ridge Regression / L2)</strong> — 使用 L2 惩罚的正则化线性回归。Ridge 收缩系数但不置零，Lasso 收缩并置零。二者互为补充。</li>
-            <li><strong>ElasticNet (弹性网络)</strong> — L1 + L2 混合正则化。解决了 Lasso 在处理相关特征组时的"随机挑选"问题，是最常用的实际方案。</li>
-            <li><strong>LARS (Least Angle Regression)</strong> — 高效求解 Lasso 解的算法。实际上 sklearn 的 Lasso 实现内部使用了 LARS 或坐标下降。</li>
-            <li><strong>自适应 Lasso (Adaptive Lasso)</strong> — 对 Lasso 的改进：不同特征有不同权重的 L1 惩罚，具备 Oracle 性质。</li>
-            <li><strong>组 Lasso (Group Lasso)</strong> — 以"组"为单位进行特征选择，适用于分组特征（如一次性纳入或排除 one-hot 编码的分类变量组）。</li>
-            <li><strong>主成分回归 (PCR)</strong> — 先降维再回归，与 Lasso 在高维数据场景下有相似用途但机制不同。</li>
-            <li><strong>SCAD / MCP</strong> — 非凸惩罚函数（Smoothly Clipped Absolute Deviation / Minimax Concave Penalty），能产生更无偏的稀疏解，但优化更复杂。</li>
-          </ul>
-        </section>
-
-      </main>
-
-      <!-- 右侧着重注意 -->
-      <aside class="aside-col">
-        <div class="aside-title">着重注意</div>
-
-        <div class="callout">
-          <strong>💡 要点</strong>
-          Lasso 能<strong>自动做特征选择</strong>——将不重要的特征权重精确压缩为零。高维数据（p ≫ n）场景下 Lasso 是最常用的基线方法之一。稀疏解带来的不仅是计算效率，更是模型的可解释性提升。
-        </div>
-
-        <div class="callout warn">
-          <strong>⚠️ 局限</strong>
-          (1) 相关特征组中<strong>随机选一个</strong>，组内其他特征被剔除，造成特征选择不稳定；(2) 当 p &gt; n 时最多只能选出 <strong>n 个非零特征</strong>（n 为样本数）；(3) 对"微相关但都重要"的特征组合不友好；(4) 优化比 Ridge 慢，因为 L1 不可导。
-        </div>
-
-        <div class="callout tip">
-          <strong>🔧 实践</strong>
-          (1) 标准化所有特征——因为 L1 惩罚对特征尺度敏感；(2) 优先使用 <code>LassoCV</code> 自动调 λ；(3) 用 <strong>warm start</strong> 加速 λ 搜索路径；(4) 对强相关特征组改用 ElasticNet；(5) λ 路径图是诊断特征重要性的好工具。
-        </div>
-
-        <div class="callout" style="border-left-color:#50c878;">
-          <strong>🌳 演进</strong>
-          ElasticNet（Zou &amp; Hastie, 2005）结合 L1 + L2 混合正则化，解决了 Lasso 在相关特征组中"随机选一个"的问题——L2 项让组内相关特征能<strong>同时被保留或同时被剔除</strong>，是实际项目中最推荐的替代方案。
-        </div>
-
-        <div class="callout" style="border-left-color:#eab308;">
-          <strong>📚 参考</strong>
-          本页内容基于 <a href="https://doi.org/10.1111/j.2517-6161.1996.tb02080.x" target="_blank" style="color:#eab308;text-decoration:underline;">Tibshirani (1996)</a> 原始论文整理
-        </div>
-      </aside>
-
-    </div>
-
-    <!-- ===== 统一尾部 ===== -->
-    <div class="footer">
-      知识图谱 3D · 算法底座 · Lasso 回归 · Tibshirani (1996)
-    </div>
-
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded',function(){
-      if(typeof renderMathInElement==='function')
-        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
-    });
-  </script>
-</body>
-</html>
+   293|<body>
+   294|
+   295|  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+   296|
+   297|  <div class="page">
+   298|
+   299|    <!-- ===== title ===== -->
+   300|    <div class="title-area">
+   301|      <h1>
+   302|        Lasso 回归
+   303|        <span class="en">LASSO Regression — Least Absolute Shrinkage and Selection Operator</span>
+   304|      </h1>
+   305|      <div class="bar" style="background:#50c878"></div>
+   306|      <p class="brief">
+   307|        在最小二乘法基础上加入 L1 正则化惩罚项，以权重绝对值之和约束模型复杂度。
+   308|        不仅能够防止过拟合，更能自动将不重要的特征权重压缩至零，实现特征选择。
+   309|      </p>
+   310|    </div>
+   311|
+   312|    <!-- ===== 参考来源 ===== -->
+   313|    <div class="paper-line">
+   314|      <a href="https://doi.org/10.1111/j.2517-6161.1996.tb02080.x" target="_blank" rel="noopener">
+   315|        📄 Regression Shrinkage and Selection via the Lasso (Tibshirani, 1996)
+   316|      </a>
+   317|    </div>
+   318|
+   319|    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
+   320|    <div class="layout">
+   321|
+   322|      <!-- 左侧导航 -->
+   323|      <nav class="nav-col">
+   324|        <div class="nav-title">目录</div>
+   325|        <a href="#definition">📖 定义</a>
+   326|        <a href="#math">📐 数学原理</a>
+   327|        <a href="#sparsity">🔍 稀疏性与特征选择</a>
+   328|        <a href="#l1-vs-l2">📊 L1 vs L2 对比</a>
+   329|        <a href="#evolution">🌳 演进关系</a>
+   330|        <a href="#concepts">🔑 关键概念</a>
+   331|        <a href="#related">🔗 关联</a>
+   332|      </nav>
+   333|
+   334|      <!-- 中间正文 -->
+   335|      <main class="main-col">
+   336|
+   337|        <!-- ===== 定义 ===== -->
+   338|        <section id="definition">
+   339|          <h2>📖 定义</h2>
+   340|          <p><strong>Lasso 回归</strong>（Least Absolute Shrinkage and Selection Operator，最小绝对收缩与选择算子）由 Robert Tibshirani 于 1996 年提出，是一种在普通最小二乘（OLS）损失函数中加入 <strong>L1 正则化惩罚项</strong> 的线性回归方法。</p>
+   341|
+   342|          <p>与 Ridge 回归（L2 正则化）不同，Lasso 的 L1 惩罚项会将某些特征的权重精确压缩为 <strong>零</strong>，从而实现<strong>自动特征选择</strong>——这是 Lasso 最核心也最独特的性质。</p>
+   343|
+   344|          <p>换句话说：Lasso 同时做了两件事——<strong>拟合模型</strong>（最小化预测误差）和<strong>筛选特征</strong>（将不重要的系数置零），特别适合处理<strong>高维稀疏数据</strong>和<strong>特征数量远多于样本数量</strong>的场景。</p>
+   345|
+   346|          <div class="example-box">
+   347|            <div class="example-label">💡 直觉理解</div>
+   348|            <p>想象你要在 100 个可能的因素中预测房价，但真正有用的只有 5 个。普通线性回归会保留所有 100 个系数（即使它们很小且充满噪声），而 Lasso 会自动将 95 个无关特征的系数精确设为 0——只保留那 5 个关键特征。</p>
+   349|          </div>
+   350|
+   351|          <h3>由来与命名</h3>
+   352|          <p>"Lasso" 的全称揭示了它的三个核心动作：<strong>Least Absolute</strong>（最小绝对值 — 使用 L1 范数）、<strong>Shrinkage</strong>（收缩 — 将系数向零压缩）、<strong>Selection Operator</strong>（选择算子 — 将无关系数设为 0）。这个名称精准概括了 Lasso 的全部工作原理。</p>
+   353|        </section>
+   354|
+   355|        <!-- ===== 数学原理 ===== -->
+   356|        <section id="math">
+   357|          <h2>📐 数学原理</h2>
+   358|
+   359|          <h3>损失函数</h3>
+   360|          <p>Lasso 回归的目标函数由两部分组成：<strong>MSE 损失</strong> + <strong>L1 正则化惩罚项</strong>：</p>
+   361|
+   362|          <div class="formula">$$L(\mathbf{w}) = \text{MSE}(\mathbf{w}) + \lambda \sum_{j=1}^{p} |w_j|$$</div>
+   363|
+   364|          <p>其中 <strong>MSE</strong> 是均方误差项，衡量模型对训练数据的拟合程度；<strong>λ·Σ|wⱼ|</strong> 是 L1 正则化项，对所有权重的绝对值之和进行惩罚；<strong>λ ≥ 0</strong> 是正则化强度超参数，控制惩罚力度。展开形式为：</p>
+   365|
+   366|          <div class="formula">$$L(\mathbf{w}) = \frac{1}{2n}\sum_{i=1}^{n}\bigl(y_i - \hat{y}_i\bigr)^2 + \lambda\sum_{j=1}^{p}|w_j|$$</div>
+   367|
+   368|          <p>注意：惯例上偏置项 w₀（截距）<strong>不参与</strong>正则化惩罚，因为只对特征权重进行收缩。</p>
+   369|
+   370|          <h3>为什么 L1 能产生稀疏解？</h3>
+   371|          <p>关键在于 <strong>L1 范数的几何形状</strong>。约束优化视角下，Lasso 等价于在满足 Σ|wⱼ| ≤ t 的条件下最小化 MSE。L1 正则化的约束区域是一个<strong>菱形（二维）或八面体（高维）</strong>，其顶点和棱边落在坐标轴上。</p>
+   372|
+   373|          <p>当 MSE 的等高线（椭圆）与菱形约束区域相切时，切点很容易落在<strong>坐标轴</strong>上，导致某些维度的权重恰好为 0。相比之下，L2 正则化的约束区域是<strong>圆形</strong>（平滑无尖角），切点极少落在坐标轴上，因此不会产生精确的零权重。</p>
+   374|
+   375|          <div class="example-box">
+   376|            <div class="example-label">🧮 简单例子（二维）</div>
+   377|            <p>假设只有两个特征 w₁ 和 w₂。Lasso 的约束是 |w₁| + |w₂| ≤ t（菱形）。MSE 的最低点若在菱形外部，则最优解会"贴"在菱形的角上——即 w₁ = 0 或 w₂ = 0 的位置。Ridge 的约束是 w₁² + w₂² ≤ t（圆），最优解<strong>几乎不可能</strong>落在坐标轴上，因此 Ridge 不会产生精确的零系数。</p>
+   378|          </div>
+   379|
+   380|          <h3>优化求解</h3>
+   381|          <p>由于 L1 范数在原点处<strong>不可导</strong>（|w| 在 w=0 处导数不存在），无法直接用标准的梯度下降法求解。Lasso 的优化主要有两种方法：</p>
+   382|
+   383|          <ul>
+   384|            <li><strong>坐标下降法 (Coordinate Descent)</strong> — 最常用的方法。每次只优化一个特征 wⱼ，固定其他所有特征。对每个系数，利用软阈值公式（subgradient 条件）直接更新，单变量更新为闭式解，计算快速。sklearn 的 Lasso 实现即基于此。</li>
+   385|            <li><strong>LARS (Least Angle Regression)</strong> — 由 Efron 等人提出。将 λ 从大到小逐步放松，沿着解路径前进，每次加入一个特征。计算效率极高，甚至可以输出完整解路径。</li>
+   386|            <li><strong>子梯度下降 (Subgradient Descent)</strong> — 理论上可行，但收敛较慢，实践中较少使用。</li>
+   387|          </ul>
+   388|
+   389|          <h3>软阈值公式（坐标下降核心）</h3>
+   390|          <p>对 Lasso 目标函数关于 wⱼ 求子梯度并令其为零，得到坐标下降法的更新公式：</p>
+   391|
+   392|          <div class="formula">$$\hat{w}_j = S_{\lambda}\!\left(\frac{1}{n}\sum_{i=1}^{n} x_{ij}\,r_i^{(j)}\right)$$</div>
+   393|
+   394|          <p>其中 $r_i^{(j)} = y_i - \sum_{k \neq j} w_k x_{ik}$ 是去掉第 j 个特征后的残差，$S_{\lambda}(\cdot)$ 是<strong>软阈值算子</strong>：</p>
+   395|
+   396|          <div class="formula">$$S_{\lambda}(z) = \operatorname{sign}(z) \cdot \max\!\bigl(|z| - \lambda,\;0\bigr)$$</div>
+   397|
+   398|          <p>软阈值算子的含义很直观：当 |z| ≤ λ 时输出 0（特征被淘汰）；当 |z| > λ 时向原点收缩 λ 个单位。这一简单公式保证了 Lasso 解的<strong>稀疏性</strong>和<strong>收缩性</strong>。</p>
+   399|        </section>
+   400|
+   401|        <!-- ===== 稀疏性与特征选择 ===== -->
+   402|        <section id="sparsity">
+   403|          <h2>🔍 稀疏性与特征选择</h2>
+   404|
+   405|          <h3>几何直觉</h3>
+   406|          <p>理解 Lasso 特征选择能力的关键是观察 L1 约束区域的<strong>几何形状</strong>。在二维参数空间中，L1 约束 |w₁| + |w₂| ≤ t 是一个旋转 45° 的<strong>菱形</strong>。该菱形的四个"尖角"分别位于坐标轴上：(t,0)、(0,t)、(-t,0)、(0,-t)。</p>
+   407|
+   408|          <p>对于普通最小二乘解的等高线（椭圆）与这个菱形约束求交点时：</p>
+   409|
+   410|          <ul>
+   411|            <li>由于椭圆的延伸方向通常不与坐标轴对齐，切点更可能落在<strong>尖角</strong>（坐标轴）上，而非边或内部</li>
+   412|            <li>在尖角处，其中一个坐标分量恰好为零——这就是<strong>稀疏性</strong>的几何来源</li>
+   413|            <li>在高维空间中，L1 约束区域是<strong>交叉多面体 (cross-polytope)</strong>，其顶点均在坐标轴上。切点落在这些顶点上的概率随维度增加而增大，因此高维稀疏性更为显著</li>
+   414|          </ul>
+   415|
+   416|          <h3>Ridge 为什么做不到？</h3>
+   417|          <p>对照来看，Ridge 的 L2 约束 w₁² + w₂² ≤ t 是一个<strong>圆盘</strong>。圆盘的边界是光滑的，没有任何尖角或棱边。当 MSE 的椭圆等高线与该圆盘相切时，切点几乎不可能精确落在坐标轴上——因为需要椭圆的主轴恰好与坐标轴完美对齐，这在实践中几乎不会发生。</p>
+   418|
+   419|          <p>因此 Ridge 虽然能<strong>收缩</strong>系数（使其变小），但<strong>不能</strong>将任何系数精确置零。</p>
+   420|
+   421|          <div class="table-wrap">
+   422|            <table>
+   423|              <tr><th>性质</th><th>Lasso (L1)</th><th>Ridge (L2)</th></tr>
+   424|              <tr><td>约束区域形状</td><td>菱形 / 交叉多面体（有尖角）</td><td>圆盘 / 球体（光滑）</td></tr>
+   425|              <tr><td>是否产生精确零系数</td><td>✅ 是 — 自动特征选择</td><td>❌ 否 — 只收缩不置零</td></tr>
+   426|              <tr><td>解的稀疏度</td><td>稀疏（大部分系数为 0）</td><td>稠密（所有系数非零）</td></tr>
+   427|              <tr><td>几何原理</td><td>切点落在菱形的角（坐标轴）上</td><td>切点落在圆的光滑边界上，极少落轴</td></tr>
+   428|            </table>
+   429|          </div>
+   430|
+   431|          <h3>特征选择的实际影响</h3>
+   432|          <p>Lasso 的自动特征选择能力在以下场景中尤为重要：</p>
+   433|
+   434|          <ul>
+   435|            <li><strong>高维数据</strong>（特征数 p 远大于样本数 n）：在 p &gt; n 的情况下，OLS 无唯一解，但 Lasso 依然能选出最多 n 个非零特征（λ 足够大时）</li>
+   436|            <li><strong>噪声特征过滤</strong>：当数据中含有大量无关或冗余特征时，Lasso 自动忽略它们</li>
+   437|            <li><strong>模型可解释性</strong>：只保留少数特征的模型更容易理解和解释</li>
+   438|            <li><strong>降低过拟合</strong>：减少特征数量即降低模型复杂度，提升泛化能力</li>
+   439|          </ul>
+   440|
+   441|          <div class="example-box">
+   442|            <div class="example-label">⚠️ 特征组问题</div>
+   443|            <p>Lasso 的一个重要局限：当一组高度相关的特征同时存在时，Lasso <strong>倾向于只从该组中随机选择一个</strong>，而将组内其他特征的系数置零。这会导致模型在相关特征子集上不稳定。ElasticNet（L1+L2 混合）通过加入 L2 惩罚部分解决了这个问题，使相关特征被同时保留（或同时剔除）。</p>
+   444|          </div>
+   445|        </section>
+   446|
+   447|        <!-- ===== L1 vs L2 对比 ===== -->
+   448|        <section id="l1-vs-l2">
+   449|          <h2>📊 L1 vs L2 对比</h2>
+   450|
+   451|          <h3>何时用 Lasso</h3>
+   452|          <ul>
+   453|            <li><strong>特征数量远多于样本</strong>（p ≫ n）：Lasso 能有效降维，选出最有用的特征子集</li>
+   454|            <li><strong>你怀疑大多数特征都是无关的</strong>：Lasso 的稀疏解自动剔除无用特征，保留关键信号</li>
+   455|            <li><strong>需要高可解释性</strong>：模型只依赖少数特征，容易向业务方解释</li>
+   456|            <li><strong>做特征选择的预处理</strong>：先用 Lasso 选出候选特征，再用其他模型做精确拟合</li>
+   457|          </ul>
+   458|
+   459|          <h3>何时用 Ridge</h3>
+   460|          <ul>
+   461|            <li><strong>所有特征都可能有用</strong>：Ridge 保留所有特征，只是对系数均匀收缩，不丢弃任何特征</li>
+   462|            <li><strong>特征间存在多重共线性</strong>：Ridge 能有效稳定共线性下的系数估计</li>
+   463|            <li><strong>预测精度优先，可解释性次要</strong>：Ridge 通常比 Lasso 有略低的预测方差</li>
+   464|            <li><strong>特征数量中等</strong>（n ≫ p 且特征数量不大）：Ridge 的均匀收缩不会浪费太多</li>
+   465|          </ul>
+   466|
+   467|          <h3>何时用 ElasticNet</h3>
+   468|          <ul>
+   469|            <li>Lasso 在相关特征组中"随机挑选单特征"的行为不可接受时</li>
+   470|            <li>二者兼顾：既要稀疏性（L1），又要稳定处理特征分组（L2）</li>
+   471|            <li>数据集特征之间分组相关结构明显时</li>
+   472|          </ul>
+   473|
+   474|          <h3>完整对比表</h3>
+   475|          <div class="table-wrap">
+   476|            <table>
+   477|              <tr><th>对比维度</th><th>Lasso (L1)</th><th>Ridge (L2)</th></tr>
+   478|              <tr><td>正则化项</td><td>λ·Σ|wⱼ|</td><td>λ·Σwⱼ²</td></tr>
+   479|              <tr><td>解的性质</td><td><strong>稀疏</strong>（部分系数 = 0）</td><td><strong>稠密</strong>（所有系数 ≠ 0）</td></tr>
+   480|              <tr><td>特征选择</td><td>✅ 自动进行</td><td>❌ 不能</td></tr>
+   481|              <tr><td>收敛速度</td><td>慢（非光滑优化）</td><td>快（光滑优化）</td></tr>
+   482|              <tr><td>闭式解</td><td>❌ 无</td><td>✅ 有（正规方程变体）</td></tr>
+   483|              <tr><td>高维适用 (p > n)</td><td>✅ 最多选 n 个非零系数</td><td>⚠️ 可解，但所有系数非零</td></tr>
+   484|              <tr><td>相关特征组</td><td>随机选一个</td><td>均匀收缩全部保留</td></tr>
+   485|              <tr><td>系数形状</td><td>尖峰（原点处不可导）</td><td>圆滑（处处可导）</td></tr>
+   486|              <tr><td>惩罚力度对大型系数的影响</td><td>线性惩罚</td><td>平方惩罚（大系数受罚更重）</td></tr>
+   487|              <tr><td>预测性能（通常）</td><td>特征稀疏时更好</td><td>特征稠密时更好</td></tr>
+   488|            </table>
+   489|          </div>
+   490|
+   491|          <h3>λ 的调参策略</h3>
+   492|          <p>正则化强度 λ 是 Lasso 最重要的超参数，需要仔细调节：</p>
+   493|
+   494|          <ul>
+   495|            <li><strong>λ = 0</strong>：退化为普通最小二乘（OLS），无正则化</li>
+   496|            <li><strong>λ 趋近 ∞</strong>：所有权重被压缩到 0，模型退化为常数预测</li>
+   497|            <li><strong>交叉验证选择 λ</strong>：最常用的是 k 折交叉验证，选择 CV 误差最小的 λ（或 1 个标准误内的最大 λ，即 lambda_1se，更稀疏的模型）</li>
+   498|            <li><strong>λ 路径（Regularization Path）</strong>：从大到小生成一系列 λ 值，观察每个 λ 下系数的变化轨迹。这是诊断特征重要性的有力工具</li>
+   499|          </ul>
+   500|
+   501|
