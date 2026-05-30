@@ -1,235 +1,375 @@
-     1|<!DOCTYPE html>
-     2|<html lang="zh-CN">
-     3|<head>
-     4|  <meta charset="UTF-8" />
-     5|  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     6|  <title>岭回归 — 知识图谱 3D</title>
-     7|  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
-     8|  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-     9|  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-    10|    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
-    11|  </script>
-    12|  
-   272|  
-   278|  
-   293|  <link rel="stylesheet" href="../../../css/common.css" />
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>岭回归 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+
+  <link rel="stylesheet" href="../../../css/common.css" />
   <style>
-273|    /* 页面专属颜色 — 蓝色主题 */
-   274|    .title-area .bar { background:#4d96ff; }
-   275|    .aside-col .callout { border-left-color:#4d96ff; }
-   276|    .aside-col .callout strong { color:#4d96ff; }
-   277|
+/* 页面专属颜色 — 蓝色主题 */
+    .title-area .bar { background:#4d96ff; }
+    .aside-col .callout { border-left-color:#4d96ff; }
+    .aside-col .callout strong { color:#4d96ff; }
 /* evo-root 主题色 */
 .evo-root{background:rgba(77,150,255,.1);border:1px solid rgba(77,150,255,.25);color:rgba(255,255,255,.85)}
 /* evo-note 主题色 */
 .evo-note{font-size:11px;color:rgba(77,150,255,.6);font-style:italic;margin-left:4px}
   </style>
 </head>
-   294|<body>
-   295|
-   296|  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
-   297|
-   298|  <div class="page">
-   299|
-   300|    <!-- ===== title ===== -->
-   301|    <div class="title-area">
-   302|      <h1>
-   303|        岭回归
-   304|        <span class="en">Ridge Regression</span>
-   305|      </h1>
-   306|      <div class="bar" style="background:#4d96ff"></div>
-   307|      <p class="brief">
-   308|        通过在最小二乘法损失函数中加入 L2 正则化惩罚项（权重平方和），
-   309|        约束模型复杂度、抑制过拟合，提高模型的泛化能力。
-   310|        又称 Tikhonov 正则化或权重衰减。
-   311|      </p>
-   312|    </div>
-   313|
-   314|    <!-- ===== 参考来源 ===== -->
-   315|    <div class="paper-line">
-   316|      <a href="https://doi.org/10.1080/00401706.1970.10488634" target="_blank" rel="noopener">
-   317|        📄 Ridge Regression: Biased Estimation for Nonorthogonal Problems (Hoerl &amp; Kennard, 1970)
-   318|      </a>
-   319|    </div>
-   320|
-   321|    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
-   322|    <div class="layout">
-   323|
-   324|      <!-- 左侧导航 -->
-   325|      <nav class="nav-col">
-   326|        <div class="nav-title">目录</div>
-   327|        <a href="#definition">📖 定义</a>
-   328|        <a href="#math">📐 数学原理</a>
-   329|        <a href="#l2-effect">📉 L2 正则化效应</a>
-   330|        <a href="#bias-variance">📊 偏差-方差权衡</a>
-   331|        <a href="#lambda">⚙️ 正则化参数 λ</a>
-   332|        <a href="#evolution">🌳 演进关系</a>
-   333|        <a href="#concepts">🔑 关键概念</a>
-   334|        <a href="#related">🔗 关联</a>
-   335|      </nav>
-   336|
-   337|      <!-- 中间正文 -->
-   338|      <main class="main-col">
-   339|
-   340|        <!-- ===== 定义 ===== -->
-   341|        <section id="definition">
-   342|          <h2>📖 定义</h2>
-   343|          <p><strong>岭回归 (Ridge Regression)</strong> 是一种专用于<strong>多重共线性 (multicollinearity)</strong> 数据分析的有偏估计回归方法。它在普通最小二乘法 (OLS) 的损失函数中引入 <strong>L2 正则化惩罚项</strong>，迫使模型权重向零收缩但不为零。</p>
-   344|          <p>核心思想：在保留所有特征的前提下，通过<strong>惩罚大的权重值</strong>来控制模型复杂度。当特征之间存在高度相关性时，普通线性回归的系数估计会变得不稳定（方差大），而 Ridge 通过加入 λI 项使矩阵<strong>可逆</strong>，保证解的唯一性和稳定性。</p>
-   345|
-   346|          <h3>为什么需要岭回归？</h3>
-   347|          <p>当特征维度 p 接近样本量 n 时，$(X^\mathsf{T}X)$ 矩阵接近<strong>奇异 (singular)</strong>，导致 OLS 解严重不稳定。Ridge 在 $X^\mathsf{T}X$ 的对角线上加入 λ，确保矩阵总是可逆的。</p>
-   348|
-   349|          <div class="table-wrap">
-   350|            <table>
-   351|              <tr><th>情况</th><th>OLS 表现</th><th>Ridge 表现</th></tr>
-   352|              <tr><td>良态数据 (n ≫ p)</td><td>稳定、无偏</td><td>接近 OLS（λ 小）</td></tr>
-   353|              <tr><td>多重共线性</td><td>方差极大、系数不稳定</td><td>系数稳定、估计可靠</td></tr>
-   354|              <tr><td>高维数据 (p ≈ n)</td><td>近乎奇异、解不可信</td><td>解唯一、泛化良好</td></tr>
-   355|              <tr><td>p > n（特征数 ≥ 样本数）</td><td>无唯一解（矩阵不可逆）</td><td>有解（λ > 0 保证可逆）</td></tr>
-   356|            </table>
-   357|          </div>
-   358|
-   359|          <div class="example-box">
-   360|            <div class="example-label">💡 直觉理解</div>
-   361|            <p>想象你试图用多个高度相关的特征（如"房屋面积"和"房屋房间数量"）预测房价。OLS 可能给面积分配一个很大的正系数，同时给房间数量分配一个很大的负系数——两者相互抵消，单看每个系数都不合理。Ridge 通过惩罚大系数，迫使这两个相关特征的系数<strong>更均衡、更合理</strong>。</p>
-   362|          </div>
-   363|        </section>
-   364|
-   365|        <!-- ===== 数学原理 ===== -->
-   366|        <section id="math">
-   367|          <h2>📐 数学原理</h2>
-   368|
-   369|          <h3>损失函数</h3>
-   370|          <p>岭回归在 OLS 的 MSE 损失基础上增加 L2 惩罚项：</p>
-   371|          <div class="formula">$$L(\mathbf{w}) = \underbrace{\frac{1}{n}\sum_{i=1}^{n}(y_i - \mathbf{w}^\mathsf{T}\mathbf{x}_i)^2}_{\text{MSE 损失}} + \lambda\underbrace{\sum_{j=1}^{p} w_j^2}_{\text{L2 惩罚}}$$</div>
-   372|          <p>其中：</p>
-   373|          <ul>
-   374|            <li><strong>λ (lambda)</strong> — 正则化强度超参数，λ ≥ 0。λ = 0 退化为 OLS</li>
-   375|            <li><strong>$w_j$</strong> — 第 j 个特征的权重（注意：偏置 b 通常不参与正则化）</li>
-   376|            <li><strong>$\sum w_j^2$</strong> — 权重的 L2 范数平方，即 $\|\mathbf{w}\|_2^2$</li>
-   377|          </ul>
-   378|
-   379|          <h3>矩阵形式</h3>
-   380|          <div class="formula">$$L(\mathbf{w}) = \|\mathbf{y} - X\mathbf{w}\|_2^2 + \lambda\|\mathbf{w}\|_2^2$$</div>
-   381|
-   382|          <h3>解析解（闭式解）</h3>
-   383|          <p>对损失函数求导并令梯度为零，得到岭回归的解析解：</p>
-   384|          <div class="formula">$$\mathbf{w}_{\text{ridge}} = (X^\mathsf{T}X + \lambda I)^{-1}X^\mathsf{T}\mathbf{y}$$</div>
-   385|          <p>关键观察：</p>
-   386|          <ul>
-   387|            <li><strong>加入 λI 保证可逆</strong> — 即使 $X^\mathsf{T}X$ 是奇异的，$X^\mathsf{T}X + \lambda I$ 也一定是满秩可逆矩阵</li>
-   388|            <li><strong>λ → 0</strong> — 解析解退化为 OLS 的 $\mathbf{w}_{\text{OLS}} = (X^\mathsf{T}X)^{-1}X^\mathsf{T}\mathbf{y}$</li>
-   389|            <li><strong>λ → ∞</strong> — 权重趋近于 0，模型趋近于常数均值预测</li>
-   390|            <li><strong>偏置</strong> — 实际中偏置项 b 单独处理（不进入惩罚项），一般等价于先对 y 和 X 进行中心化</li>
-   391|          </ul>
-   392|
-   393|          <h3>SVD 视角</h3>
-   394|          <p>设 $X = UDV^\mathsf{T}$ 为 X 的奇异值分解，则：</p>
-   395|          <div class="formula">$$\mathbf{w}_{\text{ridge}} = \sum_{j=1}^{p} \frac{d_j}{d_j^2 + \lambda} (u_j^\mathsf{T}\mathbf{y}) v_j$$</div>
-   396|          <p>对比 OLS 的 $\mathbf{w}_{\text{OLS}} = \sum_{j=1}^{p} \frac{1}{d_j} (u_j^\mathsf{T}\mathbf{y}) v_j$：</p>
-   397|          <p>Ridge 在分母中加入了 λ，对<strong>小奇异值方向（方差大的方向）的权重进行更强地收缩</strong>。因子 $\frac{d_j^2}{d_j^2 + \lambda}$ 称为<strong>收缩因子 (shrinkage factor)</strong>，奇异值越小收缩越强。</p>
-   398|        </section>
-   399|
-   400|        <!-- ===== L2 正则化效应 ===== -->
-   401|        <section id="l2-effect">
-   402|          <h2>📉 L2 正则化效应</h2>
-   403|
-   404|          <h3>权重衰减 (Weight Decay)</h3>
-   405|          <p>L2 正则化的一个直观效果是<strong>权重衰减</strong>：在梯度下降更新中，每次迭代时权重都会先乘以一个小于 1 的因子：</p>
-   406|          <div class="formula">$$w_j^{(t+1)} = w_j^{(t)} - \eta\Bigl(\frac{\partial \text{MSE}}{\partial w_j} + 2\lambda w_j^{(t)}\Bigr) = (1 - 2\eta\lambda)w_j^{(t)} - \eta\frac{\partial \text{MSE}}{\partial w_j}$$</div>
-   407|          <p>其中 $(1 - 2\eta\lambda)$ 就是衰减因子。每次迭代权重被迫向零靠拢，λ 越大衰减越强。</p>
-   408|
-   409|          <h3>λ 对权重的影响</h3>
-   410|          <p>随着 λ 从 0 逐渐增大：</p>
-   411|          <ul>
-   412|            <li><strong>权重绝对值整体下降</strong> — 所有特征系数向零收缩</li>
-   413|            <li><strong>高方差方向优先收缩</strong> — 对应较小奇异值的方向（通常是不稳定特征组合）被惩罚更多</li>
-   414|            <li><strong>所有权重被保留</strong> — Ridge 不会将任何权重精确置零（区别于 Lasso）</li>
-   415|            <li><strong>相关特征系数趋于平衡</strong> — 高度相关的一组特征各自的权重变得更均匀</li>
-   416|          </ul>
-   417|
-   418|          <h3>特征值缩放的作用</h3>
-   419|          <p>L2 惩罚项 $\sum w_j^2$ 对<strong>特征的尺度敏感</strong>。如果某个特征的数值范围很大（如"收入"以万元为单位），其对应的权重自然很小；反之，数值范围很小的特征（如"年龄"）对应较大的权重。这导致：</p>
-   420|          <ul>
-   421|            <li><strong>标准化的必要性</strong> — 使用 Ridge 前必须对特征进行标准化（均值 0、方差 1），否则惩罚项对不同特征不公平</li>
-   422|            <li><strong>等权收缩</strong> — 标准化后所有特征的尺度一致，正则化惩罚均匀作用于每个特征</li>
-   423|          </ul>
-   424|
-   425|          <div class="table-wrap">
-   426|            <table>
-   427|              <tr><th>λ 值</th><th>正则化强度</th><th>权重规模</th><th>模型复杂度</th></tr>
-   428|              <tr><td>λ = 0</td><td>无正则化</td><td>OLS 无偏估计</td><td>最高（可能过拟合）</td></tr>
-   429|              <tr><td>λ = 0.01</td><td>轻微</td><td>轻微收缩</td><td>略有降低</td></tr>
-   430|              <tr><td>λ = 1</td><td>中等</td><td>明显收缩</td><td>显著降低</td></tr>
-   431|              <tr><td>λ = 10</td><td>强</td><td>大幅收缩</td><td>低</td></tr>
-   432|              <tr><td>λ → ∞</td><td>极致</td><td>趋近零</td><td>欠拟合（近似常数模型）</td></tr>
-   433|            </table>
-   434|          </div>
-   435|
-   436|          <div class="example-box">
-   437|            <div class="example-label">🧮 数值示例</div>
-   438|            <p>假设 OLS 解为 $w_{\text{OLS}} = [10, -8, 0.5]^\mathsf{T}$，加入 λ = 1 后：</p>
-   439|            <p>$w_{\text{ridge}} = (X^\mathsf{T}X + I)^{-1}X^\mathsf{T}\mathbf{y}$，结果大致为 $[5, -4, 0.3]^\mathsf{T}$ 左右——大的正负系数被显著缩小，小的系数也略有收缩。特征选择和符号通常被保留。</p>
-   440|          </div>
-   441|        </section>
-   442|
-   443|        <!-- ===== 偏差-方差权衡 ===== -->
-   444|        <section id="bias-variance">
-   445|          <h2>📊 偏差-方差权衡</h2>
-   446|
-   447|          <h3>偏差 (Bias) 与方差 (Variance)</h3>
-   448|          <p>模型的总泛化误差可以分解为三个部分：</p>
-   449|          <div class="formula">$$\mathbb{E}\bigl[(y - \hat{y})^2\bigr] = \underbrace{\text{Bias}(\hat{y})^2}_{\text{偏差}^2} + \underbrace{\text{Var}(\hat{y})}_{\text{方差}} + \underbrace{\sigma^2}_{\text{噪声}}$$</div>
-   450|          <p>岭回归的核心机制就在于调节<strong>偏差-方差权衡 (Bias-Variance Tradeoff)</strong>：</p>
-   451|          <ul>
-   452|            <li><strong>OLS（λ = 0）</strong> — 无偏估计（偏差=0），但方差大，尤其在多重共线性时</li>
-   453|            <li><strong>Ridge（λ > 0）</strong> — 引入偏置（系数被有意缩小），但方差大幅降低</li>
-   454|          </ul>
-   455|
-   456|          <h3>量化分析</h3>
-   457|          <p>岭回归估计的偏差和方差可由下式量化：</p>
-   458|          <div class="formula">$$\text{Bias}(\mathbf{w}_{\text{ridge}}) = \mathbb{E}[\mathbf{w}_{\text{ridge}}] - \mathbf{w}_{\text{true}} = -\lambda (X^\mathsf{T}X + \lambda I)^{-1}\mathbf{w}_{\text{true}}$$</div>
-   459|          <div class="formula">$$\text{Var}(\mathbf{w}_{\text{ridge}}) = \sigma^2 (X^\mathsf{T}X + \lambda I)^{-1} X^\mathsf{T}X (X^\mathsf{T}X + \lambda I)^{-1}$$</div>
-   460|          <p>关键结论：</p>
-   461|          <ul>
-   462|            <li>偏差随 λ 增大而 <strong>增大</strong>（有偏估计）</li>
-   463|            <li>方差随 λ 增大而 <strong>减小</strong>（估计更稳定）</li>
-   464|            <li>存在一个<strong>最优 λ</strong> 使总预测误差最小——即在偏差和方差之间找到最佳平衡点</li>
-   465|          </ul>
-   466|
-   467|          <h3>泛化能力</h3>
-   468|          <p>虽然在训练数据上 Ridge 的误差比 OLS 略高（因为加入了偏置），但在<strong>测试数据</strong>上 Ridge 通常表现得更好：</p>
-   469|          <ul>
-   470|            <li>OLS 对训练数据<strong>过度适应</strong>，在新数据上表现差</li>
-   471|            <li>Ridge 通过<strong>收缩权重</strong>，抑制了对训练噪声的拟合，从而提升了泛化能力</li>
-   472|          </ul>
-   473|
-   474|          <div class="table-wrap">
-   475|            <table>
-   476|              <tr><th>方法</th><th>偏差</th><th>方差</th><th>训练误差</th><th>测试误差</th></tr>
-   477|              <tr><td>OLS</td><td>低（无偏）</td><td>高</td><td>低</td><td>高（过拟合）</td></tr>
-   478|              <tr><td>Ridge (λ 适中)</td><td>中等</td><td>中等</td><td>中等</td><td>低 ✅</td></tr>
-   479|              <tr><td>Ridge (λ 很大)</td><td>高</td><td>低</td><td>高</td><td>高（欠拟合）</td></tr>
-   480|            </table>
-   481|          </div>
-   482|        </section>
-   483|
-   484|        <!-- ===== 正则化参数 λ ===== -->
-   485|        <section id="lambda">
-   486|          <h2>⚙️ 正则化参数 λ 的选择</h2>
-   487|
-   488|          <h3>交叉验证选择 λ</h3>
-   489|          <p>λ 是 Ridge 最重要的<strong>超参数</strong>，通常通过<strong>交叉验证 (Cross-Validation)</strong> 选择：</p>
-   490|          <ol>
-   491|            <li>在对数尺度上定义候选 λ 值网格（如 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100）</li>
-   492|            <li>对每个 λ 进行 k 折交叉验证（常用 k=5 或 k=10）</li>
-   493|            <li>选择使交叉验证均方误差 (CV-MSE) 最小的 λ</li>
-   494|            <li>也可使用"1-SE 规则"（one-standard-error rule）选择更简约的模型</li>
-   495|          </ol>
-   496|          <div class="formula">$$\lambda^* = \arg\min_{\lambda} \frac{1}{k}\sum_{i=1}^{k} \text{MSE}_i(\lambda)$$</div>
-   497|
-   498|          <h3>λ 的搜索策略</h3>
-   499|          <div class="table-wrap">
-   500|            <table>
-   501|
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        岭回归
+        <span class="en">Ridge Regression</span>
+      </h1>
+      <div class="bar" style="background:#4d96ff"></div>
+      <p class="brief">
+        通过在最小二乘法损失函数中加入 L2 正则化惩罚项（权重平方和），
+        约束模型复杂度、抑制过拟合，提高模型的泛化能力。
+        又称 Tikhonov 正则化或权重衰减。
+      </p>
+    </div>
+
+    <!-- ===== 参考来源 ===== -->
+    <div class="paper-line">
+      <a href="https://doi.org/10.1080/00401706.1970.10488634" target="_blank" rel="noopener">
+        📄 Ridge Regression: Biased Estimation for Nonorthogonal Problems (Hoerl &amp; Kennard, 1970)
+      </a>
+    </div>
+
+    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#definition">📖 定义</a>
+        <a href="#math">📐 数学原理</a>
+        <a href="#l2-effect">📉 L2 正则化效应</a>
+        <a href="#bias-variance">📊 偏差-方差权衡</a>
+        <a href="#lambda">⚙️ 正则化参数 λ</a>
+        <a href="#evolution">🌳 演进关系</a>
+        <a href="#concepts">🔑 关键概念</a>
+        <a href="#related">🔗 关联</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 定义 ===== -->
+        <section id="definition">
+          <h2>📖 定义</h2>
+          <p><strong>岭回归 (Ridge Regression)</strong> 是一种专用于<strong>多重共线性 (multicollinearity)</strong> 数据分析的有偏估计回归方法。它在普通最小二乘法 (OLS) 的损失函数中引入 <strong>L2 正则化惩罚项</strong>，迫使模型权重向零收缩但不为零。</p>
+          <p>核心思想：在保留所有特征的前提下，通过<strong>惩罚大的权重值</strong>来控制模型复杂度。当特征之间存在高度相关性时，普通线性回归的系数估计会变得不稳定（方差大），而 Ridge 通过加入 λI 项使矩阵<strong>可逆</strong>，保证解的唯一性和稳定性。</p>
+
+          <h3>为什么需要岭回归？</h3>
+          <p>当特征维度 p 接近样本量 n 时，$(X^\mathsf{T}X)$ 矩阵接近<strong>奇异 (singular)</strong>，导致 OLS 解严重不稳定。Ridge 在 $X^\mathsf{T}X$ 的对角线上加入 λ，确保矩阵总是可逆的。</p>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>情况</th><th>OLS 表现</th><th>Ridge 表现</th></tr>
+              <tr><td>良态数据 (n ≫ p)</td><td>稳定、无偏</td><td>接近 OLS（λ 小）</td></tr>
+              <tr><td>多重共线性</td><td>方差极大、系数不稳定</td><td>系数稳定、估计可靠</td></tr>
+              <tr><td>高维数据 (p ≈ n)</td><td>近乎奇异、解不可信</td><td>解唯一、泛化良好</td></tr>
+              <tr><td>p > n（特征数 ≥ 样本数）</td><td>无唯一解（矩阵不可逆）</td><td>有解（λ > 0 保证可逆）</td></tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">💡 直觉理解</div>
+            <p>想象你试图用多个高度相关的特征（如"房屋面积"和"房屋房间数量"）预测房价。OLS 可能给面积分配一个很大的正系数，同时给房间数量分配一个很大的负系数——两者相互抵消，单看每个系数都不合理。Ridge 通过惩罚大系数，迫使这两个相关特征的系数<strong>更均衡、更合理</strong>。</p>
+          </div>
+        </section>
+
+        <!-- ===== 数学原理 ===== -->
+        <section id="math">
+          <h2>📐 数学原理</h2>
+
+          <h3>损失函数</h3>
+          <p>岭回归在 OLS 的 MSE 损失基础上增加 L2 惩罚项：</p>
+          <div class="formula">$$L(\mathbf{w}) = \underbrace{\frac{1}{n}\sum_{i=1}^{n}(y_i - \mathbf{w}^\mathsf{T}\mathbf{x}_i)^2}_{\text{MSE 损失}} + \lambda\underbrace{\sum_{j=1}^{p} w_j^2}_{\text{L2 惩罚}}$$</div>
+          <p>其中：</p>
+          <ul>
+            <li><strong>λ (lambda)</strong> — 正则化强度超参数，λ ≥ 0。λ = 0 退化为 OLS</li>
+            <li><strong>$w_j$</strong> — 第 j 个特征的权重（注意：偏置 b 通常不参与正则化）</li>
+            <li><strong>$\sum w_j^2$</strong> — 权重的 L2 范数平方，即 $\|\mathbf{w}\|_2^2$</li>
+          </ul>
+
+          <h3>矩阵形式</h3>
+          <div class="formula">$$L(\mathbf{w}) = \|\mathbf{y} - X\mathbf{w}\|_2^2 + \lambda\|\mathbf{w}\|_2^2$$</div>
+
+          <h3>解析解（闭式解）</h3>
+          <p>对损失函数求导并令梯度为零，得到岭回归的解析解：</p>
+          <div class="formula">$$\mathbf{w}_{\text{ridge}} = (X^\mathsf{T}X + \lambda I)^{-1}X^\mathsf{T}\mathbf{y}$$</div>
+          <p>关键观察：</p>
+          <ul>
+            <li><strong>加入 λI 保证可逆</strong> — 即使 $X^\mathsf{T}X$ 是奇异的，$X^\mathsf{T}X + \lambda I$ 也一定是满秩可逆矩阵</li>
+            <li><strong>λ → 0</strong> — 解析解退化为 OLS 的 $\mathbf{w}_{\text{OLS}} = (X^\mathsf{T}X)^{-1}X^\mathsf{T}\mathbf{y}$</li>
+            <li><strong>λ → ∞</strong> — 权重趋近于 0，模型趋近于常数均值预测</li>
+            <li><strong>偏置</strong> — 实际中偏置项 b 单独处理（不进入惩罚项），一般等价于先对 y 和 X 进行中心化</li>
+          </ul>
+
+          <h3>SVD 视角</h3>
+          <p>设 $X = UDV^\mathsf{T}$ 为 X 的奇异值分解，则：</p>
+          <div class="formula">$$\mathbf{w}_{\text{ridge}} = \sum_{j=1}^{p} \frac{d_j}{d_j^2 + \lambda} (u_j^\mathsf{T}\mathbf{y}) v_j$$</div>
+          <p>对比 OLS 的 $\mathbf{w}_{\text{OLS}} = \sum_{j=1}^{p} \frac{1}{d_j} (u_j^\mathsf{T}\mathbf{y}) v_j$：</p>
+          <p>Ridge 在分母中加入了 λ，对<strong>小奇异值方向（方差大的方向）的权重进行更强地收缩</strong>。因子 $\frac{d_j^2}{d_j^2 + \lambda}$ 称为<strong>收缩因子 (shrinkage factor)</strong>，奇异值越小收缩越强。</p>
+        </section>
+
+        <!-- ===== L2 正则化效应 ===== -->
+        <section id="l2-effect">
+          <h2>📉 L2 正则化效应</h2>
+
+          <h3>权重衰减 (Weight Decay)</h3>
+          <p>L2 正则化的一个直观效果是<strong>权重衰减</strong>：在梯度下降更新中，每次迭代时权重都会先乘以一个小于 1 的因子：</p>
+          <div class="formula">$$w_j^{(t+1)} = w_j^{(t)} - \eta\Bigl(\frac{\partial \text{MSE}}{\partial w_j} + 2\lambda w_j^{(t)}\Bigr) = (1 - 2\eta\lambda)w_j^{(t)} - \eta\frac{\partial \text{MSE}}{\partial w_j}$$</div>
+          <p>其中 $(1 - 2\eta\lambda)$ 就是衰减因子。每次迭代权重被迫向零靠拢，λ 越大衰减越强。</p>
+
+          <h3>λ 对权重的影响</h3>
+          <p>随着 λ 从 0 逐渐增大：</p>
+          <ul>
+            <li><strong>权重绝对值整体下降</strong> — 所有特征系数向零收缩</li>
+            <li><strong>高方差方向优先收缩</strong> — 对应较小奇异值的方向（通常是不稳定特征组合）被惩罚更多</li>
+            <li><strong>所有权重被保留</strong> — Ridge 不会将任何权重精确置零（区别于 Lasso）</li>
+            <li><strong>相关特征系数趋于平衡</strong> — 高度相关的一组特征各自的权重变得更均匀</li>
+          </ul>
+
+          <h3>特征值缩放的作用</h3>
+          <p>L2 惩罚项 $\sum w_j^2$ 对<strong>特征的尺度敏感</strong>。如果某个特征的数值范围很大（如"收入"以万元为单位），其对应的权重自然很小；反之，数值范围很小的特征（如"年龄"）对应较大的权重。这导致：</p>
+          <ul>
+            <li><strong>标准化的必要性</strong> — 使用 Ridge 前必须对特征进行标准化（均值 0、方差 1），否则惩罚项对不同特征不公平</li>
+            <li><strong>等权收缩</strong> — 标准化后所有特征的尺度一致，正则化惩罚均匀作用于每个特征</li>
+          </ul>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>λ 值</th><th>正则化强度</th><th>权重规模</th><th>模型复杂度</th></tr>
+              <tr><td>λ = 0</td><td>无正则化</td><td>OLS 无偏估计</td><td>最高（可能过拟合）</td></tr>
+              <tr><td>λ = 0.01</td><td>轻微</td><td>轻微收缩</td><td>略有降低</td></tr>
+              <tr><td>λ = 1</td><td>中等</td><td>明显收缩</td><td>显著降低</td></tr>
+              <tr><td>λ = 10</td><td>强</td><td>大幅收缩</td><td>低</td></tr>
+              <tr><td>λ → ∞</td><td>极致</td><td>趋近零</td><td>欠拟合（近似常数模型）</td></tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">🧮 数值示例</div>
+            <p>假设 OLS 解为 $w_{\text{OLS}} = [10, -8, 0.5]^\mathsf{T}$，加入 λ = 1 后：</p>
+            <p>$w_{\text{ridge}} = (X^\mathsf{T}X + I)^{-1}X^\mathsf{T}\mathbf{y}$，结果大致为 $[5, -4, 0.3]^\mathsf{T}$ 左右——大的正负系数被显著缩小，小的系数也略有收缩。特征选择和符号通常被保留。</p>
+          </div>
+        </section>
+
+        <!-- ===== 偏差-方差权衡 ===== -->
+        <section id="bias-variance">
+          <h2>📊 偏差-方差权衡</h2>
+
+          <h3>偏差 (Bias) 与方差 (Variance)</h3>
+          <p>模型的总泛化误差可以分解为三个部分：</p>
+          <div class="formula">$$\mathbb{E}\bigl[(y - \hat{y})^2\bigr] = \underbrace{\text{Bias}(\hat{y})^2}_{\text{偏差}^2} + \underbrace{\text{Var}(\hat{y})}_{\text{方差}} + \underbrace{\sigma^2}_{\text{噪声}}$$</div>
+          <p>岭回归的核心机制就在于调节<strong>偏差-方差权衡 (Bias-Variance Tradeoff)</strong>：</p>
+          <ul>
+            <li><strong>OLS（λ = 0）</strong> — 无偏估计（偏差=0），但方差大，尤其在多重共线性时</li>
+            <li><strong>Ridge（λ > 0）</strong> — 引入偏置（系数被有意缩小），但方差大幅降低</li>
+          </ul>
+
+          <h3>量化分析</h3>
+          <p>岭回归估计的偏差和方差可由下式量化：</p>
+          <div class="formula">$$\text{Bias}(\mathbf{w}_{\text{ridge}}) = \mathbb{E}[\mathbf{w}_{\text{ridge}}] - \mathbf{w}_{\text{true}} = -\lambda (X^\mathsf{T}X + \lambda I)^{-1}\mathbf{w}_{\text{true}}$$</div>
+          <div class="formula">$$\text{Var}(\mathbf{w}_{\text{ridge}}) = \sigma^2 (X^\mathsf{T}X + \lambda I)^{-1} X^\mathsf{T}X (X^\mathsf{T}X + \lambda I)^{-1}$$</div>
+          <p>关键结论：</p>
+          <ul>
+            <li>偏差随 λ 增大而 <strong>增大</strong>（有偏估计）</li>
+            <li>方差随 λ 增大而 <strong>减小</strong>（估计更稳定）</li>
+            <li>存在一个<strong>最优 λ</strong> 使总预测误差最小——即在偏差和方差之间找到最佳平衡点</li>
+          </ul>
+
+          <h3>泛化能力</h3>
+          <p>虽然在训练数据上 Ridge 的误差比 OLS 略高（因为加入了偏置），但在<strong>测试数据</strong>上 Ridge 通常表现得更好：</p>
+          <ul>
+            <li>OLS 对训练数据<strong>过度适应</strong>，在新数据上表现差</li>
+            <li>Ridge 通过<strong>收缩权重</strong>，抑制了对训练噪声的拟合，从而提升了泛化能力</li>
+          </ul>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>方法</th><th>偏差</th><th>方差</th><th>训练误差</th><th>测试误差</th></tr>
+              <tr><td>OLS</td><td>低（无偏）</td><td>高</td><td>低</td><td>高（过拟合）</td></tr>
+              <tr><td>Ridge (λ 适中)</td><td>中等</td><td>中等</td><td>中等</td><td>低 ✅</td></tr>
+              <tr><td>Ridge (λ 很大)</td><td>高</td><td>低</td><td>高</td><td>高（欠拟合）</td></tr>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== 正则化参数 λ ===== -->
+        <section id="lambda">
+          <h2>⚙️ 正则化参数 λ 的选择</h2>
+
+          <h3>交叉验证选择 λ</h3>
+          <p>λ 是 Ridge 最重要的<strong>超参数</strong>，通常通过<strong>交叉验证 (Cross-Validation)</strong> 选择：</p>
+          <ol>
+            <li>在对数尺度上定义候选 λ 值网格（如 0.01, 0.05, 0.1, 0.5, 1, 5, 10, 50, 100）</li>
+            <li>对每个 λ 进行 k 折交叉验证（常用 k=5 或 k=10）</li>
+            <li>选择使交叉验证均方误差 (CV-MSE) 最小的 λ</li>
+            <li>也可使用"1-SE 规则"（one-standard-error rule）选择更简约的模型</li>
+          </ol>
+          <div class="formula">$$\lambda^* = \arg\min_{\lambda} \frac{1}{k}\sum_{i=1}^{k} \text{MSE}_i(\lambda)$$</div>
+
+          <h3>λ 的搜索策略</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>策略</th><th>方法</th><th>适用场景</th></tr>
+              <tr><td>对数网格搜索</td><td>在 [0.01, 100] 上均匀取 20~50 个对数间隔点</td><td>通用</td></tr>
+              <tr><td>贝叶斯优化</td><td>高斯过程建模 CV 误差曲面</td><td>大规模超参数搜索</td></tr>
+              <tr><td>验证曲线法</td><td>画 λ vs. CV 误差曲线，选择拐点附近的 λ</td><td>快速可视化</td></tr>
+              <tr><td>广义交叉验证 (GCV)</td><td>解析近似 LOOCV，无需多次重训练</td><td>计算效率优先</td></tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">🔧 实践建议</div>
+            <p><strong>标准化特征</strong>后再用 Ridge。λ 通常从 0.01 到 100 进行对数搜索。对于大量特征，推荐从较小的 λ（如 0.1）开始，观察验证曲线。使用 sklearn 的 RidgeCV 可以自动完成交叉验证选择 λ。</p>
+          </div>
+
+          <h3>λ 的路径 (Regularization Path)</h3>
+          <p>随着 λ 从 0 到 ∞ 变化，每个权重的变化轨迹称为<strong>正则化路径 (Regularization Path)</strong>。这是理解 Ridge 行为的重要工具：</p>
+          <ul>
+            <li>λ 很小时，各个权重接近 OLS 估计，方向可能各不相同</li>
+            <li>λ 增大时，所有权重平滑地向零收缩（不会跳变或瞬间归零）</li>
+            <li>λ 很大时，所有权重趋近于零，模型退化为仅使用均值预测</li>
+            <li>与 Lasso 不同，Ridge 的正则化路径是<strong>平滑连续的</strong>，没有特征被精确排除</li>
+          </ul>
+        </section>
+
+        <!-- ===== 演进关系 ===== -->
+        <section id="evolution">
+          <h2>🌳 演进关系 (Evolution)</h2>
+          <p>回归模型的演进路径清晰地展示了正则化思想的逐步深化：从朴素的最小二乘法出发，通过不同程度和形式的惩罚项来控制模型复杂度。</p>
+
+          <div class="evo-tree">
+            <div class="evo-root"><a href="linear-reg.html" style="color:inherit;text-decoration:none">线性回归 (OLS)</a></div>
+            <div class="evo-branch">
+              <div class="evo-child star" style="background:rgba(77,150,255,.08);border-color:rgba(77,150,255,.2);color:rgba(255,255,255,.8);">
+                ⭐ <a href="ridge.html">岭回归 (Ridge)</a> <span class="evo-note">加入 L2 惩罚</span>
+              </div>
+              <div class="evo-child"><a href="lasso.html">Lasso</a> <span class="evo-note">L1 惩罚，特征选择</span></div>
+              <div class="evo-child"><a href="elasticnet.html">弹性网络 (ElasticNet)</a> <span class="evo-note">L1 + L2 混合</span></div>
+              <div class="evo-child"><a href="bayesian-linear-reg.html">贝叶斯岭回归</a> <span class="evo-note">概率视角</span></div>
+            </div>
+          </div>
+
+          <h3>Ridge vs Lasso vs ElasticNet</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>对比维度</th><th>Ridge (L2)</th><th>Lasso (L1)</th><th>ElasticNet (L1+L2)</th></tr>
+              <tr><td>惩罚项</td><td>$\lambda \sum w_j^2$</td><td>$\lambda \sum |w_j|$</td><td>$\lambda_1 \sum |w_j| + \lambda_2 \sum w_j^2$</td></tr>
+              <tr><td>特征选择</td><td>❌ 不选，保留所有</td><td>✅ 可置零，自动选择</td><td>✅ 可置零</td></tr>
+              <tr><td>共线性处理</td><td>✅ 系数稳定、均衡</td><td>⚠️ 只保留一个</td><td>✅ 保留分组</td></tr>
+              <tr><td>解路径</td><td>平滑连续</td><td>分段线性，可能跳变</td><td>平滑 + 稀疏</td></tr>
+              <tr><td>解析解</td><td>✅ 有闭式解</td><td>❌ 无闭式解</td><td>❌ 无闭式解</td></tr>
+              <tr><td>分组效应</td><td>✅ 相关特征系数均衡</td><td>❌ 倾向于选择一个</td><td>✅ 保留分组</td></tr>
+              <tr><td>高维场景</td><td>✅ 稳定（p > n 可解）</td><td>✅ 稀疏解</td><td>✅ 兼具两者优势</td></tr>
+              <tr><td>计算复杂度</td><td>低（有闭式解）</td><td>中（坐标下降）</td><td>中（坐标下降）</td></tr>
+            </table>
+          </div>
+
+          <h3>选择指南</h3>
+          <ul>
+            <li><strong>特征间高度相关</strong> → 优先选择 <strong>Ridge</strong> 或 ElasticNet</li>
+            <li><strong>希望自动特征选择</strong> → 选择 <strong>Lasso</strong>（尤其当真实模型中只有少数特征有效）</li>
+            <li><strong>样本少、特征多 (p > n)</strong> → 建议使用 <strong>ElasticNet</strong>（兼具稀疏性和稳定性）</li>
+            <li><strong>需要解释模型</strong> → Lasso 的稀疏解更容易解释</li>
+            <li><strong>预测优先，不在意解释性</strong> → Ridge 通常预测性能很好</li>
+          </ul>
+        </section>
+
+        <!-- ===== 关键概念 ===== -->
+        <section id="concepts">
+          <h2>🔑 关键概念</h2>
+          <ul>
+            <li><strong>正则化参数 λ (lambda)</strong> — 控制 L2 惩罚强度的超参数。λ 越大，正则化越强，权重收缩越剧烈。通过交叉验证选择最优值</li>
+            <li><strong>权重衰减 (Weight Decay)</strong> — 在梯度下降更新中，每次迭代权重按 $(1 - 2\eta\lambda)$ 因子衰减，向零靠拢</li>
+            <li><strong>L2 范数 ($\|\mathbf{w}\|_2^2$)</strong> — 权重向量各元素的平方和，Ridge 的惩罚项。用于衡量模型复杂度</li>
+            <li><strong>病态矩阵 (Ill-conditioned Matrix)</strong> — 当 $X^\mathsf{T}X$ 接近奇异（特征值接近 0），OLS 解极不稳定。Ridge 通过加 λI 改善条件数</li>
+            <li><strong>偏差-方差权衡 (Bias-Variance Tradeoff)</strong> — Ridge 以引入偏差为代价降低方差，总体泛化误差在均衡点最小</li>
+            <li><strong>收缩因子 (Shrinkage Factor)</strong> — SVD 分解中的 $\frac{d_j^2}{d_j^2 + \lambda}$，控制沿每个奇异方向的收缩程度</li>
+            <li><strong>正则化路径 (Regularization Path)</strong> — 不同 λ 下各权重的变化轨迹，反映 L2 惩罚的平滑收缩特性</li>
+            <li><strong>多重共线性 (Multicollinearity)</strong> — 特征间高度线性相关时，Ridge 通过加入 λI 确保解的唯一和稳定</li>
+            <li><strong>Tikhonov 正则化</strong> — 岭回归的广义形式，允许惩罚项为更一般的 $\| \Gamma \mathbf{w} \|_2^2$ 形式</li>
+            <li><strong>GCV (Generalized Cross-Validation)</strong> — 高效近似 LOOCV 的方法，无需为每个 λ 重新训练</li>
+          </ul>
+        </section>
+
+        <!-- ===== 关联 ===== -->
+        <section id="related">
+          <h2>🔗 关联</h2>
+          <ul>
+            <li><strong>线性回归（OLS）</strong> — Ridge 的基础和起点。λ = 0 时 Ridge 退化为 OLS。OLS 的无偏估计在高维/共线性场景下不适用，Ridge 通过引入偏置解决这一问题</li>
+            <li><strong>Lasso 回归</strong> — 使用 L1 惩罚 ($\lambda\sum|w_j|$) 代替 L2 惩罚。能进行特征选择（将部分权重精确置为零），但解无闭式形式，且对相关特征的处理不如 Ridge 稳定</li>
+            <li><strong>弹性网络 (ElasticNet)</strong> — 结合 L1 和 L2 惩罚，兼具特征选择（Lasso 特性）和分组效应（Ridge 特性）。参数 α 控制 L1/L2 比例，$\lambda$ 控制总正则化强度</li>
+            <li><strong>贝叶斯岭回归 (Bayesian Ridge)</strong> — 从概率视角看待 Ridge：对权重施加高斯先验 $w_j \sim \mathcal{N}(0, 1/\lambda)$，相当于在 MAP 估计下得到与 Ridge 相同的解。λ 成为先验精度的超参数，可从数据中自动学习</li>
+            <li><strong>核岭回归 (Kernel Ridge Regression, KRR)</strong> — 将 Ridge 扩展到核方法，通过核技巧在再生核希尔伯特空间中进行非线性回归。与高斯过程回归有密切关系</li>
+            <li><strong>主成分回归 (PCR)</strong> — 另一种处理共线性的方法：先 PCA 降维再回归。Ridge 可以看作所有主成分方向上的"软收缩"版本（PCR 是硬截断）</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          λ 通过交叉验证选择最优值，通常在对数尺度 [0.01, 100] 上搜索。太大导致欠拟合，太小则正则化不足。
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 局限</strong>
+          Ridge <strong>不进行特征选择</strong>——所有权重都被保留（不会置零）。如果需要稀疏解，应使用 Lasso 或 ElasticNet。
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 实践</strong>
+          标准化的特征后再用 Ridge。λ 通常从 0.01 到 100 对数搜索。使用 sklearn 的 RidgeCV 自动匹配最优 λ。注意偏置项不参与正则化。
+        </div>
+
+        <div class="callout" style="border-left-color:#4d96ff;">
+          <strong>🌳 演进</strong>
+          Ridge (L2) → Lasso (L1) → ElasticNet (L1+L2)。Ridge 保留所有特征，Lasso 可稀疏，ElasticNet 兼具两者优势。
+        </div>
+
+        <div class="callout" style="border-left-color:#eab308;">
+          <strong>📚 参考</strong>
+          Hoerl, A. E., &amp; Kennard, R. W. (1970). Ridge Regression: Biased Estimation for Nonorthogonal Problems. <em>Technometrics</em>, 12(1), 55–67. <a href="https://doi.org/10.1080/00401706.1970.10488634" target="_blank" style="color:#eab308;text-decoration:underline;">DOI</a>
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 算法底座 · 岭回归 Ridge Regression · 参考 Google ML Crash Course
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

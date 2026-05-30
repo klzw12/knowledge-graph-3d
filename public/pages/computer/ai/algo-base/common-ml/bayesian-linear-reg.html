@@ -1,235 +1,334 @@
-     1|<!DOCTYPE html>
-     2|<html lang="zh-CN">
-     3|<head>
-     4|  <meta charset="UTF-8" />
-     5|  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     6|  <title>贝叶斯线性回归 — 知识图谱 3D</title>
-     7|  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
-     8|  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-     9|  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
-    10|    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
-    11|  </script>
-    12|  
-   272|  
-   278|  
-   293|  <link rel="stylesheet" href="../../../css/common.css" />
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>贝叶斯线性回归 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+
+  <link rel="stylesheet" href="../../../css/common.css" />
   <style>
-273|    /* 页面专属颜色 — 青色主题 */
-   274|    .title-area .bar { background:#06b6d4; }
-   275|    .aside-col .callout { border-left-color:#06b6d4; }
-   276|    .aside-col .callout strong { color:#06b6d4; }
-   277|
+/* 页面专属颜色 — 青色主题 */
+    .title-area .bar { background:#06b6d4; }
+    .aside-col .callout { border-left-color:#06b6d4; }
+    .aside-col .callout strong { color:#06b6d4; }
 /* evo-root 主题色 */
 .evo-root{background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.25);color:rgba(255,255,255,.85)}
 /* evo-note 主题色 */
 .evo-note{font-size:11px;color:rgba(6,182,212,.6);font-style:italic;margin-left:4px}
   </style>
 </head>
-   294|<body>
-   295|
-   296|  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
-   297|
-   298|  <div class="page">
-   299|
-   300|    <!-- ===== title ===== -->
-   301|    <div class="title-area">
-   302|      <h1>
-   303|        贝叶斯线性回归
-   304|        <span class="en">Bayesian Linear Regression</span>
-   305|      </h1>
-   306|      <div class="bar" style="background:#06b6d4"></div>
-   307|      <p class="brief">
-   308|        将贝叶斯推断引入线性回归，将模型权重视为概率分布而非点估计。
-   309|        不仅提供预测值，还提供预测的不确定性度量——在小样本和高风险场景中至关重要。
-   310|      </p>
-   311|    </div>
-   312|
-   313|    <!-- ===== 参考来源 ===== -->
-   314|    <div class="paper-line">
-   315|      <a href="https://doi.org/10.1111/j.2517-6161.1972.tb00885.x" target="_blank" rel="noopener">
-   316|        📄 Bayes Estimates for the Linear Model (Lindley &amp; Smith, 1972)
-   317|      </a>
-   318|    </div>
-   319|
-   320|    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
-   321|    <div class="layout">
-   322|
-   323|      <!-- 左侧导航 -->
-   324|      <nav class="nav-col">
-   325|        <div class="nav-title">目录</div>
-   326|        <a href="#definition">📖 定义</a>
-   327|        <a href="#math">📐 数学原理</a>
-   328|        <a href="#relation">🔬 与 LR 的关系</a>
-   329|        <a href="#pred-interval">📊 预测区间</a>
-   330|        <a href="#evolution">🌳 演进关系</a>
-   331|        <a href="#concepts">🔑 关键概念</a>
-   332|        <a href="#related">🔗 关联</a>
-   333|      </nav>
-   334|
-   335|      <!-- 中间正文 -->
-   336|      <main class="main-col">
-   337|
-   338|        <!-- ===== 定义 ===== -->
-   339|        <section id="definition">
-   340|          <h2>📖 定义</h2>
-   341|          <p><strong>贝叶斯线性回归 (Bayesian Linear Regression)</strong> 是线性回归的贝叶斯推广。与经典线性回归将权重 $\mathbf{w}$ 视为未知但固定的常数不同，贝叶斯线性回归将权重视为<strong>随机变量</strong>，并为其指定一个<strong>先验分布 (prior distribution)</strong>，然后利用观测数据更新为<strong>后验分布 (posterior distribution)</strong>。</p>
-   342|          <p>这一概率化视角带来了两个关键优势：</p>
-   343|          <ul>
-   344|            <li><strong>不确定性量化</strong> — 模型不仅输出点预测 $\hat{y}$，还能给出预测的<strong>置信区间</strong>（预测分布），反映模型对预测结果的信心程度</li>
-   345|            <li><strong>先验知识融合</strong> — 在数据稀疏或噪声较大的场景下，先验知识可以引导模型朝合理方向学习，防止过拟合</li>
-   346|          </ul>
-   347|
-   348|          <div class="example-box">
-   349|            <div class="example-label">💡 直觉理解</div>
-   350|            <p>想象你在教一个学生画一条线穿过数据点。经典线性回归告诉学生"在数据中找一条最佳直线，画出来就好"。贝叶斯线性回归则让学生先画一条"大概的线"（先验），然后看到数据后更新自己的判断——"我现在更确定一些了，但某些区域我还是不太确定"（后验）。最终给出的不是一条线，而是一个<strong>可能的线条分布</strong>。</p>
-   351|          </div>
-   352|
-   353|          <h3>与频率派的核心差异</h3>
-   354|          <div class="table-wrap">
-   355|            <table>
-   356|              <tr><th>对比维度</th><th>频率派 (Frequentist)</th><th>贝叶斯 (Bayesian)</th></tr>
-   357|              <tr><td>参数 $\mathbf{w}$</td><td>未知但固定的常数</td><td>随机变量，服从概率分布</td></tr>
-   358|              <tr><td>估计方式</td><td>点估计（如 MLE, OLS）</td><td>后验分布 $p(\mathbf{w} \mid X, \mathbf{y})$</td></tr>
-   359|              <tr><td>预测输出</td><td>一个点（最优估计值）</td><td>一个预测分布（均值 + 方差）</td></tr>
-   360|              <tr><td>不确定性来源</td><td>仅采样不确定性</td><td>参数不确定性 + 噪声不确定性</td></tr>
-   361|              <tr><td>处理小样本</td><td>方差大，容易过拟合</td><td>先验提供正则化，鲁棒性强</td></tr>
-   362|              <tr><td>计算复杂度</td><td>低（闭式解 / GD）</td><td>较高（后验积分）</td></tr>
-   363|            </table>
-   364|          </div>
-   365|
-   366|          <p>本质上，贝叶斯线性回归将<strong>统计推断</strong>提升为<strong>概率推断</strong>——从一个确定性的最优解问题，转变为从数据中学习参数分布的问题。</p>
-   367|        </section>
-   368|
-   369|        <!-- ===== 数学原理 ===== -->
-   370|        <section id="math">
-   371|          <h2>📐 数学原理</h2>
-   372|
-   373|          <h3>1. 模型设定</h3>
-   374|          <p>与经典线性回归相同，假设输出 $y$ 与输入 $\mathbf{x}$ 之间存在线性关系，并附加高斯噪声：</p>
-   375|          <div class="formula">$$y = \mathbf{w}^\mathsf{T}\mathbf{x} + \varepsilon, \quad \varepsilon \sim \mathcal{N}(0, \sigma^2)$$</div>
-   376|          <p>即<strong>似然函数 (likelihood)</strong> 为：</p>
-   377|          <div class="formula">$$p(y \mid \mathbf{x}, \mathbf{w}, \sigma^2) = \mathcal{N}(y \mid \mathbf{w}^\mathsf{T}\mathbf{x}, \sigma^2)$$</div>
-   378|          <p>对所有 $n$ 个独立观测样本，似然为：</p>
-   379|          <div class="formula">$$p(\mathbf{y} \mid X, \mathbf{w}, \sigma^2) = \prod_{i=1}^{n} \mathcal{N}(y_i \mid \mathbf{w}^\mathsf{T}\mathbf{x}_i, \sigma^2) = \mathcal{N}(\mathbf{y} \mid X\mathbf{w}, \sigma^2 I)$$</div>
-   380|
-   381|          <h3>2. 先验分布 (Prior)</h3>
-   382|          <p>对权重 $\mathbf{w}$ 引入<strong>高斯先验</strong>，假设各权重独立同分布：</p>
-   383|          <div class="formula">$$p(\mathbf{w}) = \mathcal{N}(\mathbf{w} \mid \mathbf{0}, \tau^2 I) = \prod_{j=1}^{p} \frac{1}{\sqrt{2\pi\tau^2}} \exp\!\left(-\frac{w_j^2}{2\tau^2}\right)$$</div>
-   384|          <p>其中 $\tau^2$ 是先验方差，控制我们对权重幅度的先验信念：</p>
-   385|          <ul>
-   386|            <li><strong>$\tau^2$ 大</strong> — 先验较弱（对权重大小没有强烈约束），后验主要由数据驱动</li>
-   387|            <li><strong>$\tau^2$ 小</strong> — 先验较强（强烈认为权重接近 0），后验偏向收缩</li>
-   388|          </ul>
-   389|          <p>也可对噪声方差 $\sigma^2$ 引入逆伽马先验（此时构成<strong>共轭先验</strong>），但为简明起见，通常先固定 $\sigma^2$ 或通过经验贝叶斯估计。</p>
-   390|
-   391|          <h3>3. 后验推断 (Posterior Inference)</h3>
-   392|          <p>根据<strong>贝叶斯定理</strong>：</p>
-   393|          <div class="formula">$$p(\mathbf{w} \mid X, \mathbf{y}) = \frac{p(\mathbf{y} \mid X, \mathbf{w})\,p(\mathbf{w})}{p(\mathbf{y} \mid X)} \propto p(\mathbf{y} \mid X, \mathbf{w})\,p(\mathbf{w})$$</div>
-   394|          <p>由于高斯先验和高斯似然是<strong>共轭</strong>的，后验分布也是高斯分布，有闭式解：</p>
-   395|          <div class="formula">$$p(\mathbf{w} \mid X, \mathbf{y}) = \mathcal{N}(\mathbf{w} \mid \boldsymbol{\mu}_n, \Sigma_n)$$</div>
-   396|          <p>其中：</p>
-   397|          <div class="formula">$$\Sigma_n = \left(\frac{1}{\sigma^2} X^\mathsf{T} X + \frac{1}{\tau^2} I\right)^{-1}$$</div>
-   398|          <div class="formula">$$\boldsymbol{\mu}_n = \frac{1}{\sigma^2} \Sigma_n X^\mathsf{T} \mathbf{y}$$</div>
-   399|          <p>关键观察：</p>
-   400|          <ul>
-   401|            <li><strong>后验均值 $\boldsymbol{\mu}_n$</strong> — 等价于 Ridge 回归的 MAP 估计（$\lambda = \sigma^2 / \tau^2$）</li>
-   402|            <li><strong>后验协方差 $\Sigma_n$</strong> — 量化了权重估计的<strong>不确定性</strong>——协方差矩阵越大，我们对权重越不确定</li>
-   403|            <li><strong>数据越多</strong> — $\Sigma_n$ 的特征值越小，后验越集中（不确定性降低）</li>
-   404|            <li><strong>先验方差 $\tau^2$</strong> — 控制正则化强度：$\tau^2$ 越小（先验越强），后验均值越收缩向零</li>
-   405|          </ul>
-   406|
-   407|          <h3>4. 预测分布 (Predictive Distribution)</h3>
-   408|          <p>对于新输入 $\mathbf{x}_*$，预测分布通过对权重后验积分得到：</p>
-   409|          <div class="formula">$$p(y_* \mid \mathbf{x}_*, X, \mathbf{y}) = \int p(y_* \mid \mathbf{x}_*, \mathbf{w})\,p(\mathbf{w} \mid X, \mathbf{y})\,d\mathbf{w}$$</div>
-   410|          <p>这一积分同样有闭式解（高斯-高斯共轭性）：</p>
-   411|          <div class="formula">$$p(y_* \mid \mathbf{x}_*, X, \mathbf{y}) = \mathcal{N}(y_* \mid \boldsymbol{\mu}_n^\mathsf{T}\mathbf{x}_*, \;\sigma_n^2(\mathbf{x}_*))$$</div>
-   412|          <p>其中预测方差为：</p>
-   413|          <div class="formula">$$\sigma_n^2(\mathbf{x}_*) = \sigma^2 + \mathbf{x}_*^\mathsf{T} \Sigma_n \mathbf{x}_*$$</div>
-   414|          <p>预测方差包含两个部分：</p>
-   415|          <ul>
-   416|            <li><strong>$\sigma^2$</strong> — <strong>固有噪声</strong>（aleatoric uncertainty）：数据本身不可消除的随机噪声</li>
-   417|            <li><strong>$\mathbf{x}_*^\mathsf{T} \Sigma_n \mathbf{x}_*$</strong> — <strong>认知不确定性</strong>（epistemic uncertainty）：由于对权重 $\mathbf{w}$ 的不确定性而导致的不确定性；数据越多/越靠近训练数据，这项越小</li>
-   418|          </ul>
-   419|
-   420|          <div class="example-box">
-   421|            <div class="example-label">💡 预测方差的含义</div>
-   422|            <p>在训练数据稀疏的区域，$\mathbf{x}_*$ 远离训练数据中心，$\mathbf{x}_*^\mathsf{T} \Sigma_n \mathbf{x}_*$ 会<strong>变大</strong>——模型在它不熟悉的地方做出预测时，会如实反映出更高的不确定性。这是贝叶斯线性回归区别于普通线性回归的核心特征。</p>
-   423|          </div>
-   424|        </section>
-   425|
-   426|        <!-- ===== 与普通线性回归的关系 ===== -->
-   427|        <section id="relation">
-   428|          <h2>🔬 与普通线性回归的关系</h2>
-   429|
-   430|          <h3>MAP 估计等价于 Ridge 回归</h3>
-   431|          <p>如果只关心后验的<strong>众数 (mode)</strong>，即最大后验估计（MAP），那么对后验取对数并最大化：</p>
-   432|          <div class="formula">$$\mathbf{w}_{\text{MAP}} = \arg\max_{\mathbf{w}} \log p(\mathbf{w} \mid X, \mathbf{y}) = \arg\max_{\mathbf{w}} \bigl[\log p(\mathbf{y} \mid X, \mathbf{w}) + \log p(\mathbf{w})\bigr]$$</div>
-   433|          <p>代入高斯似然和高斯先验后：</p>
-   434|          <div class="formula">$$\mathbf{w}_{\text{MAP}} = \arg\min_{\mathbf{w}} \left[ \frac{1}{2\sigma^2}\sum_{i=1}^{n}(y_i - \mathbf{w}^\mathsf{T}\mathbf{x}_i)^2 + \frac{1}{2\tau^2}\sum_{j=1}^{p} w_j^2 \right]$$</div>
-   435|          <p>两边乘以 $2\sigma^2$ 后：</p>
-   436|          <div class="formula">$$\mathbf{w}_{\text{MAP}} = \arg\min_{\mathbf{w}} \left[ \sum_{i=1}^{n}(y_i - \mathbf{w}^\mathsf{T}\mathbf{x}_i)^2 + \frac{\sigma^2}{\tau^2}\sum_{j=1}^{p} w_j^2 \right]$$</div>
-   437|          <p>令 $\lambda = \sigma^2 / \tau^2$，这正是 <strong>Ridge 回归</strong> 的目标函数：</p>
-   438|          <div class="formula">$$\mathbf{w}_{\text{MAP}} = \arg\min_{\mathbf{w}} \left[ \text{MSE} + \lambda \|\mathbf{w}\|_2^2 \right] = \mathbf{w}_{\text{ridge}}$$</div>
-   439|
-   440|          <div class="table-wrap">
-   441|            <table>
-   442|              <tr><th>方法</th><th>估计方式</th><th>输出</th><th>不确定性</th></tr>
-   443|              <tr><td>OLS（最小二乘）</td><td>MLE（无先验）</td><td>点估计 $\hat{y}$</td><td>❌ 无</td></tr>
-   444|              <tr><td>Ridge 回归</td><td>MAP（高斯先验）</td><td>点估计 $\hat{y}$</td><td>❌ 无（仅隐式）</td></tr>
-   445|              <tr><td>贝叶斯线性回归</td><td>全后验推断</td><td>预测分布 $p(y_*)$</td><td>✅ 完整</td></tr>
-   446|            </table>
-   447|          </div>
-   448|
-   449|          <h3>频率派 vs 贝叶斯哲学对比</h3>
-   450|          <p>两者看待统计推断的方式有着根本差异：</p>
-   451|          <ul>
-   452|            <li><strong>频率派</strong>认为参数是固定但未知的常数，通过最大化似然（MLE）或最小化损失得到"最佳"点估计。置信区间解释为：如果重复采样无限次，区间覆盖真实参数的频率为 95%</li>
-   453|            <li><strong>贝叶斯派</strong>认为参数是随机变量，通过先验 + 数据更新为后验分布。可信区间解释为：给定观测数据，参数落在该区间内的概率为 95%——这是更直接的、更符合直觉的不确定性陈述</li>
-   454|          </ul>
-   455|
-   456|          <div class="example-box">
-   457|            <div class="example-label">🧮 数值示例</div>
-   458|            <p>假设单变量线性回归 $y = wx + b + \varepsilon$，仅有 5 个数据点。OLS 给出 $w=2.3$，贝叶斯线性回归的后验为 $p(w) = \mathcal{N}(2.3, 0.9^2)$。这告诉我们："最可能的斜率是 2.3，但真实斜率有 68% 的概率落在 [1.4, 3.2] 区间内。" 而在数据稀疏的区域（如 $x=10$），预测区间可能会宽到 $[15, 35]$——模型诚实地反映了其不确定性。</p>
-   459|          </div>
-   460|        </section>
-   461|
-   462|        <!-- ===== 预测区间 ===== -->
-   463|        <section id="pred-interval">
-   464|          <h2>📊 预测区间 (Prediction Interval)</h2>
-   465|
-   466|          <h3>点估计 vs 分布估计</h3>
-   467|          <p>普通线性回归只能输出一个预测值 $\hat{y}_*$，如果要计算置信区间，需要额外进行<strong>频率派推断</strong>——这通常假设模型参数已知（用点估计代替），忽略了参数估计自身的不确定性。</p>
-   468|          <p>贝叶斯线性回归则<strong>天然</strong>输出预测分布 $p(y_* \mid \mathbf{x}_*, X, \mathbf{y})$，其均值和方差同时给出。这意味着：</p>
-   469|          <ul>
-   470|            <li><strong>预测均值</strong> — 最优点预测（与 Ridge MAP 一致）</li>
-   471|            <li><strong>预测方差</strong> — 自动包含<strong>参数不确定性</strong> + <strong>固有噪声</strong></li>
-   472|          </ul>
-   473|
-   474|          <h3>数据稀疏区域的不确定性</h3>
-   475|          <p>预测方差 $\sigma_n^2(\mathbf{x}_*) = \sigma^2 + \mathbf{x}_*^\mathsf{T} \Sigma_n \mathbf{x}_*$ 随 $\mathbf{x}_*$ 的位置而变化：</p>
-   476|          <div class="table-wrap">
-   477|            <table>
-   478|              <tr><th>$\mathbf{x}_*$ 位置</th><th>预测方差</th><th>不确定性</th><th>原因</th></tr>
-   479|              <tr><td>靠近训练数据中心</td><td>小（≈ $\sigma^2$）</td><td>低</td><td>对权重有充分信息</td></tr>
-   480|              <tr><td>远离训练数据中心</td><td>大</td><td>高</td><td>外推区域，参数不确定性放大</td></tr>
-   481|              <tr><td>训练数据密集</td><td>极小</td><td>最低</td><td>$\Sigma_n$ 很小，认知不确定性近乎为零</td></tr>
-   482|              <tr><td>训练数据稀疏</td><td>极大</td><td>最高</td><td>$\Sigma_n$ 很大，模型正外推到未知区域</td></tr>
-   483|            </table>
-   484|          </div>
-   485|
-   486|          <h3>95% 预测区间</h3>
-   487|          <p>给定预测分布 $p(y_* \mid \mathbf{x}_*) = \mathcal{N}(\mu_*, \sigma_*^2)$，95% 预测区间为：</p>
-   488|          <div class="formula">$$\text{PI}_{95\%} = [\mu_* - 1.96\,\sigma_*,\; \mu_* + 1.96\,\sigma_*]$$</div>
-   489|          <p>这个区间比普通线性回归的置信区间<strong>更宽</strong>（因为包含了参数不确定性），因此也更<strong>诚实</strong>——反映的是"模型实际知道多少"，而非"假设参数已知下的最优情况"。</p>
-   490|
-   491|          <div class="example-box">
-   492|            <div class="example-label">🔬 重要特性</div>
-   493|            <p>设想一个气温预测任务：训练数据集中在 10°C~20°C，现在要预测 40°C 时的某个指标。普通线性回归给出 $\hat{y}=50\pm5$（恒定宽度的置信区间），而贝叶斯线性回归给出 $\hat{y}=50\pm18$——因为远离训练数据，模型"自知"不确定性很大。这在高风险决策（如医学、工程）中至关重要，区分了"模型自信的预测"和"模型在瞎猜"。</p>
-   494|          </div>
-   495|        </section>
-   496|
-   497|        <!-- ===== 演进关系 ===== -->
-   498|        <section id="evolution">
-   499|          <h2>🌳 演进关系 (Evolution)</h2>
-   500|          <p>从经典线性回归到贝叶斯线性回归，体现了统计学习从<strong>点估计</strong>到<strong>概率推断</strong>的范式演进。</p>
-   501|
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        贝叶斯线性回归
+        <span class="en">Bayesian Linear Regression</span>
+      </h1>
+      <div class="bar" style="background:#06b6d4"></div>
+      <p class="brief">
+        将贝叶斯推断引入线性回归，将模型权重视为概率分布而非点估计。
+        不仅提供预测值，还提供预测的不确定性度量——在小样本和高风险场景中至关重要。
+      </p>
+    </div>
+
+    <!-- ===== 参考来源 ===== -->
+    <div class="paper-line">
+      <a href="https://doi.org/10.1111/j.2517-6161.1972.tb00885.x" target="_blank" rel="noopener">
+        📄 Bayes Estimates for the Linear Model (Lindley &amp; Smith, 1972)
+      </a>
+    </div>
+
+    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#definition">📖 定义</a>
+        <a href="#math">📐 数学原理</a>
+        <a href="#relation">🔬 与 LR 的关系</a>
+        <a href="#pred-interval">📊 预测区间</a>
+        <a href="#evolution">🌳 演进关系</a>
+        <a href="#concepts">🔑 关键概念</a>
+        <a href="#related">🔗 关联</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 定义 ===== -->
+        <section id="definition">
+          <h2>📖 定义</h2>
+          <p><strong>贝叶斯线性回归 (Bayesian Linear Regression)</strong> 是线性回归的贝叶斯推广。与经典线性回归将权重 $\mathbf{w}$ 视为未知但固定的常数不同，贝叶斯线性回归将权重视为<strong>随机变量</strong>，并为其指定一个<strong>先验分布 (prior distribution)</strong>，然后利用观测数据更新为<strong>后验分布 (posterior distribution)</strong>。</p>
+          <p>这一概率化视角带来了两个关键优势：</p>
+          <ul>
+            <li><strong>不确定性量化</strong> — 模型不仅输出点预测 $\hat{y}$，还能给出预测的<strong>置信区间</strong>（预测分布），反映模型对预测结果的信心程度</li>
+            <li><strong>先验知识融合</strong> — 在数据稀疏或噪声较大的场景下，先验知识可以引导模型朝合理方向学习，防止过拟合</li>
+          </ul>
+
+          <div class="example-box">
+            <div class="example-label">💡 直觉理解</div>
+            <p>想象你在教一个学生画一条线穿过数据点。经典线性回归告诉学生"在数据中找一条最佳直线，画出来就好"。贝叶斯线性回归则让学生先画一条"大概的线"（先验），然后看到数据后更新自己的判断——"我现在更确定一些了，但某些区域我还是不太确定"（后验）。最终给出的不是一条线，而是一个<strong>可能的线条分布</strong>。</p>
+          </div>
+
+          <h3>与频率派的核心差异</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>对比维度</th><th>频率派 (Frequentist)</th><th>贝叶斯 (Bayesian)</th></tr>
+              <tr><td>参数 $\mathbf{w}$</td><td>未知但固定的常数</td><td>随机变量，服从概率分布</td></tr>
+              <tr><td>估计方式</td><td>点估计（如 MLE, OLS）</td><td>后验分布 $p(\mathbf{w} \mid X, \mathbf{y})$</td></tr>
+              <tr><td>预测输出</td><td>一个点（最优估计值）</td><td>一个预测分布（均值 + 方差）</td></tr>
+              <tr><td>不确定性来源</td><td>仅采样不确定性</td><td>参数不确定性 + 噪声不确定性</td></tr>
+              <tr><td>处理小样本</td><td>方差大，容易过拟合</td><td>先验提供正则化，鲁棒性强</td></tr>
+              <tr><td>计算复杂度</td><td>低（闭式解 / GD）</td><td>较高（后验积分）</td></tr>
+            </table>
+          </div>
+
+          <p>本质上，贝叶斯线性回归将<strong>统计推断</strong>提升为<strong>概率推断</strong>——从一个确定性的最优解问题，转变为从数据中学习参数分布的问题。</p>
+        </section>
+
+        <!-- ===== 数学原理 ===== -->
+        <section id="math">
+          <h2>📐 数学原理</h2>
+
+          <h3>1. 模型设定</h3>
+          <p>与经典线性回归相同，假设输出 $y$ 与输入 $\mathbf{x}$ 之间存在线性关系，并附加高斯噪声：</p>
+          <div class="formula">$$y = \mathbf{w}^\mathsf{T}\mathbf{x} + \varepsilon, \quad \varepsilon \sim \mathcal{N}(0, \sigma^2)$$</div>
+          <p>即<strong>似然函数 (likelihood)</strong> 为：</p>
+          <div class="formula">$$p(y \mid \mathbf{x}, \mathbf{w}, \sigma^2) = \mathcal{N}(y \mid \mathbf{w}^\mathsf{T}\mathbf{x}, \sigma^2)$$</div>
+          <p>对所有 $n$ 个独立观测样本，似然为：</p>
+          <div class="formula">$$p(\mathbf{y} \mid X, \mathbf{w}, \sigma^2) = \prod_{i=1}^{n} \mathcal{N}(y_i \mid \mathbf{w}^\mathsf{T}\mathbf{x}_i, \sigma^2) = \mathcal{N}(\mathbf{y} \mid X\mathbf{w}, \sigma^2 I)$$</div>
+
+          <h3>2. 先验分布 (Prior)</h3>
+          <p>对权重 $\mathbf{w}$ 引入<strong>高斯先验</strong>，假设各权重独立同分布：</p>
+          <div class="formula">$$p(\mathbf{w}) = \mathcal{N}(\mathbf{w} \mid \mathbf{0}, \tau^2 I) = \prod_{j=1}^{p} \frac{1}{\sqrt{2\pi\tau^2}} \exp\!\left(-\frac{w_j^2}{2\tau^2}\right)$$</div>
+          <p>其中 $\tau^2$ 是先验方差，控制我们对权重幅度的先验信念：</p>
+          <ul>
+            <li><strong>$\tau^2$ 大</strong> — 先验较弱（对权重大小没有强烈约束），后验主要由数据驱动</li>
+            <li><strong>$\tau^2$ 小</strong> — 先验较强（强烈认为权重接近 0），后验偏向收缩</li>
+          </ul>
+          <p>也可对噪声方差 $\sigma^2$ 引入逆伽马先验（此时构成<strong>共轭先验</strong>），但为简明起见，通常先固定 $\sigma^2$ 或通过经验贝叶斯估计。</p>
+
+          <h3>3. 后验推断 (Posterior Inference)</h3>
+          <p>根据<strong>贝叶斯定理</strong>：</p>
+          <div class="formula">$$p(\mathbf{w} \mid X, \mathbf{y}) = \frac{p(\mathbf{y} \mid X, \mathbf{w})\,p(\mathbf{w})}{p(\mathbf{y} \mid X)} \propto p(\mathbf{y} \mid X, \mathbf{w})\,p(\mathbf{w})$$</div>
+          <p>由于高斯先验和高斯似然是<strong>共轭</strong>的，后验分布也是高斯分布，有闭式解：</p>
+          <div class="formula">$$p(\mathbf{w} \mid X, \mathbf{y}) = \mathcal{N}(\mathbf{w} \mid \boldsymbol{\mu}_n, \Sigma_n)$$</div>
+          <p>其中：</p>
+          <div class="formula">$$\Sigma_n = \left(\frac{1}{\sigma^2} X^\mathsf{T} X + \frac{1}{\tau^2} I\right)^{-1}$$</div>
+          <div class="formula">$$\boldsymbol{\mu}_n = \frac{1}{\sigma^2} \Sigma_n X^\mathsf{T} \mathbf{y}$$</div>
+          <p>关键观察：</p>
+          <ul>
+            <li><strong>后验均值 $\boldsymbol{\mu}_n$</strong> — 等价于 Ridge 回归的 MAP 估计（$\lambda = \sigma^2 / \tau^2$）</li>
+            <li><strong>后验协方差 $\Sigma_n$</strong> — 量化了权重估计的<strong>不确定性</strong>——协方差矩阵越大，我们对权重越不确定</li>
+            <li><strong>数据越多</strong> — $\Sigma_n$ 的特征值越小，后验越集中（不确定性降低）</li>
+            <li><strong>先验方差 $\tau^2$</strong> — 控制正则化强度：$\tau^2$ 越小（先验越强），后验均值越收缩向零</li>
+          </ul>
+
+          <h3>4. 预测分布 (Predictive Distribution)</h3>
+          <p>对于新输入 $\mathbf{x}_*$，预测分布通过对权重后验积分得到：</p>
+          <div class="formula">$$p(y_* \mid \mathbf{x}_*, X, \mathbf{y}) = \int p(y_* \mid \mathbf{x}_*, \mathbf{w})\,p(\mathbf{w} \mid X, \mathbf{y})\,d\mathbf{w}$$</div>
+          <p>这一积分同样有闭式解（高斯-高斯共轭性）：</p>
+          <div class="formula">$$p(y_* \mid \mathbf{x}_*, X, \mathbf{y}) = \mathcal{N}(y_* \mid \boldsymbol{\mu}_n^\mathsf{T}\mathbf{x}_*, \;\sigma_n^2(\mathbf{x}_*))$$</div>
+          <p>其中预测方差为：</p>
+          <div class="formula">$$\sigma_n^2(\mathbf{x}_*) = \sigma^2 + \mathbf{x}_*^\mathsf{T} \Sigma_n \mathbf{x}_*$$</div>
+          <p>预测方差包含两个部分：</p>
+          <ul>
+            <li><strong>$\sigma^2$</strong> — <strong>固有噪声</strong>（aleatoric uncertainty）：数据本身不可消除的随机噪声</li>
+            <li><strong>$\mathbf{x}_*^\mathsf{T} \Sigma_n \mathbf{x}_*$</strong> — <strong>认知不确定性</strong>（epistemic uncertainty）：由于对权重 $\mathbf{w}$ 的不确定性而导致的不确定性；数据越多/越靠近训练数据，这项越小</li>
+          </ul>
+
+          <div class="example-box">
+            <div class="example-label">💡 预测方差的含义</div>
+            <p>在训练数据稀疏的区域，$\mathbf{x}_*$ 远离训练数据中心，$\mathbf{x}_*^\mathsf{T} \Sigma_n \mathbf{x}_*$ 会<strong>变大</strong>——模型在它不熟悉的地方做出预测时，会如实反映出更高的不确定性。这是贝叶斯线性回归区别于普通线性回归的核心特征。</p>
+          </div>
+        </section>
+
+        <!-- ===== 与普通线性回归的关系 ===== -->
+        <section id="relation">
+          <h2>🔬 与普通线性回归的关系</h2>
+
+          <h3>MAP 估计等价于 Ridge 回归</h3>
+          <p>如果只关心后验的<strong>众数 (mode)</strong>，即最大后验估计（MAP），那么对后验取对数并最大化：</p>
+          <div class="formula">$$\mathbf{w}_{\text{MAP}} = \arg\max_{\mathbf{w}} \log p(\mathbf{w} \mid X, \mathbf{y}) = \arg\max_{\mathbf{w}} \bigl[\log p(\mathbf{y} \mid X, \mathbf{w}) + \log p(\mathbf{w})\bigr]$$</div>
+          <p>代入高斯似然和高斯先验后：</p>
+          <div class="formula">$$\mathbf{w}_{\text{MAP}} = \arg\min_{\mathbf{w}} \left[ \frac{1}{2\sigma^2}\sum_{i=1}^{n}(y_i - \mathbf{w}^\mathsf{T}\mathbf{x}_i)^2 + \frac{1}{2\tau^2}\sum_{j=1}^{p} w_j^2 \right]$$</div>
+          <p>两边乘以 $2\sigma^2$ 后：</p>
+          <div class="formula">$$\mathbf{w}_{\text{MAP}} = \arg\min_{\mathbf{w}} \left[ \sum_{i=1}^{n}(y_i - \mathbf{w}^\mathsf{T}\mathbf{x}_i)^2 + \frac{\sigma^2}{\tau^2}\sum_{j=1}^{p} w_j^2 \right]$$</div>
+          <p>令 $\lambda = \sigma^2 / \tau^2$，这正是 <strong>Ridge 回归</strong> 的目标函数：</p>
+          <div class="formula">$$\mathbf{w}_{\text{MAP}} = \arg\min_{\mathbf{w}} \left[ \text{MSE} + \lambda \|\mathbf{w}\|_2^2 \right] = \mathbf{w}_{\text{ridge}}$$</div>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>方法</th><th>估计方式</th><th>输出</th><th>不确定性</th></tr>
+              <tr><td>OLS（最小二乘）</td><td>MLE（无先验）</td><td>点估计 $\hat{y}$</td><td>❌ 无</td></tr>
+              <tr><td>Ridge 回归</td><td>MAP（高斯先验）</td><td>点估计 $\hat{y}$</td><td>❌ 无（仅隐式）</td></tr>
+              <tr><td>贝叶斯线性回归</td><td>全后验推断</td><td>预测分布 $p(y_*)$</td><td>✅ 完整</td></tr>
+            </table>
+          </div>
+
+          <h3>频率派 vs 贝叶斯哲学对比</h3>
+          <p>两者看待统计推断的方式有着根本差异：</p>
+          <ul>
+            <li><strong>频率派</strong>认为参数是固定但未知的常数，通过最大化似然（MLE）或最小化损失得到"最佳"点估计。置信区间解释为：如果重复采样无限次，区间覆盖真实参数的频率为 95%</li>
+            <li><strong>贝叶斯派</strong>认为参数是随机变量，通过先验 + 数据更新为后验分布。可信区间解释为：给定观测数据，参数落在该区间内的概率为 95%——这是更直接的、更符合直觉的不确定性陈述</li>
+          </ul>
+
+          <div class="example-box">
+            <div class="example-label">🧮 数值示例</div>
+            <p>假设单变量线性回归 $y = wx + b + \varepsilon$，仅有 5 个数据点。OLS 给出 $w=2.3$，贝叶斯线性回归的后验为 $p(w) = \mathcal{N}(2.3, 0.9^2)$。这告诉我们："最可能的斜率是 2.3，但真实斜率有 68% 的概率落在 [1.4, 3.2] 区间内。" 而在数据稀疏的区域（如 $x=10$），预测区间可能会宽到 $[15, 35]$——模型诚实地反映了其不确定性。</p>
+          </div>
+        </section>
+
+        <!-- ===== 预测区间 ===== -->
+        <section id="pred-interval">
+          <h2>📊 预测区间 (Prediction Interval)</h2>
+
+          <h3>点估计 vs 分布估计</h3>
+          <p>普通线性回归只能输出一个预测值 $\hat{y}_*$，如果要计算置信区间，需要额外进行<strong>频率派推断</strong>——这通常假设模型参数已知（用点估计代替），忽略了参数估计自身的不确定性。</p>
+          <p>贝叶斯线性回归则<strong>天然</strong>输出预测分布 $p(y_* \mid \mathbf{x}_*, X, \mathbf{y})$，其均值和方差同时给出。这意味着：</p>
+          <ul>
+            <li><strong>预测均值</strong> — 最优点预测（与 Ridge MAP 一致）</li>
+            <li><strong>预测方差</strong> — 自动包含<strong>参数不确定性</strong> + <strong>固有噪声</strong></li>
+          </ul>
+
+          <h3>数据稀疏区域的不确定性</h3>
+          <p>预测方差 $\sigma_n^2(\mathbf{x}_*) = \sigma^2 + \mathbf{x}_*^\mathsf{T} \Sigma_n \mathbf{x}_*$ 随 $\mathbf{x}_*$ 的位置而变化：</p>
+          <div class="table-wrap">
+            <table>
+              <tr><th>$\mathbf{x}_*$ 位置</th><th>预测方差</th><th>不确定性</th><th>原因</th></tr>
+              <tr><td>靠近训练数据中心</td><td>小（≈ $\sigma^2$）</td><td>低</td><td>对权重有充分信息</td></tr>
+              <tr><td>远离训练数据中心</td><td>大</td><td>高</td><td>外推区域，参数不确定性放大</td></tr>
+              <tr><td>训练数据密集</td><td>极小</td><td>最低</td><td>$\Sigma_n$ 很小，认知不确定性近乎为零</td></tr>
+              <tr><td>训练数据稀疏</td><td>极大</td><td>最高</td><td>$\Sigma_n$ 很大，模型正外推到未知区域</td></tr>
+            </table>
+          </div>
+
+          <h3>95% 预测区间</h3>
+          <p>给定预测分布 $p(y_* \mid \mathbf{x}_*) = \mathcal{N}(\mu_*, \sigma_*^2)$，95% 预测区间为：</p>
+          <div class="formula">$$\text{PI}_{95\%} = [\mu_* - 1.96\,\sigma_*,\; \mu_* + 1.96\,\sigma_*]$$</div>
+          <p>这个区间比普通线性回归的置信区间<strong>更宽</strong>（因为包含了参数不确定性），因此也更<strong>诚实</strong>——反映的是"模型实际知道多少"，而非"假设参数已知下的最优情况"。</p>
+
+          <div class="example-box">
+            <div class="example-label">🔬 重要特性</div>
+            <p>设想一个气温预测任务：训练数据集中在 10°C~20°C，现在要预测 40°C 时的某个指标。普通线性回归给出 $\hat{y}=50\pm5$（恒定宽度的置信区间），而贝叶斯线性回归给出 $\hat{y}=50\pm18$——因为远离训练数据，模型"自知"不确定性很大。这在高风险决策（如医学、工程）中至关重要，区分了"模型自信的预测"和"模型在瞎猜"。</p>
+          </div>
+        </section>
+
+        <!-- ===== 演进关系 ===== -->
+        <section id="evolution">
+          <h2>🌳 演进关系 (Evolution)</h2>
+          <p>从经典线性回归到贝叶斯线性回归，体现了统计学习从<strong>点估计</strong>到<strong>概率推断</strong>的范式演进。</p>
+
+          <div class="evo-tree">
+            <div class="evo-root"><a href="linear-reg.html" style="color:inherit;text-decoration:none">线性回归 (OLS)</a></div>
+            <div class="evo-branch">
+              <div class="evo-child"><a href="ridge.html">岭回归 (Ridge)</a> <span class="evo-note">L2 正则化</span></div>
+              <div class="evo-child star" style="background:rgba(6,182,212,.08);border-color:rgba(6,182,212,.2);color:rgba(255,255,255,.8);">
+                ⭐ <a href="bayesian-linear-reg.html">贝叶斯线性回归</a> <span class="evo-note">概率视角 + 不确定性</span>
+              </div>
+              <div class="evo-child">贝叶斯岭回归 <span class="evo-note">自动学习 $\sigma^2,\tau^2$</span></div>
+              <div class="evo-child">高斯过程 <span class="evo-note">非参数贝叶斯回归</span></div>
+            </div>
+          </div>
+
+          <h3>演进路线</h3>
+          <ul>
+            <li><strong>OLS</strong> — 最小二乘，无正则化，无不确定性量化</li>
+            <li><strong>Ridge 回归</strong> — 加入 L2 正则化（隐式等价于高斯先验的 MAP 估计），但仍为点估计</li>
+            <li><strong>贝叶斯线性回归</strong> — 完整后验推断，不仅给出 MAP 点估计，还给出全后验分布和预测分布，不确定性量化</li>
+            <li><strong>贝叶斯岭回归</strong> — 对 $\sigma^2$ 和 $\tau^2$ 也赋予先验分布，通过数据自动学习噪声水平和正则化强度</li>
+            <li><strong>高斯过程回归</strong> — 将权重先验替换为函数空间上的高斯过程先验，实现非线性贝叶斯回归</li>
+          </ul>
+        </section>
+
+        <!-- ===== 关键概念 ===== -->
+        <section id="concepts">
+          <h2>🔑 关键概念</h2>
+          <ul>
+            <li><strong>先验 (Prior) $p(\mathbf{w})$</strong> — 在看到数据之前，对权重的<strong>先验信念</strong>。高斯先验 $\mathcal{N}(0, \tau^2 I)$ 假设权重接近零（偏好简单模型）。先验的选择反映主观判断，是贝叶斯方法的核心特征</li>
+            <li><strong>似然 (Likelihood) $p(\mathbf{y} \mid X, \mathbf{w})$</strong> — 给定权重和输入，观测到输出数据的概率。高斯似然 $\mathcal{N}(X\mathbf{w}, \sigma^2 I)$ 对应 MSE 损失</li>
+            <li><strong>后验 (Posterior) $p(\mathbf{w} \mid X, \mathbf{y})$</strong> — 结合先验和观测数据后，对权重的<strong>更新信念</strong>。后验均值 = MAP 估计，后验方差量化不确定性。后验 ∝ 先验 × 似然</li>
+            <li><strong>共轭先验 (Conjugate Prior)</strong> — 使得后验分布与先验分布属于同一分布族。高斯先验对高斯似然是共轭的，因此后验也是高斯分布，有闭式解。这极大简化了计算</li>
+            <li><strong>MAP 估计 (Maximum a Posteriori)</strong> — 后验分布的众数（最大值点）。对高斯先验-高斯似然，MAP = Ridge 回归解。MAP 是贝叶斯推断的<strong>点估计近似</strong>，丢失了不确定性信息</li>
+            <li><strong>预测分布 (Predictive Distribution)</strong> — 对新输入 $\mathbf{x}_*$ 的输出概率分布 $p(y_* \mid \mathbf{x}_*, X, \mathbf{y})$。均值 = 最优预测，方差 = 不确定性。这是贝叶斯方法的核心输出</li>
+            <li><strong>不确定性量化 (Uncertainty Quantification)</strong> — 贝叶斯线性回归的核心优势。预测方差包含固有噪声 $\sigma^2$（不可消除）和认知不确定性 $\mathbf{x}_*^\mathsf{T}\Sigma_n\mathbf{x}_*$（可通过更多数据降低）</li>
+            <li><strong>认知不确定性 vs 偶然不确定性</strong> — 认知不确定性（epistemic uncertainty）源于参数知识不足，可通过增加训练数据降低；偶然不确定性（aleatoric uncertainty）源于数据本身的固有噪声，无法通过更多数据消除</li>
+            <li><strong>边缘似然 (Marginal Likelihood) $p(\mathbf{y} \mid X)$</strong> — 又称<strong>证据 (evidence)</strong>，用于模型选择和超参数（如 $\tau^2, \sigma^2$）选择。在贝叶斯框架下，可以通过最大化边缘似然来学习超参数（经验贝叶斯）</li>
+            <li><strong>经验贝叶斯 (Empirical Bayes)</strong> — 通过最大化边缘似然从数据中估计超参数（如 $\tau^2, \sigma^2$），而非完全指定先验。介于频率派和完全贝叶斯之间</li>
+          </ul>
+        </section>
+
+        <!-- ===== 关联 ===== -->
+        <section id="related">
+          <h2>🔗 关联</h2>
+          <ul>
+            <li><strong>线性回归 (OLS)</strong> — 贝叶斯线性回归的基础和起点。OLS 是贝叶斯线性回归在无限大先验方差（$\tau^2 \to \infty$，即无先验信息）下的 MLE 特例。OLS 只输出点估计，不提供不确定性量化</li>
+            <li><strong>Ridge 回归</strong> — Ridge 的 MAP 估计等价于权重为高斯先验 $\mathcal{N}(0, \tau^2 I)$ 时的贝叶斯线性回归点估计。$\lambda = \sigma^2 / \tau^2$，Ridge 超参数 $\lambda$ 对应先验精度的比值。贝叶斯线性回归的全后验版本比 Ridge 多提供了完整的不确定性信息</li>
+            <li><strong>Lasso 回归</strong> — Lasso 对应权重为<strong>拉普拉斯先验</strong> $\text{Laplace}(0, b)$ 的 MAP 估计（而非高斯先验）。拉普拉斯先验在零点更尖锐，导致稀疏解（特征选择）。贝叶斯线性回归中若更换先验为拉普拉斯，后验无闭式解，需要 MCMC 或变分推断</li>
+            <li><strong>贝叶斯岭回归 (Bayesian Ridge)</strong> — 对 $\sigma^2$ 和 $\tau^2$ 也赋予<strong>逆伽马先验</strong>，将超参数也纳入贝叶斯框架。超参数也通过后验推断（而非手动交叉验证）自动学习，是完全贝叶斯的版本</li>
+            <li><strong>高斯过程回归 (Gaussian Process Regression)</strong> — 贝叶斯线性回归的<strong>非参数扩展</strong>。将权重的高斯先验替换为<strong>函数空间</strong>上的高斯过程先验（均值函数 + 核函数），相当于拥有无限多个基函数的贝叶斯线性回归。GP 能够拟合非线性关系，同时保留完整的不确定性量化能力</li>
+            <li><strong>变分推断 (Variational Inference)</strong> — 当先验和似然不共轭（如拉普拉斯先验、logistic 似然）时，后验无闭式解。变分推断通过优化一个近似后验来逼近真实后验，是贝叶斯推断的重要工具</li>
+            <li><strong>MCMC (Markov Chain Monte Carlo)</strong> — 另一种非共轭情况下的贝叶斯推断方法。通过从后验分布中采样来近似后验，渐近精确但计算量大。在大规模贝叶斯线性回归中，MCMC 较慢但更准确</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          贝叶斯线性回归<strong>自然地量化预测不确定性</strong>，预测方差随远离训练数据而增大。小样本和高风险领域（医学诊断、金融风控、科学实验）极其重要
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 局限</strong>
+          计算开销大于 OLS（需要矩阵求逆，$O(p^3)$）；先验选择有主观性，不当先验可能误导结果；大数据集和复杂模型上后验推断需要近似方法
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 实践</strong>
+          小样本场景首选；高斯先验等价于 Ridge 的 MAP 估计（$\lambda = \sigma^2/\tau^2$）；用边缘似然自动学习超参数；预测区间在数据稀疏区域更宽
+        </div>
+
+        <div class="callout" style="border-left-color:#06b6d4;">
+          <strong>🌳 演进</strong>
+          线性回归 → 贝叶斯线性回归（概率视角）→ 贝叶斯岭回归（自动学习超参数）→ 高斯过程（非参数贝叶斯回归）
+        </div>
+
+        <div class="callout" style="border-left-color:#eab308;">
+          <strong>📚 参考</strong>
+          <a href="https://doi.org/10.1111/j.2517-6161.1972.tb00885.x" target="_blank" style="color:#06b6d4;text-decoration:underline;">Lindley &amp; Smith (1972)</a> — Bayes Estimates for the Linear Model
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 算法底座 · 贝叶斯线性回归 · 参考 Lindley &amp; Smith (1972)
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>
