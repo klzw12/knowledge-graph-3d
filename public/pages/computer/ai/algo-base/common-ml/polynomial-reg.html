@@ -281,8 +281,12 @@
     .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
     .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
     .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
+    .evo-child a{color:inherit;text-decoration:none}
+    .evo-child a:hover{color:rgba(255,255,255,.85)}
     .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-child.star{background:rgba(255,200,50,.08);border-color:rgba(255,200,50,.2);color:rgba(255,255,255,.8)}
+    .evo-child.star{background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2);color:rgba(255,255,255,.8)}
+    .evo-child.star a{color:inherit}
+    .evo-child.star a:hover{color:#fff}
     .evo-note{font-size:11px;color:rgba(255,200,50,.6);font-style:italic;margin-left:4px}
   </style>
 </head>
@@ -535,11 +539,11 @@ y_pred = model.predict(X_test)
           <h2>🌳 演进关系</h2>
           <p>多项式回归在线性回归的基础上增加了非线性拟合能力，但它也有自身的局限——对整体性曲线使用全局多项式，导致边界不稳定。这催生了更灵活的非线性扩展方法。</p>
           <div class="evo-tree">
-            <div class="evo-root">线性回归</div>
+            <div class="evo-root"><a href="linear-reg.html" style="color:inherit;text-decoration:none">线性回归</a></div>
             <div class="evo-branch">
-              <div class="evo-child star">⭐ 多项式回归 <span class="evo-note">加入高次项拟合非线性</span></div>
-              <div class="evo-child">岭回归 (Ridge) <span class="evo-note">L2 正则化</span></div>
-              <div class="evo-child">Lasso <span class="evo-note">L1 正则化</span></div>
+              <div class="evo-child star">⭐ <a href="polynomial-reg.html">多项式回归</a> <span class="evo-note">加入高次项拟合非线性</span></div>
+              <div class="evo-child"><a href="ridge.html">岭回归 (Ridge)</a> <span class="evo-note">L2 正则化</span></div>
+              <div class="evo-child"><a href="lasso.html">Lasso</a> <span class="evo-note">L1 正则化</span></div>
               <div class="evo-child">样条回归 (Spline) <span class="evo-note">分段多项式, 更灵活</span></div>
               <div class="evo-child">GAM <span class="evo-note">广义加性模型</span></div>
             </div>

@@ -274,8 +274,12 @@
     .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
     .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
     .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
+    .evo-child a{color:inherit;text-decoration:none}
+    .evo-child a:hover{color:rgba(255,255,255,.85)}
     .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
     .evo-child.star{background:rgba(168,85,247,.12);border-color:rgba(168,85,247,.25);color:rgba(255,255,255,.8)}
+    .evo-child.star a{color:inherit}
+    .evo-child.star a:hover{color:#fff}
     .evo-note{font-size:11px;color:rgba(168,85,247,.6);font-style:italic;margin-left:4px}
   </style>
 </head>
@@ -472,11 +476,11 @@
           <p>弹性网络是正则化回归演进的集大成者，站在 Ridge 和 Lasso 的肩膀上实现了关键创新：</p>
 
           <div class="evo-tree">
-            <div class="evo-root">线性回归</div>
+            <div class="evo-root"><a href="linear-reg.html" style="color:inherit;text-decoration:none">线性回归</a></div>
             <div class="evo-branch">
-              <div class="evo-child star">⭐ 岭回归 (Ridge) <span class="evo-note">L2 正则化 · 1970</span></div>
-              <div class="evo-child star">⭐ Lasso <span class="evo-note">L1 正则化 · 1996</span></div>
-              <div class="evo-child" style="background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.3);color:rgba(255,255,255,.9);font-weight:600;">🌈 ElasticNet <span class="evo-note">L1+L2 融合 · 2005</span></div>
+              <div class="evo-child star">⭐ <a href="ridge.html">岭回归 (Ridge)</a> <span class="evo-note">L2 正则化 · 1970</span></div>
+              <div class="evo-child star">⭐ <a href="lasso.html">Lasso</a> <span class="evo-note">L1 正则化 · 1996</span></div>
+              <div class="evo-child" style="background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.3);color:rgba(255,255,255,.9);font-weight:600;">🌈 <a href="elasticnet.html">ElasticNet</a> <span class="evo-note">L1+L2 融合 · 2005</span></div>
             </div>
           </div>
 

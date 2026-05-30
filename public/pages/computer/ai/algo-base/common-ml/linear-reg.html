@@ -274,8 +274,12 @@
     .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
     .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
     .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
+    .evo-child a{color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+    .evo-child a:hover{color:rgba(255,255,255,.85)}
     .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
     .evo-child.star{background:rgba(255,200,50,.08);border-color:rgba(255,200,50,.2);color:rgba(255,255,255,.8)}
+    .evo-child.star a{color:inherit}
+    .evo-child.star a:hover{color:#fff}
     .evo-note{font-size:11px;color:rgba(255,200,50,.6);font-style:italic;margin-left:4px}
   </style>
 </head>
@@ -510,12 +514,12 @@
           <div class="evo-tree">
             <div class="evo-root">线性回归</div>
             <div class="evo-branch">
-              <div class="evo-child">岭回归 (Ridge)</div>
-              <div class="evo-child">Lasso</div>
-              <div class="evo-child">弹性网络 (ElasticNet)</div>
-              <div class="evo-child">多项式回归</div>
-              <div class="evo-child">贝叶斯线性回归</div>
-              <div class="evo-child star">⭐ 逻辑回归 <span class="evo-note">范式跃迁: 回归→分类</span></div>
+              <div class="evo-child"><a href="ridge.html">岭回归 (Ridge)</a></div>
+              <div class="evo-child"><a href="lasso.html">Lasso</a></div>
+              <div class="evo-child"><a href="elasticnet.html">弹性网络 (ElasticNet)</a></div>
+              <div class="evo-child"><a href="polynomial-reg.html">多项式回归</a></div>
+              <div class="evo-child"><a href="bayesian-linear-reg.html">贝叶斯线性回归</a></div>
+              <div class="evo-child star"><a href="logistic-reg.html">⭐ 逻辑回归</a> <span class="evo-note">范式跃迁: 回归→分类</span></div>
             </div>
           </div>
         </section>

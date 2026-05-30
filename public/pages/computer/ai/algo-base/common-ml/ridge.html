@@ -282,8 +282,12 @@
     .evo-root::after{content:'';position:absolute;right:-16px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
     .evo-branch{display:flex;flex-direction:column;gap:6px;position:relative;padding:0 0 0 20px;margin-left:4px;border-left:2px solid rgba(255,255,255,.12)}
     .evo-child{display:flex;align-items:center;flex-wrap:wrap;gap:4px 10px;padding:7px 14px;border-radius:6px;font-size:13px;position:relative;margin-left:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);color:rgba(255,255,255,.55)}
+    .evo-child a{color:inherit;text-decoration:none}
+    .evo-child a:hover{color:rgba(255,255,255,.85)}
     .evo-child::before{content:'';position:absolute;left:-18px;top:50%;width:16px;height:2px;background:rgba(255,255,255,.12)}
-    .evo-child.star{background:rgba(77,150,255,.08);border-color:rgba(77,150,255,.2);color:rgba(255,255,255,.8)}
+    .evo-child.star{background:rgba(255,200,50,.08);border-color:rgba(255,200,50,.2);color:rgba(255,255,255,.8)}
+    .evo-child.star a{color:inherit}
+    .evo-child.star a:hover{color:#fff}
     .evo-note{font-size:11px;color:rgba(77,150,255,.6);font-style:italic;margin-left:4px}
   </style>
 </head>
@@ -523,14 +527,14 @@
           <p>回归模型的演进路径清晰地展示了正则化思想的逐步深化：从朴素的最小二乘法出发，通过不同程度和形式的惩罚项来控制模型复杂度。</p>
 
           <div class="evo-tree">
-            <div class="evo-root">线性回归 (OLS)</div>
+            <div class="evo-root"><a href="linear-reg.html" style="color:inherit;text-decoration:none">线性回归 (OLS)</a></div>
             <div class="evo-branch">
               <div class="evo-child star" style="background:rgba(77,150,255,.08);border-color:rgba(77,150,255,.2);color:rgba(255,255,255,.8);">
-                ⭐ 岭回归 (Ridge) <span class="evo-note">加入 L2 惩罚</span>
+                ⭐ <a href="ridge.html">岭回归 (Ridge)</a> <span class="evo-note">加入 L2 惩罚</span>
               </div>
-              <div class="evo-child">Lasso <span class="evo-note">L1 惩罚，特征选择</span></div>
-              <div class="evo-child">弹性网络 (ElasticNet) <span class="evo-note">L1 + L2 混合</span></div>
-              <div class="evo-child">贝叶斯岭回归 <span class="evo-note">概率视角</span></div>
+              <div class="evo-child"><a href="lasso.html">Lasso</a> <span class="evo-note">L1 惩罚，特征选择</span></div>
+              <div class="evo-child"><a href="elasticnet.html">弹性网络 (ElasticNet)</a> <span class="evo-note">L1 + L2 混合</span></div>
+              <div class="evo-child"><a href="bayesian-linear-reg.html">贝叶斯岭回归</a> <span class="evo-note">概率视角</span></div>
             </div>
           </div>
 
