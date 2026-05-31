@@ -28,7 +28,12 @@ function parseTree(data) {
     nd._parentId = parentId
     nd._depth = depth
     nd._children = node.children ? node.children.map(c => c.id) : []
-    nd.url = nd.url || nd.src  // src = 项目内 HTML, url = 外链, 统一映射
+    nd.url = nd.url || nd.src
+    // GitHub Pages subpath 适配: 给绝对路径加 base
+    if (nd.url && nd.url.startsWith('/')) {
+      const basePath = window.location.pathname.replace(/\/[^/]*$/, '').replace(/\/+$/, '')
+      if (basePath) nd.url = basePath + nd.url
+    }
     nd.inDegree = 0
     nd.outDegree = 0
     // 标记所属 domain（depth=2 的节点本身就是 domain，其子节点继承）
