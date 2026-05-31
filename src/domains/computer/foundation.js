@@ -80,9 +80,7 @@ export default {
     { source: 'distribution', target: 'common-ml', label: '基础', color: '#eab308' },
     { source: 'matrix', target: 'dl', label: '张量运算基础', color: '#eab308' },
     { source: 'svd', target: 'recommender', label: '推荐系统基础', color: '#eab308' },
-    { source: 'determinant', target: 'ridge', label: '|XᵀX+λI| 核心', color: '#eab308' },
     { source: 'determinant', target: 'eigen', label: '特征方程基础', color: '#eab308' },
     { source: 'determinant', target: 'matrix', label: '矩阵标量映射', color: '#eab308' },
-    { source: 'determinant', target: 'linear-reg', label: '|XᵀX|判别可逆', color: '#eab308' },
   ],
 }
