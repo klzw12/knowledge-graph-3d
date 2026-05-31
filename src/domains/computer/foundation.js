@@ -24,13 +24,6 @@ export default {
             label: '行列式',
             color: '#c89810',
             src: '/pages/foundation/linear-algebra/determinant.html',
-            children: [
-              { id: 'det-def', label: '定义与几何意义', color: '#b88808' },
-              { id: 'det-prop', label: '行列式的性质', color: '#a87800' },
-              { id: 'det-expansion', label: '展开与余子式', color: '#986800' },
-              { id: 'det-special', label: '特殊行列式', color: '#885800' },
-              { id: 'cramer', label: '克拉默法则', color: '#784800' },
-            ],
           },
           { id: 'matrix', label: '矩阵运算', color: '#c09000' },
           { id: 'eigen', label: '特征值分解', color: '#ac8000' },
