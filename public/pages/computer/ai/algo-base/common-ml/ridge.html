@@ -335,7 +335,8 @@
         <section id="related">
           <h2>🔗 关联</h2>
           <ul>
-            <li><strong>线性回归（OLS）</strong> — Ridge 的基础和起点。λ = 0 时 Ridge 退化为 OLS。OLS 的无偏估计在高维/共线性场景下不适用，Ridge 通过引入偏置解决这一问题</li>
+            <li><strong>线性回归（OLS）</strong> — Ridge 的基础和起点。λ = 0 时 Ridge 退化为 OLS。OLS 的无偏估计在高维/共线性场景下不适用，Ridge 通过引入偏置解决这一问题。OLS 解的存在依赖 $|X^\mathsf{T}X| \neq 0$，Ridge 通过加 λI 保证行列式恒正。</li>
+            <li><strong><a href="/pages/foundation/linear-algebra/determinant.html" style="color:#c89810;">行列式</a></strong> — Ridge 核心公式 $(X^\mathsf{T}X + \lambda I)^{-1}$ 的可逆性由 $|X^\mathsf{T}X + \lambda I|$ 保证。λ>0 时该行列式恒不为零，这是 Ridge 能处理共线性和高维数据的数学根源。</li>
             <li><strong>Lasso 回归</strong> — 使用 L1 惩罚 ($\lambda\sum|w_j|$) 代替 L2 惩罚。能进行特征选择（将部分权重精确置为零），但解无闭式形式，且对相关特征的处理不如 Ridge 稳定</li>
             <li><strong>弹性网络 (ElasticNet)</strong> — 结合 L1 和 L2 惩罚，兼具特征选择（Lasso 特性）和分组效应（Ridge 特性）。参数 α 控制 L1/L2 比例，$\lambda$ 控制总正则化强度</li>
             <li><strong>贝叶斯岭回归 (Bayesian Ridge)</strong> — 从概率视角看待 Ridge：对权重施加高斯先验 $w_j \sim \mathcal{N}(0, 1/\lambda)$，相当于在 MAP 估计下得到与 Ridge 相同的解。λ 成为先验精度的超参数，可从数据中自动学习</li>

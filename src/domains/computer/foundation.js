@@ -19,6 +19,19 @@ export default {
         color: '#d4a000',
         src: '/pages/foundation/linear-algebra.html',
         children: [
+          {
+            id: 'determinant',
+            label: '行列式',
+            color: '#c89810',
+            src: '/pages/foundation/linear-algebra/determinant.html',
+            children: [
+              { id: 'det-def', label: '定义与几何意义', color: '#b88808' },
+              { id: 'det-prop', label: '行列式的性质', color: '#a87800' },
+              { id: 'det-expansion', label: '展开与余子式', color: '#986800' },
+              { id: 'det-special', label: '特殊行列式', color: '#885800' },
+              { id: 'cramer', label: '克拉默法则', color: '#784800' },
+            ],
+          },
           { id: 'matrix', label: '矩阵运算', color: '#c09000' },
           { id: 'eigen', label: '特征值分解', color: '#ac8000' },
           { id: 'svd', label: 'SVD 分解', color: '#987000' },
@@ -67,5 +80,9 @@ export default {
     { source: 'distribution', target: 'common-ml', label: '基础', color: '#eab308' },
     { source: 'matrix', target: 'dl', label: '张量运算基础', color: '#eab308' },
     { source: 'svd', target: 'recommender', label: '推荐系统基础', color: '#eab308' },
+    { source: 'determinant', target: 'ridge', label: '|XᵀX+λI| 核心', color: '#eab308' },
+    { source: 'determinant', target: 'eigen', label: '特征方程基础', color: '#eab308' },
+    { source: 'determinant', target: 'matrix', label: '矩阵标量映射', color: '#eab308' },
+    { source: 'determinant', target: 'linear-reg', label: '|XᵀX|判别可逆', color: '#eab308' },
   ],
 }
