@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>线性方程组 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+
+  <link rel="stylesheet" href="../../../css/common.css" />
+  <style>
+    .title-area .bar { background:#a87800; }
+    .aside-col .callout { border-left-color:#a87800; }
+    .aside-col .callout strong { color:#a87800; }
+    .evo-root{background:rgba(168,120,0,.1);border:1px solid rgba(168,120,0,.25);color:rgba(255,255,255,.85)}
+    .evo-note{color:rgba(168,120,0,.6)}
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        线性方程组
+        <span class="en">Linear Equations</span>
+      </h1>
+      <div class="bar" style="background:#a87800"></div>
+      <p class="brief">
+        线性方程组是线性代数的核心应用对象。求解 $Ax=b$ 贯穿整个学科，
+        解的存在性、唯一性和结构由矩阵的秩完全决定。
+      </p>
+    </div>
+
+    <!-- ===== 三栏 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#basics">📖 基本概念与矩阵表示</a>
+        <a href="#homogeneous">⚪ 齐次线性方程组</a>
+        <a href="#fundamental">🧩 基础解系与通解</a>
+        <a href="#nonhomogeneous">🔵 非齐次线性方程组</a>
+        <a href="#structure">🏗️ 解的结构</a>
+        <a href="#parametric">⚙️ 含参数方程组模板</a>
+        <a href="#pitfalls">⚠️ 易错点速查表</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 1. 基本概念与矩阵表示 ===== -->
+        <section id="basics">
+          <h2>📖 基本概念与矩阵表示</h2>
+
+          <p>含 $m$ 个方程、$n$ 个未知量的线性方程组一般形式：</p>
+          <div class="formula">$$
+            \begin{cases}
+            a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = b_1 \\
+            a_{21}x_1 + a_{22}x_2 + \cdots + a_{2n}x_n = b_2 \\
+            \quad\vdots \\
+            a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mn}x_n = b_m
+            \end{cases}
+          $$</div>
+
+          <p>矩阵形式（最简表达）：</p>
+          <div class="formula">$$Ax = b,\quad A_{m\times n},\; x\in\mathbb{R}^n,\; b\in\mathbb{R}^m$$</div>
+
+          <h3>两个基本类型</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>类型</th><th>形式</th><th>特征</th></tr>
+              <tr>
+                <td><strong>齐次</strong> (Homogeneous)</td>
+                <td>$Ax = 0$</td>
+                <td>常系数全零，至少有零解</td>
+              </tr>
+              <tr>
+                <td><strong>非齐次</strong> (Non-homogeneous)</td>
+                <td>$Ax = b,\; b\neq 0$</td>
+                <td>可能有解或无解</td>
+              </tr>
+            </table>
+          </div>
+
+          <h3>增广矩阵 (Augmented Matrix)</h3>
+          <p>将系数矩阵 $A$ 与常数向量 $b$ 拼接，是求解的核心工具：</p>
+          <div class="formula">$$[A \mid b] = \left[\begin{array}{cccc|c}
+            a_{11} & a_{12} & \cdots & a_{1n} & b_1 \\
+            a_{21} & a_{22} & \cdots & a_{2n} & b_2 \\
+            \vdots & \vdots & \ddots & \vdots & \vdots \\
+            a_{m1} & a_{m2} & \cdots & a_{mn} & b_m
+          \end{array}\right]$$</div>
+
+          <p><strong>核心原则</strong>：增广矩阵的秩与系数矩阵的秩之关系，唯一决定解的情况。</p>
+        </section>
+
+        <!-- ===== 2. 齐次线性方程组 ===== -->
+        <section id="homogeneous">
+          <h2>⚪ 齐次线性方程组 $Ax = 0$</h2>
+
+          <p><strong>定理 4.1</strong>：齐次线性方程组 $A_{m\times n}x = 0$ <strong>有非零解</strong>的充要条件是 $r(A) < n$。</p>
+          <div class="formula">$$r(A) < n \iff Ax=0 \text{ 有非零解（无穷多解）}$$</div>
+
+          <h3>推论</h3>
+          <ul>
+            <li><strong>推论 1</strong>：当 $m < n$（方程数 < 未知数个数）时，$Ax=0$ <strong>必有非零解</strong>。因为 $r(A) \le m < n$。</li>
+            <li><strong>推论 2</strong>：当 $m = n$ 时，$Ax=0$ 有非零解 $\iff |A| = 0 \iff r(A) < n$。</li>
+            <li><strong>推论 3</strong>：$Ax=0$ 只有零解 $\iff r(A) = n \iff |A| \neq 0$（方阵时）。</li>
+          </ul>
+
+          <div class="example-box">
+            <div class="example-label">💡 直觉理解</div>
+            <p>未知数个数 $n$ 是\"总自由度\"，$r(A)$ 是\"有效约束数\"。约束 < 自由度时，必然有非零解可"自由运动"。$m < n$ 意味着约束肯定不够，所以必有非零解。</p>
+          </div>
+        </section>
+
+        <!-- ===== 3. 基础解系与通解 ===== -->
+        <section id="fundamental">
+          <h2>🧩 基础解系与通解</h2>
+
+          <h3>基础解系的定义</h3>
+          <p>齐次方程组 $Ax=0$ 的一组解向量 $\eta_1, \eta_2, \dots, \eta_t$ 若满足：</p>
+          <ul>
+            <li>① 这组解向量<strong>线性无关</strong>；</li>
+            <li>② 方程组的<strong>任意解</strong>都可由它们线性表示；</li>
+          </ul>
+          <p>则称 $\{\eta_1, \dots, \eta_t\}$ 为方程组的一个<strong>基础解系</strong>（Fundamental System of Solutions）。</p>
+
+          <h3>定理 4.2（基础解系的存在性）</h3>
+          <p>若 $r(A) = r < n$，则 $Ax=0$ 存在 $n-r$ 个<strong>线性无关的解向量</strong>构成一个基础解系。</p>
+          <div class="formula">$$\text{基础解系含向量个数} = n - r(A)$$</div>
+
+          <h3>通解公式</h3>
+          <p>设 $\eta_1, \eta_2, \dots, \eta_{n-r}$ 是一个基础解系，则通解为：</p>
+          <div class="formula">$$x = k_1\eta_1 + k_2\eta_2 + \cdots + k_{n-r}\eta_{n-r},\quad k_i\in\mathbb{R}$$</div>
+
+          <h3>两步法求基础解系</h3>
+          <p>① 行变换得行最简形（RREF），确定秩 $r$ 和自由变量个数 $n-r$；</p>
+          <p>② 对自由变量依次取 $(1,0,\dots,0), (0,1,\dots,0), \dots, (0,0,\dots,1)$，反代求出约束变量，即得 $n-r$ 个线性无关解向量。</p>
+
+          <div class="example-box">
+            <div class="example-label">🌳 408 考研</div>
+            <p>基础解系的核心是<strong>线性无关</strong>且<strong>能生成所有解</strong>。这两个条件缺一不可。求基础解系就是找 $n-r(A)$ 个自由变量的一组标准基，再回代。</p>
+          </div>
+        </section>
+
+        <!-- ===== 4. 非齐次线性方程组 ===== -->
+        <section id="nonhomogeneous">
+          <h2>🔵 非齐次线性方程组 $Ax = b$</h2>
+
+          <h3>定理 4.3（解的存在性判别）</h3>
+          <p>非齐次线性方程组 $A_{m\times n}x = b$ 有解 $\iff r(A) = r([A \mid b])$。</p>
+          <div class="formula">$$r(A) = r([A\mid b]) \iff \text{有解（相容）}$$</div>
+
+          <h3>三种情况一览</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>条件</th><th>解的结论</th></tr>
+              <tr>
+                <td>$r(A) = r([A\mid b]) = n$</td>
+                <td><strong>唯一解</strong>（满秩方阵时即为 $x = A^{-1}b$）</td>
+              </tr>
+              <tr>
+                <td>$r(A) = r([A\mid b]) < n$</td>
+                <td><strong>无穷多解</strong>（自由度为 $n - r$）</td>
+              </tr>
+              <tr>
+                <td>$r(A) \neq r([A\mid b])$</td>
+                <td><strong>无解</strong>（不相容），此时 $r([A\mid b]) = r(A) + 1$</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">⚠️ 易混</div>
+            <p>非齐次方程组<strong>不会出现</strong>只有零解的情况——因为 $b\neq 0$ 时零向量不是解。唯一解与非唯一解的分界线是 $r(A)=n$ 与否。</p>
+          </div>
+        </section>
+
+        <!-- ===== 5. 解的结构 ===== -->
+        <section id="structure">
+          <h2>🏗️ 解的结构</h2>
+
+          <h3>核心公式</h3>
+          <p>非齐次方程组的通解 = <strong>一个特解</strong> + <strong>对应齐次方程的通解</strong>：</p>
+          <div class="formula">$$x = x_p + x_h$$</div>
+          <p>其中 $x_p$ 是 $Ax=b$ 的任意一个特解，$x_h$ 是 $Ax=0$ 的通解 $k_1\eta_1 + \cdots + k_{n-r}\eta_{n-r}$。</p>
+
+          <h3>求解 5 步法</h3>
+          <table>
+            <tr><th>步骤</th><th>操作</th></tr>
+            <tr><td><strong>① 写</strong></td><td>写出增广矩阵 $[A \mid b]$</td></tr>
+            <tr><td><strong>② 化</strong></td><td>行变换化为行最简形（RREF）</td></tr>
+            <tr><td><strong>③ 判</strong></td><td>比较 $r(A)$ 与 $r([A\mid b])$，判别解的情况</td></tr>
+            <tr><td><strong>④ 特解</strong></td><td>令自由变量全取 0，求出一个特解 $x_p$</td></tr>
+            <tr><td><strong>⑤ 齐次通解</strong></td><td>自由变量取标准基，求基础解系，写出 $x_h$</td></tr>
+          </table>
+          <p>最终：$x = x_p + x_h$。</p>
+
+          <div class="example-box">
+            <div class="example-label">💡 为什么是 $x_p + x_h$？</div>
+            <p>验证：$A(x_p + x_h) = Ax_p + Ax_h = b + 0 = b$。所加 $x_h$ 不改变 $b$，只提供自由度。<br>
+            几何上：$x_p$ 是仿射空间中的一个点，$x_h$ 张成通过原点的子空间方向。</p>
+          </div>
+        </section>
+
+        <!-- ===== 6. 含参数方程组模板 ===== -->
+        <section id="parametric">
+          <h2>⚙️ 含参数方程组模板</h2>
+
+          <p>考研中出现含参数 $\lambda, a, k$ 等时，统一套路：</p>
+
+          <h3>三步骤套路</h3>
+          <ol>
+            <li><strong>写增广矩阵</strong> $[A \mid b]$</li>
+            <li><strong>行变换求秩</strong> — 对参数所在行/列消元，找出使 $r(A)$ 和 $r([A\mid b])$ 变化的\"临界值\"（通常是消元后分母为零的点）</li>
+            <li><strong>按临界值分类讨论</strong>：</li>
+          </ol>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>条件</th><th>结论</th></tr>
+              <tr><td>$r(A) \neq r([A\mid b])$</td><td>无解</td></tr>
+              <tr><td>$r(A) = r([A\mid b]) = n$</td><td>唯一解</td></tr>
+              <tr><td>$r(A) = r([A\mid b]) < n$</td><td>无穷多解（写出通解）</td></tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">🌳 408 考研</div>
+            <p>含参讨论重灾区：<strong>方阵</strong>时先算行列式 $|A|=0$ 找临界值；<strong>非方阵</strong>时直接行变换看秩。参数讨论完后一定要\"回头检查\"——看临界值处是否真的改变结论。</p>
+          </div>
+        </section>
+
+        <!-- ===== 7. 易错点速查表 ===== -->
+        <section id="pitfalls">
+          <h2>⚠️ 易错点速查表</h2>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>易错点</th><th>错误理解</th><th style="width:45%;">正确理解</th></tr>
+              <tr>
+                <td><strong>解的定义</strong></td>
+                <td>"齐次方程组有零解"=没有解</td>
+                <td>零解$(\forall x_i=0)$是齐次方程组<strong>一定有的解</strong>。讨论的是"有没有非零解"</td>
+              </tr>
+              <tr>
+                <td><strong>行变换破坏等价性</strong></td>
+                <td>行变换可能改变解</td>
+                <td rowspan="2"><strong>行</strong>变换不改变解（列变换会！），增广矩阵只能做行变换</td>
+              </tr>
+              <tr>
+                <td><strong>增广矩阵行变换</strong></td>
+                <td>可以对 $[A\mid b]$ 做列变换</td>
+              </tr>
+              <tr>
+                <td><strong>基础解系唯一性</strong></td>
+                <td>基础解系是唯一的</td>
+                <td>基础解系<strong>不唯一</strong>，但所含向量个数固定为 $n-r$</td>
+              </tr>
+              <tr>
+                <td><strong>非齐次解+非齐次解</strong></td>
+                <td>两个非齐次解之和还是非齐次解</td>
+                <td>$x_1 + x_2$ 是 $Ax=2b$ 的解，不是原方程的解。<br>正确：两个非齐次解的<strong>差</strong>是齐次解</td>
+              </tr>
+              <tr>
+                <td><strong>特解的自由变量</strong></td>
+                <td>求特解时必须自由变量全取 0</td>
+                <td>自由变量可以取<strong>任意值</strong>，取 0 只是最简单的一种</td>
+              </tr>
+              <tr>
+                <td><strong>参数讨论后不复查</strong></td>
+                <td>算出行列式 $|A|=0$ 直接下结论</td>
+                <td>方阵时 $|A|=0$ 只保证 $r(A) < n$，还要看增广矩阵的秩才能判断有解与否</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">🔧 考研高频结论</div>
+            <p>① 齐次 $Ax=0$：总是有解（至少零解）；$r(A)=n$ 唯一零解，$r(A)<n$ 无穷多非零解。<br>
+            ② 非齐次 $Ax=b$：$r(A)=r([A|b])$ 时有解，否则无解。<br>
+            ③ 非齐次解的差是齐次解，非齐次解的和是 $Ax=2b$ 的解。<br>
+            ④ $Ax=b$ 有唯一解 $\iff r(A)=r([A|b])=n$。</p>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          方程组解的情况完全由秩决定：$r(A)$ 与 $r([A\mid b])$ 是否相等决定有无解，$r(A)=n$ 与否决定是否唯一。核心定理 4.1-4.3 构成了判断系统。
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 易混</strong>
+          ① "齐次方程组有解"和"有非零解"是两个概念——零解永远存在。② 基础解系不唯一，但向量个数固定为 $n-r$。③ 增广矩阵只能做行变换，不能做列变换。
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 考研</strong>
+          含参讨论三步走：写增广矩阵 → 行变换求临界值 → 分类讨论。自由度 $n-r$ 就是基础解系中解向量的个数。特解+齐次通解=非齐次通解，这个公式背熟。
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 数学基础 · 线性方程组 Linear Equations
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

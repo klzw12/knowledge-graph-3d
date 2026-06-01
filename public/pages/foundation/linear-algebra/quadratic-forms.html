@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>二次型 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+
+  <link rel="stylesheet" href="../../../css/common.css" />
+  <style>
+    .title-area .bar { background:#906000; }
+    .aside-col .callout { border-left-color:#906000; }
+    .aside-col .callout strong { color:#906000; }
+    .evo-root{background:rgba(144,96,0,.1);border:1px solid rgba(144,96,0,.25);color:rgba(255,255,255,.85)}
+    .evo-note{color:rgba(144,96,0,.6)}
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        二次型
+        <span class="en">Quadratic Forms</span>
+      </h1>
+      <div class="bar" style="background:#906000"></div>
+      <p class="brief">
+        二次型是线性代数中连接矩阵与多元二次函数的桥梁，本质是"对称矩阵的二次齐次多项式表示"。其标准化是特征值分解最经典的应用之一。
+      </p>
+    </div>
+
+    <!-- ===== 三栏 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#definition">📖 基本概念</a>
+        <a href="#orthogonal">🔄 正交变换法</a>
+        <a href="#completing">🧩 配方法</a>
+        <a href="#inertia">📊 规范型与惯性定理</a>
+        <a href="#positive-definite">✅ 正定二次型</a>
+        <a href="#comparison">⚖️ 两种方法对比</a>
+        <a href="#pitfalls">⚠️ 易错点速查</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 基本概念 ===== -->
+        <section id="definition">
+          <h2>📖 基本概念</h2>
+
+          <p>
+            <strong>二次型</strong>是 $n$ 个变量的二次齐次多项式，可唯一表示为对称矩阵形式：
+          </p>
+          <div class="formula">$$
+            f(x_1, x_2, \dots, x_n) = \sum_{i=1}^{n}\sum_{j=1}^{n} a_{ij} x_i x_j
+            = \mathbf{x}^{\mathsf{T}} A \mathbf{x}
+          $$</div>
+          <p>
+            其中 $A$ 为<strong>实对称矩阵</strong>（$A^{\mathsf{T}} = A$），$a_{ij} = a_{ji}$。例如二元二次型：
+          </p>
+          <div class="formula">$$
+            f(x_1, x_2) = a_{11}x_1^2 + 2a_{12}x_1x_2 + a_{22}x_2^2
+            = \begin{pmatrix}x_1 & x_2\end{pmatrix}
+            \begin{pmatrix}a_{11} & a_{12} \\ a_{12} & a_{22}\end{pmatrix}
+            \begin{pmatrix}x_1 \\ x_2\end{pmatrix}
+          $$</div>
+
+          <h3>标准形</h3>
+          <p>
+            若通过可逆线性变换，将二次型化为<strong>仅含平方项</strong>的形式：
+          </p>
+          <div class="formula">$$
+            f = d_1 y_1^2 + d_2 y_2^2 + \cdots + d_n y_n^2
+          $$</div>
+          <p>称之为二次型的<strong>标准形</strong>（$d_i$ 不一定为 0 或 1）。</p>
+        </section>
+
+        <!-- ===== 正交变换法 ===== -->
+        <section id="orthogonal">
+          <h2>🔄 正交变换法化标准形</h2>
+
+          <p>利用实对称矩阵可正交对角化的性质，通过正交变换 $\mathbf{x} = Q\mathbf{y}$ 将二次型化为标准形，<strong>保持几何形状不拉伸变形</strong>。</p>
+
+          <div class="example-box">
+            <div class="example-label">📋 四步法</div>
+            <p>
+              <strong>① 写出对称矩阵 $A$</strong><br>
+              提取二次型各项系数，构造实对称矩阵 $A$（对角线为平方项系数，交叉项除以 2）。
+            </p>
+            <p>
+              <strong>② 正交对角化 $A = Q\Lambda Q^{\mathsf{T}}$</strong><br>
+              求 $A$ 的特征值 $\lambda_1, \dots, \lambda_n$ 及对应的<strong>单位正交</strong>特征向量，组成正交矩阵 $Q$。
+            </p>
+            <p>
+              <strong>③ 换元 $\mathbf{x} = Q\mathbf{y}$</strong><br>
+              代入得 $f = \mathbf{x}^{\mathsf{T}}A\mathbf{x} = \mathbf{y}^{\mathsf{T}}Q^{\mathsf{T}}AQ\mathbf{y} = \mathbf{y}^{\mathsf{T}}\Lambda\mathbf{y}$。
+            </p>
+            <p>
+              <strong>④ 得标准形</strong><br>
+              $$f = \lambda_1 y_1^2 + \lambda_2 y_2^2 + \cdots + \lambda_n y_n^2$$
+              系数即为特征值。
+            </p>
+          </div>
+
+          <div class="example-box" style="margin-top:12px;">
+            <div class="example-label">💡 示例</div>
+            <p>二次型 $f = 2x_1^2 + 2x_2^2 + 2x_1x_2$：</p>
+            <div class="formula">$$
+              A = \begin{pmatrix}2 & 1 \\ 1 & 2\end{pmatrix},
+              \quad |A-\lambda I| = \begin{vmatrix}2-\lambda & 1 \\ 1 & 2-\lambda\end{vmatrix}
+              = (\lambda-1)(\lambda-3) = 0
+            $$</div>
+            <p>特征值 $\lambda_1 = 1,\; \lambda_2 = 3$，对应单位正交特征向量：</p>
+            <div class="formula">$$
+              Q = \begin{pmatrix}
+                \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\[2pt]
+                -\frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}}
+              \end{pmatrix},
+              \quad f = y_1^2 + 3y_2^2
+            $$</div>
+          </div>
+        </section>
+
+        <!-- ===== 配方法 ===== -->
+        <section id="completing">
+          <h2>🧩 配方法</h2>
+
+          <p>通过<strong>配方</strong>逐步消去交叉项，是初等变换视角下的标准化方法，不依赖特征值计算。</p>
+
+          <h3>二元配方示例</h3>
+          <div class="formula">$$
+            \begin{aligned}
+            f(x_1, x_2) &= x_1^2 + 4x_1x_2 + 3x_2^2 \\
+            &= (x_1 + 2x_2)^2 - x_2^2 \\
+            &= y_1^2 - y_2^2
+            \end{aligned}
+          $$</div>
+          <p>
+            其中 $y_1 = x_1 + 2x_2,\; y_2 = x_2$。注意变换矩阵 $P = \begin{pmatrix}1 & -2 \\ 0 & 1\end{pmatrix}$ 不是正交矩阵。
+          </p>
+
+          <h3>通用步骤</h3>
+          <ul>
+            <li><strong>Step 1</strong>：选取一个平方项系数非零的变量（如 $x_1^2$），将所有含 $x_1$ 的项集中配成完全平方；</li>
+            <li><strong>Step 2</strong>：对剩余变量重复 Step 1，直到所有变量都配成平方；</li>
+            <li><strong>Step 3</strong>：若遇到某变量平方项系数为零，做可逆线性变换引入新平方项后再配方。</li>
+          </ul>
+
+          <div class="aside-col" style="float:right;width:280px;margin-left:16px;margin-bottom:12px;">
+            <div class="callout warn">
+              <strong>⚠️ 注意</strong>
+              配方得到的标准形系数<strong>不是</strong>特征值，且线性变换 $P$ 一般不是正交矩阵。但配方法计算简单、适合手算。
+            </div>
+          </div>
+
+          <p style="clear:both;"><strong>配方法的本质</strong>：对 $A$ 做合同变换——存在可逆矩阵 $P$ 使 $P^{\mathsf{T}}AP = \operatorname{diag}(d_1, \dots, d_n)$。</p>
+        </section>
+
+        <!-- ===== 规范型与惯性定理 ===== -->
+        <section id="inertia">
+          <h2>📊 规范型与惯性定理</h2>
+
+          <h3>规范型</h3>
+          <p>
+            标准形进一步化为<strong>系数仅取 $\pm 1$ 或 $0$</strong> 的形式，称为<strong>规范型</strong>：
+          </p>
+          <div class="formula">$$
+            f = y_1^2 + \cdots + y_p^2 - y_{p+1}^2 - \cdots - y_{p+q}^2
+          $$</div>
+
+          <h3>惯性定理（Sylvester）</h3>
+          <p>二次型的规范型中，<strong>正平方项数 $p$</strong>（正惯性指数）和<strong>负平方项数 $q$</strong>（负惯性指数）由 $A$ 唯一确定，与所用的可逆线性变换无关。</p>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>名称</th><th>含义</th><th>记法</th></tr>
+              <tr>
+                <td><strong>正惯性指数</strong></td>
+                <td>规范型中系数为 $+1$ 的项数</td>
+                <td>$p$</td>
+              </tr>
+              <tr>
+                <td><strong>负惯性指数</strong></td>
+                <td>规范型中系数为 $-1$ 的项数</td>
+                <td>$q$</td>
+              </tr>
+              <tr>
+                <td><strong>符号差</strong></td>
+                <td>正负惯性指数之差</td>
+                <td>$p - q$</td>
+              </tr>
+              <tr>
+                <td><strong>秩</strong></td>
+                <td>非零系数的项数</td>
+                <td>$r = p + q$</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="aside-col" style="width:100%;max-width:none;">
+            <div class="callout tip">
+              <strong>🔍 惯性定理的含义</strong>
+              二次型的"本质"由 $(p, q)$ 刻画——正项数、负项数是内禀属性，坐标系的选择只改变表面的系数，不改变这个深层结构。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 正定二次型 ===== -->
+        <section id="positive-definite">
+          <h2>✅ 正定二次型</h2>
+
+          <p><strong>定义</strong>：对任意非零向量 $\mathbf{x} \neq \mathbf{0}$，恒有 $f(\mathbf{x}) = \mathbf{x}^{\mathsf{T}} A \mathbf{x} > 0$，则称 $f$ 为<strong>正定二次型</strong>，$A$ 为<strong>正定矩阵</strong>。</p>
+
+          <h3>判定三件套</h3>
+          <p>以下三条中的<strong>任意一条</strong>都是正定的充要条件：</p>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>#</th><th>条件</th><th>内容</th></tr>
+              <tr>
+                <td><strong>①</strong></td>
+                <td>特征值条件</td>
+                <td>$A$ 的所有特征值 $\lambda_i > 0$</td>
+              </tr>
+              <tr>
+                <td><strong>②</strong></td>
+                <td>顺序主子式条件</td>
+                <td>$A$ 的所有顺序主子式 $> 0$</td>
+              </tr>
+              <tr>
+                <td><strong>③</strong></td>
+                <td>惯性指数条件</td>
+                <td>正惯性指数 $p = n$（满正）</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">💡 顺序主子式速记</div>
+            <p>对于 $A = \begin{pmatrix}a & b \\ b & c\end{pmatrix}$，正定 $\iff$ $a > 0$ 且 $ac - b^2 > 0$。</p>
+            <p>推广到 $n$ 阶：$|A_1| > 0, |A_2| > 0, \dots, |A_n| = |A| > 0$。</p>
+          </div>
+
+          <h3>相关概念</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>类型</th><th>定义</th><th>特征值</th></tr>
+              <tr><td><strong>正定</strong></td><td>$\forall \mathbf{x} \neq \mathbf{0},\; f > 0$</td><td>全部 $> 0$</td></tr>
+              <tr><td><strong>负定</strong></td><td>$\forall \mathbf{x} \neq \mathbf{0},\; f < 0$</td><td>全部 $< 0$</td></tr>
+              <tr><td><strong>半正定</strong></td><td>$\forall \mathbf{x},\; f \ge 0$</td><td>全部 $\ge 0$</td></tr>
+              <tr><td><strong>不定</strong></td><td>$f$ 可正可负</td><td>有正有负</td></tr>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== 两种方法对比 ===== -->
+        <section id="comparison">
+          <h2>⚖️ 两种方法对比</h2>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>对比维度</th><th>正交变换法</th><th>配方法</th></tr>
+              <tr>
+                <td><strong>理论基础</strong></td>
+                <td>实对称矩阵可正交对角化</td>
+                <td>合同变换（配平方）</td>
+              </tr>
+              <tr>
+                <td><strong>线性变换</strong></td>
+                <td>正交矩阵 $Q$（$Q^{\mathsf{T}} = Q^{-1}$）</td>
+                <td>可逆矩阵 $P$（一般不正交）</td>
+              </tr>
+              <tr>
+                <td><strong>标准形系数</strong></td>
+                <td><strong>特征值</strong> $\lambda_i$</td>
+                <td>配方法系数 $d_i$（<strong>非特征值</strong>）</td>
+              </tr>
+              <tr>
+                <td><strong>几何意义</strong></td>
+                <td>保持长度和角度——旋转变换</td>
+                <td>不保距——仿射变换</td>
+              </tr>
+              <tr>
+                <td><strong>计算复杂度</strong></td>
+                <td>$O(n^3)$ 求特征值，手算稍繁</td>
+                <td>$O(n^2)$，适合手算</td>
+              </tr>
+              <tr>
+                <td><strong>应用场景</strong></td>
+                <td>需要特征值、几何解释</td>
+                <td>仅需惯性指数、规范型</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="aside-col" style="width:100%;max-width:none;">
+            <div class="callout">
+              <strong>💡 核心区别</strong>
+              正交变换法求出的标准形系数就是特征值，保留了二次型曲面的几何形状（如椭圆长短轴方向）。配方法只关心"正负号个数"（惯性指数），计算更快但丢失了几何信息。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 易错点速查 ===== -->
+        <section id="pitfalls">
+          <h2>⚠️ 易错点速查</h2>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>#</th><th>易错点</th><th>正确理解</th></tr>
+              <tr>
+                <td>1</td>
+                <td>二次型对应的 $A$ 忘记除以 2</td>
+                <td>$a_{ij}x_ix_j$ 中 $i \neq j$ 时，$a_{ij}$ 应填入交叉项系数的<strong>一半</strong></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>认为配方法的系数就是特征值</td>
+                <td>配方法系数<strong>不是</strong>特征值，只有正交变换法得到的才是</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>混淆"规范型"与"标准形"</td>
+                <td>标准形系数任意；规范型系数只能为 $\pm 1$ 或 $0$</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>顺序主子式判据用于非正定</td>
+                <td>顺序主子式全正 $\iff$ 正定；但负定是奇数阶 $<0$、偶数阶 $>0$</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>忽略实对称的条件</td>
+                <td>二次型必然对应<strong>对称矩阵</strong>——交叉项 $a_{ij}$ 和 $a_{ji}$ 相等</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>正定条件只检查 $|A| > 0$</td>
+                <td>仅 $|A| > 0$ 不够，需<strong>所有</strong>顺序主子式 $>0$</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>忘记单位正交化</td>
+                <td>正交变换法的特征向量必须<strong>单位化</strong>且正交（不同特征值自动正交）</td>
+              </tr>
+            </table>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          二次型是对称矩阵的二次齐次多项式表示。标准化的核心是找可逆线性变换消去交叉项——正交变换法得到特征值，配方法更快但失去几何信息。
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 注意</strong>
+          惯性指数说明正负平方项数是<strong>唯一的</strong>，与所用变换无关——这是 Sylvester 惯性定理的核心。
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 实践</strong>
+          判定正定性：先试顺序主子式（手算最快），复杂矩阵用特征值，常规题用惯性指数 $p=n$。
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 数学基础 · 二次型 / Quadratic Forms
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

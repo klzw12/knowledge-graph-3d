@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>特征值分解 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+
+  <link rel="stylesheet" href="../../../css/common.css" />
+  <style>
+/* 页面专属颜色 — 琥珀色主题 */
+    .title-area .bar { background:#ac8000; }
+    .aside-col .callout { border-left-color:#ac8000; }
+    .aside-col .callout strong { color:#ac8000; }
+/* evo-root 主题色 */
+.evo-root{background:rgba(172,128,0,.1);border:1px solid rgba(172,128,0,.25);color:rgba(255,255,255,.85)}
+.evo-note{font-size:11px;color:rgba(172,128,0,.6);font-style:italic;margin-left:4px}
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        特征值分解
+        <span class="en">Eigenvalue Decomposition</span>
+      </h1>
+      <div class="bar" style="background:#ac8000"></div>
+      <p class="brief">
+        将方阵分解为特征值与特征向量，揭示矩阵的\"本质变换\"——拉伸方向与比例。
+        是 PCA、谱聚类、PageRank 等核心算法的数学基石。
+      </p>
+    </div>
+
+    <!-- ===== 参考来源 ===== -->
+    <!-- 无具体论文 -->
+
+    <!-- ===== 三栏：导航 | 正文 | 着重 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#definition">📖 定义</a>
+        <a href="#steps">🧮 计算步骤</a>
+        <a href="#properties">⚖️ 重要性质</a>
+        <a href="#similar">🔗 相似矩阵</a>
+        <a href="#diagonalize">🎯 对角化</a>
+        <a href="#symmetric">💎 实对称矩阵三大定理</a>
+        <a href="#orthogonal-steps">📐 正交对角化步骤</a>
+        <a href="#pitfalls">⚠️ 易错点</a>
+        <a href="#evolution">🌳 演进关系</a>
+        <a href="#concepts">🔑 关键概念</a>
+        <a href="#related">🔗 关联</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 定义 ===== -->
+        <section id="definition">
+          <h2>📖 定义</h2>
+
+          <h3>特征值与特征向量</h3>
+          <p>设 $A$ 是 $n$ 阶方阵，若存在数 $\lambda$ 和非零向量 $\alpha$（$\alpha \neq 0$）满足：</p>
+          <div class="formula">$$A\alpha = \lambda\alpha \qquad (\alpha \neq 0)$$</div>
+          <p>则称 $\lambda$ 为 $A$ 的<strong>特征值 (eigenvalue)</strong>，$\alpha$ 为 $A$ 的对应于 $\lambda$ 的<strong>特征向量 (eigenvector)</strong>。</p>
+
+          <div class="example-box">
+            <div class="example-label">💡 直觉理解</div>
+            <p>特征向量是<strong>方向不变</strong>的向量——矩阵 $A$ 作用在它上面只改变长度（缩放 $\lambda$ 倍），不改变方向。这个\"不变的方向\"揭示了矩阵最本质的变换特性。</p>
+          </div>
+
+          <h3>特征多项式与特征方程</h3>
+          <p>将定义式移项：$A\alpha = \lambda\alpha \;\Longrightarrow\; (A - \lambda E)\alpha = 0$</p>
+          <p>由于 $\alpha \neq 0$，齐次方程组有非零解 $\iff$ 系数矩阵行列式为 0：</p>
+          <div class="formula">$$|\lambda E - A| = 0 \quad \text{（特征方程）}$$</div>
+          <p>展开后得到关于 $\lambda$ 的 $n$ 次多项式：</p>
+          <div class="formula">$$f(\lambda) = |\lambda E - A| = \lambda^n + c_{n-1}\lambda^{n-1} + \cdots + c_1\lambda + c_0$$</div>
+          <p>此多项式称为 $A$ 的<strong>特征多项式</strong>，特征方程的根即为特征值。</p>
+
+          <div class="example-box">
+            <div class="example-label">💡 两种写法</div>
+            <p>$|\lambda E - A| = 0$ 和 $|A - \lambda E| = 0$ 本质等价，仅差符号 $(-1)^n$。推荐用 $|\lambda E - A| = 0$，特征多项式首项系数为 1（首一多项式），避免符号混乱。</p>
+          </div>
+        </section>
+
+        <!-- ===== 计算步骤 ===== -->
+        <section id="steps">
+          <h2>🧮 计算步骤</h2>
+
+          <h3>两步法</h3>
+          <p><strong>第①步：解特征方程求特征值</strong></p>
+          <div class="formula">$$|\lambda E - A| = 0 \;\Longrightarrow\; \lambda_1, \lambda_2, \dots, \lambda_n$$</div>
+          <p>特征多项式是 $n$ 次方程，在复数域上必有 $n$ 个根（含重根）。</p>
+
+          <p><strong>第②步：对每个 $\lambda_i$，解齐次方程组求特征向量</strong></p>
+          <div class="formula">$$(\lambda_i E - A)x = 0$$</div>
+          <p>求解该齐次线性方程组，得到<strong>基础解系</strong>。基础解系中每个非零解向量都是对应于 $\lambda_i$ 的特征向量。基础解系的所有<strong>非零线性组合</strong>构成 $\lambda_i$ 的全部特征向量。</p>
+
+          <div class="example-box">
+            <div class="example-label">💡 特征向量的自由度</div>
+            <p>对应 $\lambda_i$ 的特征向量构成一个<strong>子空间</strong>（特征子空间），其维数 = $n - r(\lambda_i E - A)$。基础解系中的每个向量都是该子空间的一组基。</p>
+          </div>
+        </section>
+
+        <!-- ===== 重要性质 ===== -->
+        <section id="properties">
+          <h2>⚖️ 重要性质</h2>
+
+          <h3>特征值的和与积</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>性质</th><th>公式</th><th>说明</th></tr>
+              <tr>
+                <td><strong>特征值之和</strong></td>
+                <td>$\lambda_1 + \lambda_2 + \cdots + \lambda_n = \operatorname{tr}(A)$</td>
+                <td>等于矩阵的<strong>迹</strong>（主对角线元素之和）</td>
+              </tr>
+              <tr>
+                <td><strong>特征值之积</strong></td>
+                <td>$\lambda_1 \lambda_2 \cdots \lambda_n = |A|$</td>
+                <td>等于矩阵的<strong>行列式</strong></td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">⚠️ 重要推论</div>
+            <p>$|A| = 0 \iff A$ 至少有一个零特征值 $\iff A$ 不可逆。这是联系特征值与矩阵可逆性的关键纽带。</p>
+          </div>
+
+          <h3>其他基本性质</h3>
+          <ul>
+            <li>$\lambda$ 是 $A$ 的特征值 $\iff \lambda^k$ 是 $A^k$ 的特征值（特征向量不变）</li>
+            <li>$\lambda$ 是 $A$ 的特征值且 $A$ 可逆 $\iff \frac{1}{\lambda}$ 是 $A^{-1}$ 的特征值</li>
+            <li>$\lambda$ 是 $A$ 的特征值 $\iff \lambda + k$ 是 $A + kE$ 的特征值</li>
+            <li>不同特征值对应的特征向量<strong>线性无关</strong></li>
+          </ul>
+        </section>
+
+        <!-- ===== 相似矩阵 ===== -->
+        <section id="similar">
+          <h2>🔗 相似矩阵</h2>
+
+          <h3>定义</h3>
+          <p>设 $A, B$ 是 $n$ 阶方阵，若存在可逆矩阵 $P$ 使得：</p>
+          <div class="formula">$$P^{-1}AP = B$$</div>
+          <p>则称 $A$ 与 $B$ <strong>相似</strong>，记为 $A \sim B$。$P$ 称为<strong>过渡矩阵</strong>（相似变换矩阵）。</p>
+
+          <h3>相似矩阵的公共性质</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>性质</th><th>说明</th></tr>
+              <tr><td><strong>特征多项式相同</strong></td><td>$|\lambda E - A| = |\lambda E - B|$</td></tr>
+              <tr><td><strong>特征值相同</strong></td><td>特征多项式相同 ⇒ 特征值（含重数）完全相同</td></tr>
+              <tr><td><strong>行列式相同</strong></td><td>$|A| = |B|$（特征值之积）</td></tr>
+              <tr><td><strong>迹相同</strong></td><td>$\operatorname{tr}(A) = \operatorname{tr}(B)$（特征值之和）</td></tr>
+              <tr><td><strong>秩相同</strong></td><td>$r(A) = r(B)$</td></tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">💡 核心洞察</div>
+            <p>相似变换的本质是<strong>换基</strong>：$B = P^{-1}AP$ 意味着在 $P$ 的列向量构成的新基下，$B$ 是 $A$ 的\"新坐标表示\"。特征值是相似<strong>不变量</strong>——在所有基下都保持不变。</p>
+          </div>
+        </section>
+
+        <!-- ===== 对角化 ===== -->
+        <section id="diagonalize">
+          <h2>🎯 对角化</h2>
+
+          <h3>什么是可对角化</h3>
+          <p>若 $n$ 阶方阵 $A$ 能与对角矩阵 $\Lambda$ 相似，即存在可逆矩阵 $P$ 使得：</p>
+          <div class="formula">$$P^{-1}AP = \Lambda = \begin{pmatrix}
+            \lambda_1 & & \\
+            & \ddots & \\
+            & & \lambda_n
+          \end{pmatrix}$$</div>
+          <p>则称 $A$ <strong>可对角化</strong>。此时 $P$ 的列向量正是 $A$ 的 $n$ 个线性无关的特征向量，$\Lambda$ 的对角元素为对应的特征值。</p>
+
+          <h3>定理 5.2 — 互异特征值可对角化</h3>
+          <p>若 $n$ 阶方阵 $A$ 有 $n$ 个<strong>互异的特征值</strong>，则 $A$ 必可对角化。</p>
+          <p class="note">证明思路：互异特征值对应的特征向量线性无关 ⇒ 恰好 $n$ 个无关向量 ⇒ 构成满秩矩阵 $P$。</p>
+
+          <h3>定理 5.3 — 可对角化的充要条件</h3>
+          <p>$A$ 可对角化 $\iff$ 每个特征值的<strong>几何重数</strong>等于<strong>代数重数</strong>。</p>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>概念</th><th>定义</th><th>符号</th></tr>
+              <tr>
+                <td><strong>代数重数</strong></td>
+                <td>特征值 $\lambda_i$ 作为特征多项式根的重数</td>
+                <td>$m_i$</td>
+              </tr>
+              <tr>
+                <td><strong>几何重数</strong></td>
+                <td>特征子空间 $V_{\lambda_i}$ 的维数 = $n - r(\lambda_i E - A)$</td>
+                <td>$d_i$</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="formula">$$\text{可对角化} \iff d_i = m_i \quad (\forall i)$$</div>
+
+          <div class="example-box">
+            <div class="example-label">⚠️ 重根验证法</div>
+            <p>遇到重特征值 $\lambda$（代数重数 $m > 1$）：</p>
+            <ol>
+              <li>计算 $r(\lambda E - A)$</li>
+              <li>计算几何重数 $d = n - r(\lambda E - A)$</li>
+              <li>若 $d = m$，则 $\lambda$ 贡献 $m$ 个无关特征向量；否则不可对角化</li>
+            </ol>
+            <p>常见不可对角化案例：<strong>约当块</strong>（如 $J = \begin{pmatrix}\lambda & 1 \\ 0 & \lambda\end{pmatrix}$），几何重数为 1 但代数重数为 2。</p>
+          </div>
+
+          <h3>对角化的意义</h3>
+          <ul>
+            <li><strong>简化计算</strong>：$A^k = P\Lambda^k P^{-1}$，对角幂远易于矩阵幂</li>
+            <li><strong>解耦合</strong>：将复杂的线性变换分解为独立的缩放操作</li>
+            <li><strong>本质信息</strong>：特征值决定伸缩倍数，特征向量决定方向</li>
+          </ul>
+        </section>
+
+        <!-- ===== 实对称矩阵三大定理 ===== -->
+        <section id="symmetric">
+          <h2>💎 实对称矩阵三大定理</h2>
+
+          <p>实对称矩阵（$A^\mathsf{T} = A$，元素均为实数）的特征值与特征向量具有极其特殊的性质，是线代中最优美的结论之一。</p>
+
+          <h3>定理 1 — 必可正交对角化</h3>
+          <p>实对称矩阵 $A$ 一定可对角化，而且可以通过<strong>正交矩阵</strong> $Q$（$Q^\mathsf{T} = Q^{-1}$）实现对角化：</p>
+          <div class="formula">$$Q^\mathsf{T}AQ = \Lambda$$</div>
+          <p>即存在正交矩阵 $Q$ 使得 $Q^\mathsf{T}AQ$ 为对角矩阵。</p>
+
+          <h3>定理 2 — 不同特征值的特征向量正交</h3>
+          <p>实对称矩阵 $A$ 的<strong>不同特征值</strong>对应的特征向量必然<strong>正交</strong>。</p>
+          <p>证明要点：设 $A\alpha = \lambda\alpha$，$A\beta = \mu\beta$，$\lambda \neq \mu$，则</p>
+          <div class="formula">$$\lambda\langle\alpha,\beta\rangle = \langle A\alpha,\beta\rangle = \langle\alpha,A\beta\rangle = \mu\langle\alpha,\beta\rangle \;\Longrightarrow\; (\lambda-\mu)\langle\alpha,\beta\rangle = 0 \;\Longrightarrow\; \langle\alpha,\beta\rangle = 0$$</div>
+
+          <h3>定理 3 — 存在正交矩阵 Q</h3>
+          <p>对任意实对称矩阵 $A$，总存在正交矩阵 $Q$ 使得：</p>
+          <div class="formula">$$Q^\mathsf{T}AQ = \Lambda$$</div>
+          <p>其中 $\Lambda$ 的对角线元素为 $A$ 的特征值（均为实数）。</p>
+
+          <div class="example-box">
+            <div class="example-label">💡 三大定理的意义</div>
+            <p>实对称矩阵的特征值都是<strong>实数</strong>（不会出现复数），且特征向量可构成标准正交基。这是 PCA 中协方差矩阵可正交对角化的理论基础，也是二次型标准化（主轴定理）的核心。</p>
+          </div>
+        </section>
+
+        <!-- ===== 正交对角化步骤 ===== -->
+        <section id="orthogonal-steps">
+          <h2>📐 正交对角化步骤</h2>
+
+          <p>对实对称矩阵 $A$ 进行正交对角化，分 4 步：</p>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>步骤</th><th>操作</th><th>说明</th></tr>
+              <tr>
+                <td><strong>① 求特征值</strong></td>
+                <td>解 $|\lambda E - A| = 0$</td>
+                <td>得到全部 $n$ 个特征值（均为实数）</td>
+              </tr>
+              <tr>
+                <td><strong>② 求特征向量</strong></td>
+                <td>对每个 $\lambda_i$，解 $(\lambda_i E - A)x = 0$</td>
+                <td>得到 $n$ 个线性无关的特征向量</td>
+              </tr>
+              <tr>
+                <td><strong>③ 施密特正交化</strong></td>
+                <td>将同一特征值的特征向量<strong>Schmidt 正交化</strong></td>
+                <td>不同特征值已自动正交（定理 2），只需处理重根内部的线性无关向量</td>
+              </tr>
+              <tr>
+                <td><strong>④ 单位化</strong></td>
+                <td>将所有正交向量<strong>单位化</strong></td>
+                <td>得到标准正交基，组成正交矩阵 $Q$</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">⚠️ 关键注意</div>
+            <p><strong>施密特正交化只对同一特征值的特征向量做</strong>！不同特征值的特征向量之间根据定理 2 已经正交，不需要也不应该再施密特。单位化时每列除以自己的模长即可。</p>
+          </div>
+        </section>
+
+        <!-- ===== 易错点 ===== -->
+        <section id="pitfalls">
+          <h2>⚠️ 易错点</h2>
+
+          <div class="example-box">
+            <div class="example-label">❌ 误区 1：特征向量可以为零向量</div>
+            <p>定义明确要求 $\alpha \neq 0$。零向量恒满足 $A \cdot 0 = \lambda \cdot 0$，但它不提供任何信息，故排除。</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">❌ 误区 2：不同特征值对应的特征向量一定正交</div>
+            <p><strong>只在实对称矩阵</strong>下才成立！一般矩阵不同特征值的特征向量只是线性无关，未必正交。</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">❌ 误区 3：有 n 个互异特征值是可对角化的必要条件</div>
+            <p>是<strong>充分</strong>条件而非必要。反例：单位矩阵 $E$ 所有特征值都为 1（重根），但 $E = E E E^{-1}$ 显然可对角化。</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">❌ 误区 4：$|A - \lambda E|$ 和 $|\lambda E - A|$ 的特征值不同</div>
+            <p>两种写法仅差 $(-1)^n$ 因子，特征方程的根完全相同。推荐使用 $|\lambda E - A|$ 以保证特征多项式首一。</p>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">❌ 误区 5：特征值全为零 ⇒ 矩阵为零矩阵</div>
+            <p>错！例如严格上三角矩阵 $\begin{pmatrix}0 & 1 \\ 0 & 0\end{pmatrix}$ 的特征值全为 0，但它不是零矩阵。特征值为零只说明矩阵<strong>不可逆</strong>。</p>
+          </div>
+        </section>
+
+        <!-- ===== 演进关系 ===== -->
+        <section id="evolution">
+          <h2>🌳 与后续章节的关联</h2>
+
+          <div class="evo-tree">
+            <div class="evo-root">🎯 特征值分解</div>
+            <div class="evo-branch">
+              <div class="evo-child" style="background:rgba(172,128,0,.08);border-color:rgba(172,128,0,.2);color:rgba(255,255,255,.8);">
+                → 二次型 <span class="evo-note">主轴定理：正交变换化标准形</span>
+              </div>
+              <div class="evo-child" style="background:rgba(172,128,0,.06);border-color:rgba(172,128,0,.15);color:rgba(255,255,255,.7);">
+                → SVD 分解 <span class="evo-note">$A^\mathsf{T}A$ 的特征值分解推广到任意矩阵</span>
+              </div>
+              <div class="evo-child" style="background:rgba(172,128,0,.06);border-color:rgba(172,128,0,.15);color:rgba(255,255,255,.7);">
+                → PCA <span class="evo-note">协方差矩阵的特征向量 = 主成分方向</span>
+              </div>
+              <div class="evo-child" style="background:rgba(172,128,0,.06);border-color:rgba(172,128,0,.15);color:rgba(255,255,255,.7);">
+                → 谱聚类 <span class="evo-note">Laplacian 矩阵的特征值决定图的划分</span>
+              </div>
+              <div class="evo-child" style="background:rgba(172,128,0,.06);border-color:rgba(172,128,0,.15);color:rgba(255,255,255,.7);">
+                → PageRank <span class="evo-note">网页链接矩阵的主特征向量 = 网页排名</span>
+              </div>
+              <div class="evo-child" style="background:rgba(172,128,0,.06);border-color:rgba(172,128,0,.15);color:rgba(255,255,255,.7);">
+                → 动力系统 <span class="evo-note">$\dot{x} = Ax$ 的稳定性由特征值实部决定</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 关键概念 ===== -->
+        <section id="concepts">
+          <h2>🔑 关键概念</h2>
+          <ul>
+            <li><strong>特征值 $\lambda$</strong> — 使 $A\alpha = \lambda\alpha$ 成立的标量，反映矩阵在特征向量方向上的伸缩倍数</li>
+            <li><strong>特征向量 $\alpha$</strong> — 经 $A$ 变换后方向不变的<strong>非零</strong>向量</li>
+            <li><strong>特征多项式 $f(\lambda) = |\lambda E - A|$</strong> — 行列式展开得到的 $n$ 次首一多项式</li>
+            <li><strong>特征子空间 $V_\lambda$</strong> — 对应 $\lambda$ 的全部特征向量加上零向量构成的子空间</li>
+            <li><strong>代数重数 $m_i$</strong> — $\lambda_i$ 作为特征多项式根的重数</li>
+            <li><strong>几何重数 $d_i$</strong> — 特征子空间 $V_{\lambda_i}$ 的维数 = $n - r(\lambda_i E - A)$</li>
+            <li><strong>相似对角化</strong> — $P^{-1}AP = \Lambda$，$P$ 的列 = $n$ 个线性无关特征向量</li>
+            <li><strong>正交对角化</strong> — $Q^\mathsf{T}AQ = \Lambda$，$Q$ 为正交矩阵（仅限于实对称矩阵）</li>
+          </ul>
+        </section>
+
+        <!-- ===== 关联 ===== -->
+        <section id="related">
+          <h2>🔗 关联</h2>
+          <ul>
+            <li><strong>PCA（主成分分析）</strong> — 对数据中心化后的协方差矩阵做特征值分解，特征向量指向方差最大的方向，特征值大小衡量各主成分的重要性</li>
+            <li><strong>SVD（奇异值分解）</strong> — 特征值分解无法处理非方阵，SVD 通过 $A = U\Sigma V^\mathsf{T}$ 将分解推广到任意矩阵，其中 $U$ 和 $V$ 分别是 $AA^\mathsf{T}$ 和 $A^\mathsf{T}A$ 的特征向量</li>
+            <li><strong>行列式</strong> — $|A| = \prod \lambda_i$，行列式的值为零 $\iff$ 有零特征值 $\iff$ 矩阵不可逆</li>
+            <li><strong>二次型标准化</strong> — 对实对称矩阵 $A$，存在正交变换 $x = Qy$ 使二次型 $x^\mathsf{T}Ax = \sum \lambda_i y_i^2$ 化为标准形</li>
+            <li><strong>谱半径</strong> — $\rho(A) = \max |\lambda_i|$，决定迭代法的收敛性（如 Gauss-Seidel）和动力系统的稳定性</li>
+            <li><strong>PageRank</strong> — Google 的核心算法，网页链接矩阵的最大特征值对应的特征向量即为各网页的 PageRank 值</li>
+            <li><strong>谱聚类</strong> — 利用图 Laplacian 矩阵的第二小特征值（Fiedler 值）对应的特征向量进行聚类分割</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          特征向量<strong>方向不变</strong>，只被缩放 $\lambda$ 倍。不同特征值的特征向量<strong>线性无关</strong>（但对一般矩阵并非正交）。$n$ 个互异特征值 $\Rightarrow$ 可对角化（充分非必要）。
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 局限</strong>
+          特征值分解只对<strong>方阵</strong>定义。即使对方阵，也并非所有矩阵都可对角化（几何重数 < 代数重数时不可对角化，如约当块）。实对称矩阵则<strong>一定可正交对角化</strong>。
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 实践</strong>
+          PCA 中先对协方差矩阵做特征值分解，特征值排序后取前 k 大对应的特征向量即为投影方向。特征值之和 = 总方差，前 k 个特征值之和 / 总和 = 方差保留率。
+        </div>
+
+        <div class="callout" style="border-left-color:#eab308;">
+          <strong>🌳 408 考研</strong>
+          特征值线代中期<strong>核心章节</strong>，承上（矩阵、行列式）启下（二次型、SVD）。核心考点：特征值/向量计算、相似对角化判定、实对称矩阵正交对角化三步。重根必考几何重数 vs 代数重数。
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 数学基础 · 特征值分解
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

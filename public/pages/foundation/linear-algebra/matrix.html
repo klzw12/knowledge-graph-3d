@@ -48,6 +48,9 @@
         <a href="#ops">🧮 基本运算</a>
         <a href="#inverse">🔄 逆矩阵</a>
         <a href="#rank">📏 秩</a>
+        <a href="#elementary">🔄 初等变换</a>
+        <a href="#block">🧩 分块矩阵</a>
+        <a href="#adjoint-deep">📐 伴随矩阵与方程</a>
         <a href="#bridge">🌉 从行列式到矩阵</a>
         <a href="#concepts">🔑 关键概念</a>
         <a href="#related">🔗 关联</a>
@@ -155,6 +158,125 @@
           </div>
         </section>
 
+        <!-- ===== 初等变换与初等矩阵 ===== -->
+        <section id="elementary">
+          <h2>🔄 初等变换与初等矩阵</h2>
+
+          <h3>三种初等变换</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>#</th><th>操作</th><th>行变换↔左乘</th><th>列变换↔右乘</th></tr>
+              <tr><td>①</td><td>交换两行（列）</td><td>$E(i,j)A$</td><td>$AE(i,j)$</td></tr>
+              <tr><td>②</td><td>非零数 $k$ 乘某行（列）</td><td>$E_i(k)A$</td><td>$AE_i(k)$</td></tr>
+              <tr><td>③</td><td>某行 $k$ 倍加到另一行</td><td>$E_{ij}(k)A$</td><td>$AE_{ij}(k)$</td></tr>
+            </table>
+          </div>
+
+          <h3>初等矩阵逆矩阵（考研速记）</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>操作</th><th>初等矩阵 $E$</th><th>$E^{-1}$</th></tr>
+              <tr><td>交换第 $i,j$ 行</td><td>$E_{ij}$</td><td>$E_{ij}$（自身）</td></tr>
+              <tr><td>第 $i$ 行乘 $k\neq0$</td><td>$E_i(k)$</td><td>$E_i(1/k)$</td></tr>
+              <tr><td>第 $j$ 行的 $k$ 倍加到第 $i$ 行</td><td>$E_{ij}(k)$</td><td>$E_{ij}(-k)$</td></tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">💡 核心规律</div>
+            <p><strong>行变换 ↔ 左乘</strong> 初等矩阵；<strong>列变换 ↔ 右乘</strong> 初等矩阵。<br>
+            矩阵 $A$ 可逆 $\iff$ $A$ 可表示为若干初等矩阵的乘积。</p>
+          </div>
+
+          <h3>行阶梯矩阵与行最简矩阵</h3>
+          <ul>
+            <li><strong>行阶梯矩阵</strong>：每个非零行的首个非零元素下方全为 0</li>
+            <li><strong>行最简矩阵</strong>：行阶梯基础上，首非零元为 1，且所在列其他元素全为 0</li>
+            <li>任一矩阵均可经初等行变换化为行阶梯形 → 行最简形</li>
+          </ul>
+          <p><strong>等价矩阵</strong>：$A\cong B$ $\iff$ 存在可逆矩阵 $P,Q$ 使 $PAQ=B$。初等变换不改变矩阵的秩。</p>
+        </section>
+
+        <!-- ===== 分块矩阵 ===== -->
+        <section id="block">
+          <h2>🧩 分块矩阵</h2>
+
+          <p>将矩阵用横竖线分成若干子块，以子块为元素的矩阵称为分块矩阵。</p>
+
+          <div class="formula">$$\begin{bmatrix}
+            A_1 & A_2 \\
+            A_3 & A_4
+          \end{bmatrix}
+          +
+          \begin{bmatrix}
+            B_1 & B_2 \\
+            B_3 & B_4
+          \end{bmatrix}
+          =
+          \begin{bmatrix}
+            A_1+B_1 & A_2+B_2 \\
+            A_3+B_3 & A_4+B_4
+          \end{bmatrix}$$</div>
+          <div class="formula">$$\begin{bmatrix}
+            A_1 & A_2 \\
+            A_3 & A_4
+          \end{bmatrix}
+          \begin{bmatrix}
+            B_1 & B_2 \\
+            B_3 & B_4
+          \end{bmatrix}
+          =
+          \begin{bmatrix}
+            A_1B_1+A_2B_3 & A_1B_2+A_2B_4 \\
+            A_3B_1+A_4B_3 & A_3B_2+A_4B_4
+          \end{bmatrix}$$</div>
+
+          <h3>分块对角矩阵（高频）</h3>
+          <p>设 $A = \operatorname{diag}(A_1,A_2,\dots,A_s)$：</p>
+          <ul>
+            <li>$|A| = |A_1||A_2|\cdots|A_s|$</li>
+            <li>$A^{-1} = \operatorname{diag}(A_1^{-1},A_2^{-1},\dots,A_s^{-1})$（各子块可逆时）</li>
+            <li>副对角线：$\begin{bmatrix}O&B\\C&O\end{bmatrix}^{-1} = \begin{bmatrix}O&C^{-1}\\B^{-1}&O\end{bmatrix}$</li>
+          </ul>
+        </section>
+
+        <!-- ===== 伴随矩阵深入 ===== -->
+        <section id="adjoint-deep">
+          <h2>📐 伴随矩阵深入与矩阵方程</h2>
+
+          <h3>伴随矩阵秩定理（考研必背）</h3>
+          <div class="formula">$$r(A^*) = \begin{cases}
+            n, & r(A)=n,\\
+            1, & r(A)=n-1,\\
+            0, & r(A) < n-1.
+          \end{cases}$$</div>
+          <p>伴随矩阵的秩只有三种可能——满秩、1、0，取决于原矩阵的秩。</p>
+
+          <h3>伴随矩阵性质大全</h3>
+          <ul>
+            <li>$(kA)^* = k^{n-1}A^*$</li>
+            <li>$(A^\mathsf{T})^* = (A^*)^\mathsf{T}$</li>
+            <li>$|A^*| = |A|^{n-1}$</li>
+            <li>$(A^*)^* = |A|^{n-2}A$</li>
+            <li>$A$ 可逆时：$A^* = |A|A^{-1}$，$(A^*)^{-1} = (A^{-1})^* = \frac{1}{|A|}A$</li>
+          </ul>
+
+          <h3>矩阵方程求解框架（考研高频）</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>方程</th><th>可逆情形</th><th>不可逆情形</th></tr>
+              <tr><td>$AX=B$</td><td>$X=A^{-1}B$</td><td>初等行变换 $[A|B] \xrightarrow{r} [E|X]$</td></tr>
+              <tr><td>$XA=B$</td><td>$X=BA^{-1}$</td><td>初等列变换 $\begin{bmatrix}A\\B\end{bmatrix} \xrightarrow{c} \begin{bmatrix}E\\X\end{bmatrix}$</td></tr>
+              <tr><td>$AXB=C$</td><td>$X=A^{-1}CB^{-1}$</td><td>分步讨论秩</td></tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">⚠️ 注意</div>
+            <p>$AX=B$ 和 $XA=B$ 的解不同——矩阵乘法不交换，左乘和右乘 $A^{-1}$ 的位置有严格区别。</p>
+          </div>
+        </section>
+
         <!-- ===== 从行列式到矩阵 ===== -->
         <section id="bridge">
           <h2>🌉 从行列式到矩阵</h2>
@@ -196,6 +318,9 @@
             <li><strong>深度学习</strong> — 神经网络前向传播 = 矩阵乘法 + 激活函数</li>
             <li><strong>线性回归</strong> — 解析解 $\mathbf{w} = (X^\mathsf{T}X)^{-1}X^\mathsf{T}\mathbf{y}$ 本质是矩阵求逆</li>
             <li><strong>特征值分解</strong> — 将矩阵分解为 $A = Q\Lambda Q^{-1}$，揭示主要变化方向</li>
+            <li><strong><a href="linear-equations.html" style="color:#a87800;">线性方程组</a></strong> — 矩阵秩判定解的存在性与结构</li>
+            <li><strong><a href="eigen.html" style="color:#ac8000;">特征值分解</a></strong> — 相似对角化，矩阵的谱分解</li>
+            <li><strong><a href="quadratic-forms.html" style="color:#906000;">二次型</a></strong> — 实对称矩阵与正定性判别</li>
           </ul>
         </section>
 
