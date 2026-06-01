@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>矩阵运算 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+
+  <link rel="stylesheet" href="../../../css/common.css" />
+  <style>
+    .title-area .bar { background:#c09000; }
+    .aside-col .callout { border-left-color:#c09000; }
+    .aside-col .callout strong { color:#c09000; }
+    .evo-root{background:rgba(192,144,0,.1);border:1px solid rgba(192,144,0,.25);color:rgba(255,255,255,.85)}
+    .evo-note{color:rgba(192,144,0,.6)}
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        矩阵运算
+        <span class="en">Matrix Operations</span>
+      </h1>
+      <div class="bar" style="background:#c09000"></div>
+      <p class="brief">
+        矩阵是线性代数的核心操作对象，本质是"向量的容器"。
+        所有矩阵运算都可视为对容器内数据的批量转换。
+      </p>
+    </div>
+
+    <!-- ===== 三栏 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#definition">📖 定义</a>
+        <a href="#ops">🧮 基本运算</a>
+        <a href="#inverse">🔄 逆矩阵</a>
+        <a href="#rank">📏 秩</a>
+        <a href="#bridge">🌉 从行列式到矩阵</a>
+        <a href="#concepts">🔑 关键概念</a>
+        <a href="#related">🔗 关联</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 定义 ===== -->
+        <section id="definition">
+          <h2>📖 定义</h2>
+          <p><strong>矩阵</strong>：$m \times n$ 个数按一定顺序排成的 $m$ 行 $n$ 列的矩形数表，记作 $A_{m \times n}$ 或 $(a_{ij})_{m \times n}$。</p>
+          <div class="formula">$$A = \begin{pmatrix}
+            a_{11} & a_{12} & \cdots & a_{1n} \\
+            a_{21} & a_{22} & \cdots & a_{2n} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            a_{m1} & a_{m2} & \cdots & a_{mn}
+          \end{pmatrix}$$</div>
+
+          <p>几个特殊矩阵类型：</p>
+          <ul>
+            <li><strong>方阵</strong>：$m=n$，行列式只对方阵定义</li>
+            <li><strong>对角矩阵</strong>：仅主对角线非零，其余为 0</li>
+            <li><strong>单位矩阵</strong> $I$：主对角线全为 1 的对角矩阵，$AI = IA = A$</li>
+            <li><strong>对称矩阵</strong>：$A^\mathsf{T} = A$</li>
+            <li><strong>正交矩阵</strong>：$A^\mathsf{T}A = AA^\mathsf{T} = I$，$|A| = \pm 1$</li>
+          </ul>
+        </section>
+
+        <!-- ===== 基本运算 ===== -->
+        <section id="ops">
+          <h2>🧮 基本运算</h2>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>运算</th><th>公式</th><th>条件</th></tr>
+              <tr>
+                <td><strong>加法</strong></td>
+                <td>$(A+B)_{ij} = a_{ij} + b_{ij}$</td>
+                <td>同型矩阵</td>
+              </tr>
+              <tr>
+                <td><strong>数乘</strong></td>
+                <td>$(kA)_{ij} = k \cdot a_{ij}$</td>
+                <td>任意矩阵</td>
+              </tr>
+              <tr>
+                <td><strong>乘法</strong></td>
+                <td>$(AB)_{ij} = \sum_{k=1}^{p} a_{ik}b_{kj}$</td>
+                <td>$A_{m\times p},\; B_{p\times n}$</td>
+              </tr>
+              <tr>
+                <td><strong>转置</strong></td>
+                <td>$(A^\mathsf{T})_{ij} = a_{ji}$</td>
+                <td>任意矩阵</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">⚠️ 矩阵乘法要点</div>
+            <p>① $AB \neq BA$（不满足交换律）<br>
+            ② $AB = O \nRightarrow A=O$ 或 $B=O$（有零因子）<br>
+            ③ 行数 = 前列数，后行数 = 列数，才能相乘</p>
+          </div>
+        </section>
+
+        <!-- ===== 逆矩阵 ===== -->
+        <section id="inverse">
+          <h2>🔄 逆矩阵</h2>
+
+          <p>对于 $n$ 阶方阵 $A$，若存在 $B$ 使 $AB = BA = I$，则 $B$ 称为 $A$ 的<strong>逆矩阵</strong>，记作 $A^{-1}$。</p>
+          <div class="formula">$$A^{-1} = \frac{A^*}{|A|},\quad A^* = (A_{ji}) \text{ 为伴随矩阵}$$</div>
+
+          <p><strong>可逆的充要条件</strong>（等价链核心）：</p>
+          <div class="formula">$$|A| \neq 0 \iff r(A)=n \iff A \text{ 可逆} \iff \text{行(列)向量组无关} \iff Ax=0 \text{ 仅有零解}$$</div>
+
+          <p>逆矩阵用于：解方程组 $x = A^{-1}b$、矩阵方程、理论推导等。实际计算常用 Gauss-Jordan 消元法而非伴随矩阵法（$O(n!)$ vs $O(n^3)$）。</p>
+        </section>
+
+        <!-- ===== 秩 ===== -->
+        <section id="rank">
+          <h2>📏 秩 (Rank)</h2>
+
+          <p><strong>定义</strong>：矩阵 $A$ 中非零最高阶子式的阶数，记作 $r(A)$。</p>
+          <ul>
+            <li>$r(A) = n \iff |A| \neq 0$（满秩/可逆）</li>
+            <li>$r(A) < n \iff |A| = 0$（降秩/不可逆）</li>
+            <li>初等变换不改变秩——常用行阶梯形法求秩</li>
+          </ul>
+
+          <h3>三秩相等（核心定理）</h3>
+          <div class="formula">$$r(A) = \text{行秩} = \text{列秩}$$</div>
+          <p>矩阵的行空间维数、列空间维数、向量组秩三者一致。</p>
+
+          <h3>秩的不等式（考研必背）</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>公式</th><th>说明</th></tr>
+              <tr><td>$r(AB) \le \min\{r(A), r(B)\}$</td><td>乘后秩不增</td></tr>
+              <tr><td>$AB=O \Rightarrow r(A)+r(B) \le n$</td><td>$n$ 为 $A$ 的列数</td></tr>
+              <tr><td>$r(A+B) \le r(A) + r(B)$</td><td>和秩不等式</td></tr>
+              <tr><td>$r\begin{pmatrix}A&O\\O&B\end{pmatrix} = r(A) + r(B)$</td><td>分块对角</td></tr>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== 从行列式到矩阵 ===== -->
+        <section id="bridge">
+          <h2>🌉 从行列式到矩阵</h2>
+
+          <p>行列式是矩阵的<strong>标量映射</strong>，它连接了矩阵世界的核心概念：</p>
+
+          <div class="evo-tree">
+            <div class="evo-root">📐 行列式 $|A|$</div>
+            <div class="evo-branch">
+              <div class="evo-child">→ <strong>矩阵可逆</strong> $|A|\neq0 \iff A^{-1}$ 存在</div>
+              <div class="evo-child">→ <strong>秩</strong> $|A|\neq0 \iff r(A)=n$（满秩）</div>
+              <div class="evo-child">→ <strong>方程组</strong> $|A|\neq0 \iff$ 唯一解</div>
+              <div class="evo-child">→ <strong>特征值</strong> $|A-\lambda I| = 0$</div>
+              <div class="evo-child">→ <strong>二次型</strong> 顺序主子式判正定</div>
+            </div>
+          </div>
+
+          <p><strong>一句话</strong>：行列式是矩阵的"门卫"——只回答"是/否"（可逆/满秩/唯一），门关上后（$|A|=0$），里面的事由秩来管。</p>
+        </section>
+
+        <!-- ===== 关键概念 ===== -->
+        <section id="concepts">
+          <h2>🔑 关键概念</h2>
+          <ul>
+            <li><strong>矩阵乘法 $AB$</strong> — 前者的行与后者的列点积，本质是线性变换的复合</li>
+            <li><strong>逆矩阵 $A^{-1}$</strong> — $|A|\neq0$ 时存在，$x=A^{-1}b$ 解方程组</li>
+            <li><strong>秩 $r(A)$</strong> — 矩阵最核心的数值特征，决定解空间维数</li>
+            <li><strong>伴随矩阵 $A^*$</strong> — 由代数余子式构成，$AA^* = A^*A = |A|I$</li>
+            <li><strong>初等变换</strong> — 不改变秩，是求逆/求秩/解方程组的标准工具</li>
+            <li><strong>三秩相等</strong> — 行秩=列秩=矩阵秩，打通了行/列两个视角</li>
+          </ul>
+        </section>
+
+        <!-- ===== 关联 ===== -->
+        <section id="related">
+          <h2>🔗 关联</h2>
+          <ul>
+            <li><strong><a href="determinant.html" style="color:#c89810;">行列式</a></strong> — 矩阵的标量映射，$|A|\neq0$ 是可逆的充要条件</li>
+            <li><strong>深度学习</strong> — 神经网络前向传播 = 矩阵乘法 + 激活函数</li>
+            <li><strong>线性回归</strong> — 解析解 $\mathbf{w} = (X^\mathsf{T}X)^{-1}X^\mathsf{T}\mathbf{y}$ 本质是矩阵求逆</li>
+            <li><strong>特征值分解</strong> — 将矩阵分解为 $A = Q\Lambda Q^{-1}$，揭示主要变化方向</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          矩阵是"向量的容器"，矩阵乘法本质是线性变换的复合。深度学习的所有运算最终归结为矩阵乘法。
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 注意</strong>
+          矩阵乘法不满足交换律和消去律。$AB=O$ 推不出 $A=O$ 或 $B=O$。
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 实践</strong>
+          掌握秩的三条不等式和矩阵乘法三要点，覆盖 80% 的实操场景。
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 数学基础 · 矩阵运算 Matrix Operations
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

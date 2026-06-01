@@ -55,6 +55,7 @@
         <a href="#expansion">🧩 展开与余子式</a>
         <a href="#special">⭐ 特殊行列式</a>
         <a href="#cramer">⚖️ 克拉默法则</a>
+        <a href="#matrix-bridge">🌉 桥梁到矩阵</a>
         <a href="#evolution">🌳 演进关系</a>
         <a href="#concepts">🔑 关键概念</a>
         <a href="#related">🔗 关联</a>
@@ -126,18 +127,42 @@
         <section id="properties">
           <h2>⚖️ 行列式的性质</h2>
 
+          <h3>🌳 三条根基（不可再约，逻辑本源）</h3>
           <div class="table-wrap">
             <table>
-              <tr><th>#</th><th>性质</th><th>说明</th></tr>
-              <tr><td>1</td><td>$|A| = |A^\mathsf{T}|$</td><td>行列式与转置行列式相等</td></tr>
-              <tr><td>2</td><td>交换两行（列），行列式变号</td><td>推论：两行相同 → 行列式为 0</td></tr>
-              <tr><td>3</td><td>某行(列)公因子 k 可提出</td><td>推论：某行全 0 → 行列式为 0；两行成比例 → 行列式为 0</td></tr>
-              <tr><td>4</td><td>拆分性质</td><td>若某行是两数之和，行列式 = 两个行列式之和</td></tr>
-              <tr><td>5</td><td>倍加不变</td><td>某行(列)的 k 倍加到另一行(列)，行列式不变</td></tr>
+              <tr><th>#</th><th>根基性质</th><th>为什么是根基</th></tr>
+              <tr><td>①</td><td><strong>提取公因子</strong>：某行/列乘 $k$，行列式值乘 $k$</td><td>涉及"缩放"，线性性的一维</td></tr>
+              <tr><td>②</td><td><strong>交换变号</strong>：交换两行/列，乘 $(-1)$</td><td>涉及"排列符号"，反对称性</td></tr>
+              <tr><td>③</td><td><strong>单行可拆</strong>：某行 $=a_i+b_i$，可拆为两式之和</td><td>涉及"加法"，线性性的另一维</td></tr>
             </table>
           </div>
+          <p style="color:rgba(255,255,255,.4);font-size:13px;">口号：①缩放 ②反转 ③分拆 — 三个操作说完，全部性质都是它们的推论。</p>
 
-          <p>性质 5 是<strong>行列式计算中最常用的工具</strong>——通过倍加操作将矩阵化为上三角形式，再直接相乘对角线元素即得行列式值。</p>
+          <h3>🌿 三条衍生（均可由根基推导）</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>衍生性质</th><th>推导路径</th></tr>
+              <tr>
+                <td><strong>两行相同 ⇒ 值为 0</strong></td>
+                <td>交换这两行（根基②）→ 值变号但矩阵不变 → $D=-D \Rightarrow D=0$</td>
+              </tr>
+              <tr>
+                <td><strong>两行成比例 ⇒ 值为 0</strong></td>
+                <td>比例因子 $k$ 提出（根基①）→ 两行相同 → 值为 0（上条衍生）</td>
+              </tr>
+              <tr>
+                <td><strong>某行倍数加另一行，值不变</strong></td>
+                <td>拆分（根基③）→ 成比例行为 0（上条衍生）→ 剩下原行列式</td>
+              </tr>
+            </table>
+          </div>
+          <p>另外还有 $|A|=|A^\mathsf{T}|$（转置性质），可由定义直接证明，也属于根基层。性质 5（倍加不变）是 <strong>行列式计算中最常用的工具</strong>——通过倍加操作将矩阵化为上三角形式，再直接相乘对角线元素即得行列式值。</p>
+
+          <div class="example-box">
+            <div class="example-label">💡 核心洞察</div>
+            <p>如果考试中遇到不确定的变换，回到三条根基推理，永远最稳妥。<br>
+            考研中"推导"比"死记"更可靠——三条根基一共就三句话，衍生性质现场推都来得及。</p>
+          </div>
         </section>
 
         <!-- ===== 展开与余子式 ===== -->
@@ -202,20 +227,75 @@
           <h2>⚖️ 克拉默法则 (Cramer's Rule)</h2>
 
           <div class="formula">$$\text{若 } |A| \neq 0,\quad 则 Ax=b \text{ 有唯一解:}\quad x_i = \frac{|A_i|}{|A|}$$</div>
-          <p>其中 $A_i$ 是将 $A$ 的第 i 列替换为向量 $b$ 后得到的矩阵。</p>
+          <p>其中 $A_i$ 是将 $A$ 的第 i 列替换为向量 $b$ 后得到的矩阵。分母 $|A|$ 决定能否"除"，分子 $|A_i|$ 只是替换列后的新行列式。</p>
 
+          <h3>各种情况一览</h3>
           <div class="table-wrap">
             <table>
-              <tr><th>条件</th><th>结论</th></tr>
-              <tr><td>$|A| \neq 0$</td><td>唯一解（非齐次）；仅有零解（齐次）</td></tr>
-              <tr><td>$|A| = 0$</td><td>无法判断，需改用秩判别（可能无解或无穷多解）</td></tr>
+              <tr><th>条件</th><th>$Ax=b$（非齐次）</th><th>$Ax=0$（齐次）</th></tr>
+              <tr>
+                <td><strong>$|A| \neq 0$</strong></td>
+                <td>✅ <strong>唯一解</strong>（克拉默直接算）</td>
+                <td>✅ <strong>唯一解 = 零解</strong>（称为平凡解）</td>
+              </tr>
+              <tr>
+                <td><strong>$|A| = 0$</strong></td>
+                <td>❌ 无解或无穷多解 — 克拉默失效，需用秩判断</td>
+                <td>❌ <strong>非零解存在</strong>（有自由度）</td>
+              </tr>
             </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">⚠️ 常见误区：齐次方程的分子</div>
+            <p>$Ax=0$ 时，$b=0$，所以 $A_i$ 是将 $A$ 第 i 列换为零 → $|A_i|=0$。<br>
+            <strong>但分子=0 ≠ 只有零解！</strong> 判断依据始终是分母 $|A|$：<br>
+            • $|A| \neq 0$ → 唯一解，且恰为 $x=0$ → <strong>只有零解</strong><br>
+            • $|A| = 0$ → 自由度高 → <strong>有非零解</strong><br>
+            分子 $|A_i|=0$ 是齐次的必然结果，不是判断依据。</p>
           </div>
 
           <div class="example-box">
             <div class="example-label">⚠️ 局限性</div>
             <p>克拉默法则的计算复杂度为 $O(n!)$，远高于高斯消元法 $O(n^3)$。实际中仅用于理论推导（如证明解的存在唯一性），工程上几乎不用。</p>
           </div>
+        </section>
+
+        <!-- ===== 行列式→矩阵桥梁 ===== -->
+        <section id="matrix-bridge">
+          <h2>🌉 行列式 → 矩阵 → 秩：三层接力</h2>
+
+          <p>行列式是<strong>标量</strong>，矩阵是<strong>容器</strong>。行列式的真正力量在于它连接了矩阵世界中的一系列核心概念。</p>
+
+          <h3>可逆性等价链（线代第一公式）</h3>
+          <div class="formula">$$|A|\ne 0 \iff r(A)=n \iff A\text{ 可逆} \iff \text{向量组无关} \iff Ax=0\text{ 仅零解} \iff \text{特征值全非零}$$</div>
+
+          <h3>行列式说"是/否"，秩说"多少"</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>场景</th><th>行列式能做什么</th><th>行列式不能做什么</th><th>谁接手</th></tr>
+              <tr>
+                <td>判断可逆</td><td>$|A|\ne 0$ 即可逆 ✅</td><td>—</td><td>—</td>
+              </tr>
+              <tr>
+                <td>解的唯一性</td><td>$|A|\ne 0$ 唯一 ✅</td><td>$|A|=0$ 时说不清 ❌</td><td><strong>秩</strong>：$r(A)$ vs $r(A|b)$</td>
+              </tr>
+              <tr>
+                <td>求具体解</td><td>$|A|\ne 0$ 用克拉默 ✅</td><td>阶数大时炸计算量 ❌</td><td><strong>消元法</strong> / $x=A^{-1}b$</td>
+              </tr>
+              <tr>
+                <td>向量相关性</td><td>向量数=维数时可用 ✅</td><td>向量数≠维数时不行 ❌</td><td><strong>秩</strong>：$r(\alpha_1,\dots,\alpha_m)$</td>
+              </tr>
+              <tr>
+                <td>特征值</td><td>$|A-\lambda E|=0$ ✅</td><td>—</td><td>—</td>
+              </tr>
+            </table>
+          </div>
+
+          <h3>一句话通解</h3>
+          <p><strong>行列式是门卫</strong>：只回答"是不是"（可逆/唯一/无关/满秩）。门一关（$|A|=0$），里面的事由<strong>秩</strong>来管。<br>
+          <strong>秩是管家</strong>：回答"有多少"（自由度、解空间维数、无关向量个数）。<br>
+          <strong>矩阵运算是工具</strong>：回答"具体是什么"（具体解、变换结果）。</p>
         </section>
 
         <!-- ===== 演进关系 ===== -->

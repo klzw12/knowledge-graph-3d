@@ -25,7 +25,7 @@ export default {
             color: '#c89810',
             src: '/pages/foundation/linear-algebra/determinant.html',
           },
-          { id: 'matrix', label: '矩阵运算', color: '#c09000' },
+          { id: 'matrix', label: '矩阵运算', color: '#c09000', src: '/pages/foundation/linear-algebra/matrix.html' },
           { id: 'eigen', label: '特征值分解', color: '#ac8000' },
           { id: 'svd', label: 'SVD 分解', color: '#987000' },
         ],
@@ -73,7 +73,7 @@ export default {
     { source: 'distribution', target: 'common-ml', label: '基础', color: '#eab308' },
     { source: 'matrix', target: 'dl', label: '张量运算基础', color: '#eab308' },
     { source: 'svd', target: 'recommender', label: '推荐系统基础', color: '#eab308' },
-    { source: 'determinant', target: 'eigen', label: '特征方程基础', color: '#eab308' },
     { source: 'determinant', target: 'matrix', label: '矩阵标量映射', color: '#eab308' },
+    { source: 'determinant', target: 'eigen', label: '特征方程基础', color: '#eab308' },
   ],
 }
