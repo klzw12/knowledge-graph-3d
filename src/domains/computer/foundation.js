@@ -26,6 +26,12 @@ export default {
             src: '/pages/foundation/linear-algebra/determinant.html',
           },
           { id: 'matrix', label: '矩阵运算', color: '#c09000', src: '/pages/foundation/linear-algebra/matrix.html' },
+          {
+            id: 'vector',
+            label: '向量与线性方程组',
+            color: '#b08000',
+            src: '/pages/foundation/linear-algebra/vector.html',
+          },
           { id: 'eigen', label: '特征值分解', color: '#ac8000' },
           { id: 'svd', label: 'SVD 分解', color: '#987000' },
         ],
@@ -75,5 +81,10 @@ export default {
     { source: 'svd', target: 'recommender', label: '推荐系统基础', color: '#eab308' },
     { source: 'determinant', target: 'matrix', label: '矩阵标量映射', color: '#eab308' },
     { source: 'determinant', target: 'eigen', label: '特征方程基础', color: '#eab308' },
+    // 向量组跨域
+    { source: 'vector', target: 'determinant', label: '相关⇔|A|=0', color: '#eab308' },
+    { source: 'vector', target: 'matrix', label: '三秩相等', color: '#eab308' },
+    { source: 'vector', target: 'eigen', label: '正交基变换', color: '#eab308' },
+    { source: 'vector', target: 'svd', label: '正交基基础', color: '#eab308' },
   ],
 }

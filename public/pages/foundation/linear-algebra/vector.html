@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>向量与线性方程组 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+
+  <link rel="stylesheet" href="../../../css/common.css" />
+  <style>
+    .title-area .bar { background:#b08000; }
+    .aside-col .callout { border-left-color:#b08000; }
+    .aside-col .callout strong { color:#b08000; }
+    .evo-root{background:rgba(176,128,0,.1);border:1px solid rgba(176,128,0,.25);color:rgba(255,255,255,.85)}
+    .evo-note{color:rgba(176,128,0,.6)}
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        向量与线性方程组
+        <span class="en">Vectors &amp; Linear Equations</span>
+      </h1>
+      <div class="bar" style="background:#b08000"></div>
+      <p class="brief">
+        从单个向量到向量组，从线性相关到解空间结构。
+        本章是连接行列式/矩阵与特征值/二次型的桥梁，也是考研线代定理最多的章节。
+      </p>
+    </div>
+
+    <!-- ===== 三栏 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#vector">📖 向量的概念</a>
+        <a href="#dependence">🔗 线性表示与相关</a>
+        <a href="#rank">📏 极大无关组与秩</a>
+        <a href="#orthogonal">📐 施密特正交化</a>
+        <a href="#ortho-matrix">🔄 正交矩阵</a>
+        <a href="#bridge">🌉 与其他章节的关联</a>
+        <a href="#concepts">🔑 关键概念</a>
+        <a href="#related">🔗 关联</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 向量的概念 ===== -->
+        <section id="vector">
+          <h2>📖 向量的概念</h2>
+
+          <p><strong>n 维向量</strong>：由 $n$ 个实数 $a_1,a_2,\dots,a_n$ 构成的有序数组。</p>
+          <ul>
+            <li><strong>行向量</strong>：$\alpha = (a_1, a_2, \dots, a_n)$</li>
+            <li><strong>列向量</strong>：$\alpha = (a_1, a_2, \dots, a_n)^\mathrm{T}$</li>
+            <li><strong>零向量</strong>：所有分量为 0，记作 $\mathbf{0}$</li>
+          </ul>
+
+          <h3>向量的运算</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>运算</th><th>定义</th></tr>
+              <tr><td><strong>加法</strong></td><td>对应分量相加：$\alpha+\beta = (a_1+b_1,\dots,a_n+b_n)$</td></tr>
+              <tr><td><strong>数乘</strong></td><td>每个分量乘以同一数：$k\alpha = (ka_1,\dots,ka_n)$</td></tr>
+              <tr><td><strong>内积</strong></td><td>$\alpha^\mathrm{T}\beta = \sum a_i b_i$</td></tr>
+              <tr><td><strong>模长</strong></td><td>$\|\alpha\| = \sqrt{a_1^2 + \cdots + a_n^2}$</td></tr>
+            </table>
+          </div>
+
+          <h3>向量组</h3>
+          <ul>
+            <li><strong>定义</strong>：同维向量的集合</li>
+            <li><strong>部分组与整体组</strong>：$S_1 \subseteq S$，整体无关$\Rightarrow$部分无关，部分相关$\Rightarrow$整体相关</li>
+            <li><strong>延伸组 / 缩短组</strong>：增/删分量所得。延伸相关$\Rightarrow$缩短相关；缩短无关$\Rightarrow$延伸无关</li>
+          </ul>
+        </section>
+
+        <!-- ===== 线性表示与相关 ===== -->
+        <section id="dependence">
+          <h2>🔗 线性表示与线性相关</h2>
+
+          <h3>基本定义</h3>
+          <div class="formula">$$\text{线性组合:}\quad k_1\alpha_1 + \cdots + k_m\alpha_m$$</div>
+
+          <ul>
+            <li><strong>线性表示</strong>：$\beta$ 可写为 $\alpha_1,\dots,\alpha_m$ 的线性组合</li>
+            <li><strong>线性相关</strong>：存在不全为 0 的 $k_i$ 使 $\sum k_i\alpha_i = \mathbf{0}$</li>
+            <li><strong>线性无关</strong>：仅当所有 $k_i=0$ 时 $\sum k_i\alpha_i = \mathbf{0}$</li>
+          </ul>
+
+          <div class="example-box">
+            <div class="example-label">⚠️ 注意</div>
+            <p>含零向量的向量组必线性相关。单个零向量相关，单个非零向量无关。</p>
+          </div>
+
+          <h3>考研核心：线性表示 ⇄ 方程组秩</h3>
+          <div class="formula">$$\beta \text{ 可由 } \alpha_1,\dots,\alpha_n \text{ 线性表示}
+            \iff r(\alpha_1,\dots,\alpha_n) = r(\alpha_1,\dots,\alpha_n,\beta)$$</div>
+          <p>即：把 $\beta$ 拼到向量组末尾，秩不变 $\iff$ $\beta$ 可被表示。</p>
+
+          <h3>重要定理一览（考研必背）</h3>
+          <div class="table-wrap">
+            <table>
+              <tr><th>#</th><th>内容</th></tr>
+              <tr><td><strong>定理 3.2</strong></td><td>$\alpha_1,\dots,\alpha_n$ 线性相关 $\iff$ 齐次方程组 $Ax=0$ 有非零解</td></tr>
+              <tr><td><strong>推论 1</strong></td><td>任意 $n+1$ 个 $n$ 维向量必线性相关</td></tr>
+              <tr><td><strong>推论 2</strong></td><td>向量个数=维数时，相关 $\iff$ 对应矩阵 $|A|=0$</td></tr>
+              <tr><td><strong>定理 3.5</strong></td><td>相关 $\iff$ 至少一个向量可被其余表示</td></tr>
+              <tr><td><strong>定理 3.6</strong></td><td>$\alpha_1,\dots,\alpha_n$ 无关，但加入 $\beta$ 后相关 $\Rightarrow$ $\beta$ 可被<strong>唯一</strong>表示</td></tr>
+              <tr><td><strong>定理 3.7</strong></td><td>若 II 可由 I 表示，且 t > s，则 II 相关<br>若 II 可由 I 表示，且 II 无关，则 t ≤ s</td></tr>
+            </table>
+          </div>
+
+          <p><strong>推论 2 的桥梁作用</strong>：当向量个数等于维数时，线性相关性问题直接转化为行列式计算——这是连接第三章和第一章的关键。</p>
+        </section>
+
+        <!-- ===== 极大无关组与秩 ===== -->
+        <section id="rank">
+          <h2>📏 极大线性无关组与秩</h2>
+
+          <p><strong>极大线性无关组</strong>：向量组中线性无关且无法再添加向量的子组。其向量个数即为<strong>秩</strong>，记 $r(\alpha_1,\dots,\alpha_m)$。</p>
+
+          <div class="formula">$$r(\alpha_1,\dots,\alpha_m) = \text{极大无关组中向量的个数}$$</div>
+
+          <h3>等价向量组</h3>
+          <p>两个向量组可互相线性表示 $\iff$ 等价，此时秩相等。</p>
+          <div class="formula">$$\text{(I) 等价于 (II)} \iff r(\text{I}) = r(\text{II})$$</div>
+
+          <h3>三秩相等（与矩阵的桥梁）</h3>
+          <div class="formula">$$r(A) = \text{行秩} = \text{列秩}$$</div>
+          <p>矩阵的秩 = 行向量组的秩 = 列向量组的秩。这意味着：<strong>向量组的秩可以用矩阵的初等变换来求</strong>——把向量排成矩阵，行阶梯形数非零行即可。</p>
+        </section>
+
+        <!-- ===== 施密特正交化 ===== -->
+        <section id="orthogonal">
+          <h2>📐 施密特正交化 (Gram-Schmidt)</h2>
+
+          <p>给定线性无关组 $\alpha_1,\dots,\alpha_m$，构造正交组 $\beta_1,\dots,\beta_m$：</p>
+          <div class="formula">$$\begin{aligned}
+            \beta_1 &= \alpha_1, \\
+            \beta_k &= \alpha_k - \sum_{i=1}^{k-1} \frac{(\alpha_k,\beta_i)}{(\beta_i,\beta_i)} \beta_i \quad (k=2,\dots,m)
+          \end{aligned}$$</div>
+
+          <p>核心思想：每步减去新向量在已有正交基上的投影，剩余分量即为正交部分。之后再单位化（除以模长）得<strong>标准正交组</strong>。</p>
+
+          <p><strong>用途</strong>：将任意基转化为标准正交基，是 QR 分解、最小二乘法等算法的基础。</p>
+        </section>
+
+        <!-- ===== 正交矩阵 ===== -->
+        <section id="ortho-matrix">
+          <h2>🔄 正交矩阵</h2>
+
+          <div class="formula">$$A^\mathrm{T}A = AA^\mathrm{T} = I$$</div>
+
+          <div class="table-wrap">
+            <table>
+              <tr><th>条件</th><th>等价性质</th></tr>
+              <tr><td>定义</td><td>$A^\mathrm{T}A = I$</td></tr>
+              <tr><td>逆</td><td>$A^{-1} = A^\mathrm{T}$</td></tr>
+              <tr><td>行列式</td><td>$|A| = \pm 1$</td></tr>
+              <tr><td>列向量</td><td>单位向量且两两正交</td></tr>
+              <tr><td>行向量</td><td>单位向量且两两正交</td></tr>
+              <tr><td>保范性</td><td>$\|Ax\| = \|x\|$（正交变换不改变向量长度）</td></tr>
+            </table>
+          </div>
+
+          <div class="example-box">
+            <div class="example-label">💡 直觉</div>
+            <p>正交矩阵对应的是<strong>旋转</strong>或<strong>反射</strong>——不伸缩、不变形，只改变方向。所以 $|A| = \pm 1$：$+1$ 是旋转，$-1$ 是反射。</p>
+          </div>
+        </section>
+
+        <!-- ===== 与其他章节的关联 ===== -->
+        <section id="bridge">
+          <h2>🌉 与其他章节的关联</h2>
+
+          <div class="evo-tree">
+            <div class="evo-root">📐 向量与线性方程组</div>
+            <div class="evo-branch">
+              <div class="evo-child">→ <strong>行列式</strong> 推论 2：相关 $\iff |A|=0$（向量个数=维数时）</div>
+              <div class="evo-child">→ <strong>矩阵</strong> 三秩相等：向量组秩 = 矩阵秩</div>
+              <div class="evo-child">→ <strong>特征值</strong> 正交矩阵保范性用于对称矩阵对角化</div>
+              <div class="evo-child">→ <strong>SVD</strong> 正交基变换是 SVD 的数学基础</div>
+            </div>
+          </div>
+
+          <h3>解空间的判定流程</h3>
+          <p>拿到一个线性方程组问题，按以下顺序判定：</p>
+          <ol style="color:rgba(255,255,255,.55);font-size:14px;line-height:2;padding-left:20px;">
+            <li>$A$ 是方阵？→ 先算 $|A|$（快筛）</li>
+            <li>$|A| \neq 0$ → 唯一解（有解时）/ 只有零解（齐次时）</li>
+            <li>$|A| = 0$ 或 $A$ 不是方阵 → 用秩：$r(A)$ vs $r(A|b)$</li>
+            <li>$r(A) = r(A|b) = n$ → 唯一解；$r(A)=r(A|b) < n$ → 无穷多解；$r(A) < r(A|b)$ → 无解</li>
+          </ol>
+        </section>
+
+        <!-- ===== 关键概念 ===== -->
+        <section id="concepts">
+          <h2>🔑 关键概念</h2>
+          <ul>
+            <li><strong>线性相关 / 无关</strong> — 向量组"有无冗余"的判断，相关 ⇔ 至少一个可被其余表示</li>
+            <li><strong>线性表示 ⇄ 秩相等</strong> — 考研最核心等价：$\beta$ 可被表示 $\iff$ 添加后秩不变</li>
+            <li><strong>极大无关组</strong> — 向量组的"骨架"，去掉冗余向量后剩下的最小生成集</li>
+            <li><strong>三秩相等</strong> — 行秩 = 列秩 = 矩阵秩，打通了行/列/向量三个视角</li>
+            <li><strong>施密特正交化</strong> — 逐次减去投影，把任意基化为正交基</li>
+            <li><strong>正交矩阵</strong> — $A^{-1}=A^\mathrm{T}$，对应旋转/反射变换，不改变向量长度</li>
+            <li><strong>解空间判定</strong> — 方阵先试行列式，非方阵用秩，这是最系统的思路</li>
+          </ul>
+        </section>
+
+        <!-- ===== 关联 ===== -->
+        <section id="related">
+          <h2>🔗 关联</h2>
+          <ul>
+            <li><strong><a href="determinant.html" style="color:#c89810;">行列式</a></strong> — 推论 2 将相关性判断转化为 $|A|$ 计算（仅有向量个数=维数时）</li>
+            <li><strong><a href="matrix.html" style="color:#c09000;">矩阵运算</a></strong> — 三秩相等打通向量组秩与矩阵秩，向量排成矩阵即可求秩</li>
+            <li><strong>PCA 主成分分析</strong> — 本质是在高维向量空间中找一组标准正交基（特征向量）</li>
+            <li><strong>最小二乘法</strong> — 基于正交投影，施密特正交化是其核心计算步骤</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 要点</strong>
+          线性相关/无关是本章最核心的概念。记住：相关 $\iff$ 有冗余 $\iff$ 齐次方程组有非零解。
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 易混</strong>
+          线性表示 $\neq$ 线性相关。前者是一个向量 vs 一组向量，后者是一组向量内部的关系。<br>
+          <strong>定理 3.5</strong> 说相关⇔至少一个可被其余表示——这是两者的联系，但概念上不同。
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 考研</strong>
+          本章定理最多（6条），不要死记，抓住一条主线：<br>
+          <strong>线性相关 $\iff$ 齐次方程组有非零解 $\iff$ 秩 $<$ 向量个数</strong>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 数学基础 · 向量与线性方程组
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>
