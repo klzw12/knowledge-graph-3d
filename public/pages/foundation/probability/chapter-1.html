@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>随机事件与概率 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});">
+  </script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html,body {
+      width:100%; min-height:100vh;
+      background:#080818;
+      color:rgba(255,255,255,.85);
+      font:400 15px/1.7 'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    }
+    a { color:inherit; text-decoration:none; }
+    .back-link {
+      position:fixed; top:16px; left:20px; z-index:100;
+      font-size:13px; color:rgba(255,255,255,.35); transition:all .2s;
+    }
+    .back-link:hover { color:rgba(255,255,255,.7); }
+    .page { max-width:1200px; margin:0 auto; padding:60px 20px 0; }
+    .title-area { padding:0 0 20px; border-bottom:1px solid rgba(255,255,255,.06); margin-bottom:28px; }
+    .title-area h1 { font-size:28px; font-weight:700; display:flex; align-items:baseline; gap:12px; }
+    .title-area .en { font-size:16px; font-weight:400; color:rgba(255,255,255,.35); }
+    .title-area .bar { width:40px; height:4px; border-radius:2px; margin:10px 0 14px; }
+    .title-area .brief { font-size:14px; color:rgba(255,255,255,.5); max-width:640px; }
+    .layout { display:flex; gap:24px; align-items:flex-start; }
+    .nav-col { flex:0 0 180px; position:sticky; top:60px; }
+    .nav-col .nav-title { font-size:12px; font-weight:600; text-transform:uppercase; color:rgba(255,255,255,.25); letter-spacing:1px; margin-bottom:12px; }
+    .nav-col a { display:block; font-size:13px; line-height:2; color:rgba(255,255,255,.35); transition:color .15s; }
+    .nav-col a:hover { color:rgba(255,255,255,.7); }
+    .main-col { flex:1; min-width:0; }
+    .main-col section { margin-bottom:28px; }
+    .main-col section h2 { font-size:17px; font-weight:600; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+    .main-col section h3 { font-size:14px; font-weight:600; margin:16px 0 8px; color:rgba(255,255,255,.7); }
+    .main-col section h4 { font-size:13px; font-weight:600; margin:12px 0 6px; color:rgba(255,255,255,.5); }
+    .main-col section p { font-size:14px; line-height:1.9; color:rgba(255,255,255,.55); margin-bottom:8px; }
+    .main-col section p:last-child { margin-bottom:0; }
+    .formula { background:rgba(0,0,0,.25); border-radius:8px; padding:14px 18px; margin:10px 0; overflow-x:auto; text-align:center; }
+    .formula .katex { color:rgba(255,255,255,.85); }
+    .main-col section ul { list-style:none; padding:0; }
+    .main-col section ul li { font-size:14px; line-height:1.9; color:rgba(255,255,255,.5); padding-left:16px; position:relative; }
+    .main-col section ul li::before { content:'•'; position:absolute; left:2px; color:rgba(255,255,255,.2); }
+    .main-col section ol { padding-left:20px; }
+    .main-col section ol li { font-size:14px; line-height:1.9; color:rgba(255,255,255,.5); }
+    .table-wrap { overflow-x:auto; margin:12px 0; }
+    .table-wrap table { width:100%; border-collapse:collapse; font-size:13px; }
+    .table-wrap th { background:rgba(255,255,255,.05); color:rgba(255,255,255,.6); padding:8px 12px; text-align:left; font-weight:600; border-bottom:1px solid rgba(255,255,255,.08); }
+    .table-wrap td { padding:8px 12px; border-bottom:1px solid rgba(255,255,255,.04); color:rgba(255,255,255,.5); }
+    .table-wrap tr:hover td { background:rgba(255,255,255,.02); }
+    .aside-col { flex:0 0 220px; position:sticky; top:60px; }
+    .aside-col .aside-title { font-size:12px; font-weight:600; text-transform:uppercase; color:rgba(255,255,255,.2); letter-spacing:1px; margin-bottom:12px; }
+    .aside-col .callout { background:rgba(176,152,0,.06); border-left:3px solid #b09800; border-radius:0 8px 8px 0; padding:12px 14px; margin-bottom:12px; font-size:13px; line-height:1.7; color:rgba(255,255,255,.55); }
+    .aside-col .callout strong { display:block; font-size:12px; color:#b09800; margin-bottom:4px; }
+    .aside-col .callout.tip { border-left-color:#4d96ff; }
+    .aside-col .callout.tip strong { color:#4d96ff; }
+    .aside-col .callout.warn { border-left-color:#eab308; }
+    .aside-col .callout.warn strong { color:#eab308; }
+    .aside-col .callout.key { border-left-color:#22c55e; }
+    .aside-col .callout.key strong { color:#22c55e; }
+    .star { color:#eab308; font-size:13px; }
+    .footer { margin-top:48px; padding:20px 0 40px; border-top:1px solid rgba(255,255,255,.04); text-align:center; font-size:12px; color:rgba(255,255,255,.15); }
+    @media (max-width:800px) {
+      .layout { flex-direction:column; }
+      .nav-col, .aside-col { flex:none; position:static; width:100%; }
+      .nav-col { display:flex; gap:12px; flex-wrap:wrap; }
+      .nav-col .nav-title { display:none; }
+      .nav-col a { font-size:12px; padding:4px 10px; background:rgba(255,255,255,.03); border-radius:6px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="../../../">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        随机事件与概率
+        <span class="en">Random Events &amp; Probability</span>
+      </h1>
+      <div class="bar" style="background:#a89000"></div>
+      <p class="brief">
+        概率论的基石章节。从随机试验到概率空间公理化，建立严谨的不确定性度量体系。考研概率论分值占比最高的章节之一。
+      </p>
+    </div>
+
+    <!-- ===== 三栏 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#basic">📖 随机事件与样本空间</a>
+        <a href="#prob-def">📐 概率的定义与性质</a>
+        <a href="#classical">🎲 古典概型与几何概型</a>
+        <a href="#conditional">🔗 条件概率</a>
+        <a href="#total-bayes">🧮 全概率与贝叶斯公式</a>
+        <a href="#bernoulli">📊 伯努利概型与二项分布</a>
+        <a href="#exam-tips">🎯 考研重点</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 1.1 随机事件与样本空间 ===== -->
+        <section id="basic">
+          <h2>📖 1.1 随机事件与样本空间</h2>
+
+          <h3>1.1.1 基本概念</h3>
+          <p><strong>随机试验</strong>：满足以下条件的试验</p>
+          <ol>
+            <li>可在相同条件下重复进行</li>
+            <li>每次试验结果不止一个，且所有可能结果明确可知</li>
+            <li>试验前不能确定出现哪个结果</li>
+          </ol>
+          <ul>
+            <li><strong>样本空间 Ω</strong> — 随机试验所有可能结果的集合</li>
+            <li><strong>样本点 ω</strong> — 样本空间的元素，$ \omega \in \Omega $</li>
+            <li><strong>随机事件</strong> — 样本空间的子集，用大写字母 A,B,C,... 表示</li>
+            <li><strong>基本事件</strong> — 只含一个样本点的事件</li>
+            <li><strong>必然事件</strong> — 样本空间 Ω</li>
+            <li><strong>不可能事件</strong> — 空集 ∅</li>
+          </ul>
+
+          <h3>1.1.2 事件的关系与运算</h3>
+          <h4>包含与相等</h4>
+          <ul>
+            <li><strong>包含</strong>：$ A \subseteq B \iff \forall \omega \in A, \omega \in B $</li>
+            <li><strong>相等</strong>：$ A = B \iff A \subseteq B \land B \subseteq A $</li>
+          </ul>
+
+          <h4>事件的运算</h4>
+          <ul>
+            <li><strong>并事件</strong>：$ A \cup B = \{ \omega \in \Omega : \omega \in A \lor \omega \in B \} $</li>
+            <li><strong>交事件</strong>：$ A \cap B = \{ \omega \in \Omega : \omega \in A \land \omega \in B \} $</li>
+            <li><strong>差事件</strong>：$ A \setminus B = \{ \omega \in \Omega : \omega \in A \land \omega \notin B \} $</li>
+            <li><strong>对立事件</strong>：$ \overline{A} = \Omega \setminus A $</li>
+          </ul>
+
+          <h4>运算律</h4>
+          <ul>
+            <li><strong>幂等律</strong>：$ A \cup A = A $，$ A \cap A = A $</li>
+            <li><strong>交换律</strong>：$ A \cup B = B \cup A $，$ A \cap B = B \cap A $</li>
+            <li><strong>结合律</strong>：$ (A \cup B) \cup C = A \cup (B \cup C) $，$ (A \cap B) \cap C = A \cap (B \cap C) $</li>
+            <li><strong>分配律</strong>：
+              $ A \cup (B \cap C) = (A \cup B) \cap (A \cup C) $，
+              $ A \cap (B \cup C) = (A \cap B) \cup (A \cap C) $</li>
+            <li><strong>吸收律</strong>：$ A \cup (A \cap B) = A $，$ A \cap (A \cup B) = A $</li>
+            <li><strong>德摩根律</strong>（对偶律）：
+              $ \overline{A \cup B} = \overline{A} \cap \overline{B} $，
+              $ \overline{A \cap B} = \overline{A} \cup \overline{B} $</li>
+          </ul>
+
+          <h4>关键关系</h4>
+          <ul>
+            <li><strong>对立事件是特殊的互斥事件</strong>：对立事件不仅互斥，且 $ A \cup \bar{A} = \Omega $（必有一个发生）</li>
+            <li><strong>互斥事件不一定对立</strong>：互斥仅要求 $ A \cap B = \emptyset $，不要求 $ A \cup B = \Omega $</li>
+          </ul>
+        </section>
+
+        <!-- ===== 1.2 概率的定义与性质 ===== -->
+        <section id="prob-def">
+          <h2>📐 1.2 概率的定义与性质</h2>
+
+          <h3>1.2.1 概率的公理化定义</h3>
+          <p><strong>概率空间</strong>：三元组 $(\Omega, \mathscr{F}, P)$，其中：</p>
+          <ul>
+            <li><strong>样本空间</strong> Ω：所有可能结果的集合</li>
+            <li><strong>事件域</strong> $\mathscr{F} \subseteq 2^{\Omega}$：Ω 的子集构成的 σ-代数</li>
+            <li><strong>概率测度</strong> $P: \mathscr{F} \to [0,1]$：满足以下公理</li>
+          </ul>
+
+          <div class="formula">
+            <strong>σ-代数</strong>：集合族 $\mathscr{F} \subseteq 2^{\Omega}$ 称为 σ-代数，若满足：<br>
+            1. $\Omega \in \mathscr{F}$<br>
+            2. $A \in \mathscr{F} \Rightarrow \overline{A} \in \mathscr{F}$（对补集封闭）<br>
+            3. $\{A_n\}_{n=1}^{\infty} \subseteq \mathscr{F} \Rightarrow \bigcup_{n=1}^{\infty} A_n \in \mathscr{F}$（对可数并封闭）
+          </div>
+
+          <p><strong>概率公理</strong>：</p>
+          <ul>
+            <li><strong>非负性</strong>：$ P(A) \geq 0 $，对所有 $ A \in \mathscr{F} $</li>
+            <li><strong>规范性</strong>：$ P(\Omega) = 1 $</li>
+            <li><strong>可列可加性</strong> <span class="star">★</span>：对任意两两互斥的事件序列 $\{A_n\}_{n=1}^{\infty} \subseteq \mathscr{F}$，有
+              $$ P\left(\bigcup_{n=1}^{\infty} A_n\right) = \sum_{n=1}^{\infty} P(A_n) $$</li>
+          </ul>
+
+          <h3>1.2.2 概率的基本性质</h3>
+          <ul>
+            <li><strong>空集概率</strong>：$ P(\emptyset) = 0 $</li>
+            <li><strong>有限可加性</strong>：若 $A_1,...,A_n$ 两两互斥，则 $ P(\bigcup_{i=1}^{n} A_i) = \sum_{i=1}^{n} P(A_i) $</li>
+            <li><strong>补事件概率</strong>：$ P(\overline{A}) = 1 - P(A) $</li>
+            <li><strong>单调性</strong>：若 $ A \subseteq B $，则 $ P(A) \leq P(B) $</li>
+            <li><strong>次可加性</strong> <span class="star">★</span>：$ P(\bigcup_{i=1}^{n} A_i) \leq \sum_{i=1}^{n} P(A_i) $</li>
+            <li><strong>加法公式</strong>：$ P(A \cup B) = P(A) + P(B) - P(A \cap B) $</li>
+          </ul>
+
+          <div class="formula">
+            <strong>容斥原理（推广加法公式）</strong> <span class="star">★</span>：<br>
+            $$ P\left(\bigcup_{i=1}^{n} A_i\right) = \sum_{i} P(A_i) - \sum_{i{<}j} P(A_i \cap A_j) + \sum_{i{<}j{<}k} P(A_i \cap A_j \cap A_k) - \cdots + (-1)^{n-1} P\left(\bigcap_{i=1}^{n} A_i\right) $$
+          </div>
+
+          <h4>连续性定理</h4>
+          <ul>
+            <li><strong>下连续性</strong>：$ A_n \uparrow A \Rightarrow \lim_{n \to \infty} P(A_n) = P(A) $</li>
+            <li><strong>上连续性</strong>：$ A_n \downarrow A \Rightarrow \lim_{n \to \infty} P(A_n) = P(A) $</li>
+          </ul>
+        </section>
+
+        <!-- ===== 1.3 古典概型与几何概型 ===== -->
+        <section id="classical">
+          <h2>🎲 1.3 古典概型与几何概型</h2>
+
+          <h3>1.3.1 古典概型（等可能概型）</h3>
+          <p><strong>条件</strong>：$|\Omega| = n < \infty$（有限性）+ $\forall \omega \in \Omega, P(\{\omega\}) = \frac{1}{n}$（等可能性）</p>
+          <div class="formula">
+            $$ P(A) = \frac{|A|}{|\Omega|} = \frac{m}{n} $$
+          </div>
+
+          <h4>抽样计数理论（考研重点）</h4>
+          <div class="table-wrap">
+            <table>
+              <tr><th>抽样类型</th><th>计数公式</th><th>适用条件</th></tr>
+              <tr><td><strong>有序放回</strong></td><td>$ n^k $</td><td>可重复排列</td></tr>
+              <tr><td><strong>有序不放回</strong></td><td>$ P_n^k = \frac{n!}{(n-k)!} $</td><td>排列数</td></tr>
+              <tr><td><strong>无序不放回</strong></td><td>$ C_n^k = \binom{n}{k} = \frac{n!}{k!(n-k)!} $</td><td>组合数</td></tr>
+            </table>
+          </div>
+
+          <h3>1.3.2 几何概型</h3>
+          <p><strong>条件</strong>：Ω 为欧氏空间子集，$\mu(\Omega) < \infty$（可测 + 有限测度）</p>
+          <div class="formula">
+            $$ P(D) = \frac{\mu(D)}{\mu(\Omega)}, \quad D \in \mathscr{F} $$
+          </div>
+
+          <h4>不同维度测度计算</h4>
+          <div class="table-wrap">
+            <table>
+              <tr><th>维度</th><th>测度空间</th><th>概率计算</th></tr>
+              <tr><td><strong>一维</strong></td><td>$(\mathbb{R}, \mathscr{B}, \lambda)$</td><td>$ P([a,b]) = \frac{b-a}{L} $</td></tr>
+              <tr><td><strong>二维</strong></td><td>$(\mathbb{R}^2, \mathscr{B}^2, \lambda^2)$</td><td>$ P(D) = \frac{\text{Area}(D)}{\text{Area}(\Omega)} $</td></tr>
+              <tr><td><strong>三维</strong></td><td>$(\mathbb{R}^3, \mathscr{B}^3, \lambda^3)$</td><td>$ P(V) = \frac{\text{Volume}(V)}{\text{Volume}(\Omega)} $</td></tr>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== 1.4 条件概率 ===== -->
+        <section id="conditional">
+          <h2>🔗 1.4 条件概率</h2>
+
+          <div class="formula">
+            $$ P(B|A) = \frac{P(AB)}{P(A)}, \quad P(A) > 0 $$
+          </div>
+
+          <h3>核心性质（考研必背）</h3>
+          <ul>
+            <li>$ P(\Omega|B) = 1, P(\emptyset|B) = 0 $</li>
+            <li>$ P(\bar{A}|B) = 1 - P(A|B) $</li>
+            <li>$ P(A_1 \cup A_2|B) = P(A_1|B) + P(A_2|B) - P(A_1 \cap A_2|B) $</li>
+            <li><strong>乘法公式推广</strong>：
+              $$ P(A_1 \cap A_2 \cap \cdots \cap A_n) = P(A_1)P(A_2|A_1)P(A_3|A_1 \cap A_2) \cdots P(A_n|A_1 \cap \cdots \cap A_{n-1}) $$</li>
+          </ul>
+
+          <h3>1.4.3 事件的独立性</h3>
+          <h4>两个事件的独立性</h4>
+          <p><strong>定义</strong>：$ A, B \in \mathscr{F} $ 独立，若 $ P(A \cap B) = P(A)P(B) $</p>
+          <p><strong>等价刻画</strong>：若 $ P(A) > 0 $，则 $ P(B|A) = P(B) $</p>
+
+          <h4>有限事件族的独立性</h4>
+          <p>事件族 $\{A_1,...,A_n\}$ 独立，若对任意 $k$ 和任意 $1 \leq i_1 < i_2 < \cdots < i_k \leq n$，有</p>
+          <div class="formula">
+            $$ P\left(\bigcap_{j=1}^k A_{i_j}\right) = \prod_{j=1}^k P(A_{i_j}) $$
+          </div>
+
+          <h4>经典反例（三事件两两独立但不整体独立）</h4>
+          <p>Ω = {1,2,3,4}，均匀分布，定义：A = {1,2}, B = {1,3}, C = {1,4}</p>
+          <ul>
+            <li><strong>两两独立</strong>：$ P(A\cap B) = \frac14 = P(A)P(B) $，B∩C、A∩C 同理</li>
+            <li><strong>非整体独立</strong>：$ P(A\cap B\cap C) = \frac14 \neq P(A)P(B)P(C) = \frac18 $</li>
+          </ul>
+          <p><span class="star">⚠️</span> $P(ABC) = P(A)P(B)P(C)$ <strong>不能推出</strong> 两两独立！</p>
+        </section>
+
+        <!-- ===== 1.5 全概率与贝叶斯公式 ===== -->
+        <section id="total-bayes">
+          <h2>🧮 1.5 全概率公式与贝叶斯公式</h2>
+
+          <h3>1.5.1 完备事件组</h3>
+          <p>事件族 $\{B_i\}_{i \in I}$ 称为完备事件组，满足：</p>
+          <ol>
+            <li><strong>两两互斥</strong>：$ B_i \cap B_j = \emptyset \ (i \neq j) $</li>
+            <li><strong>完全覆盖</strong>：$ \bigcup_{i \in I} B_i = \Omega $</li>
+            <li><strong>正概率</strong>：$ P(B_i) > 0 $</li>
+          </ol>
+
+          <h3>1.5.2 全概率公式 <span class="star">★</span></h3>
+          <div class="formula">
+            $$ P(A) = \sum_{i=1}^n P(B_i)P(A|B_i) $$
+            <p style="margin-top:8px;font-size:13px;color:rgba(255,255,255,.4);">二元情形：$ P(A) = P(A|B)P(B) + P(A|\bar{B})P(\bar{B}) $</p>
+          </div>
+
+          <h3>1.5.3 贝叶斯公式 <span class="star">★</span></h3>
+          <div class="formula">
+            $$ P(B_j|A) = \frac{P(B_j)P(A|B_j)}{\sum_{i=1}^n P(B_i)P(A|B_i)} $$
+          </div>
+          <p>统一形式：$ P(B_j|A) = \dfrac{P(B_j)P(A|B_j)}{P(A)} $</p>
+
+          <h4>应用模板 <span class="star">★</span></h4>
+          <ol>
+            <li><strong>构造完备事件组</strong>：$\{B_i\}$ 两两互斥且覆盖 Ω</li>
+            <li><strong>计算先验</strong>：$ P(B_i) $ 和 $ P(A|B_i) $</li>
+            <li><strong>全概率</strong>：$ P(A) = \sum P(B_i)P(A|B_i) $</li>
+            <li><strong>贝叶斯</strong>：$ P(B_j|A) = P(B_j)P(A|B_j)/P(A) $</li>
+          </ol>
+        </section>
+
+        <!-- ===== 1.6 伯努利概型与二项分布 ===== -->
+        <section id="bernoulli">
+          <h2>📊 1.6 伯努利概型与二项分布</h2>
+
+          <h3>1.6.1 伯努利试验</h3>
+          <p>样本空间 Ω = {0,1}，$P(1) = p$，$P(0) = 1-p$。</p>
+          <p><strong>特征</strong>：可重复性 + 同质性 + 独立性</p>
+
+          <h3>1.6.2 二项分布</h3>
+          <p>设 X 为 n 重伯努利试验成功次数，$X \sim \text{Bin}(n,p)$：</p>
+          <div class="formula">
+            $$ P(X=k) = C_n^k p^k (1-p)^{n-k}, \quad k=0,1,...,n $$
+          </div>
+          <ul>
+            <li><strong>期望</strong>：$ E[X] = np $</li>
+            <li><strong>方差</strong>：$ Var(X) = np(1-p) $</li>
+          </ul>
+
+          <h3>1.6.3 泊松定理（二项分布的泊松近似）</h3>
+          <p>若 $n \to \infty, p_n \to 0, np_n \to \lambda > 0$：</p>
+          <div class="formula">
+            $$ \lim_{n \to \infty} C_n^k p_n^k (1-p_n)^{n-k} = \frac{\lambda^k}{k!} e^{-\lambda} $$
+          </div>
+          <p><strong>应用条件</strong>：经典准则 $n \geq 20, p \leq 0.05$；现代准则 $n \geq 100, np \leq 10$</p>
+        </section>
+
+        <!-- ===== 考研重点 ===== -->
+        <section id="exam-tips">
+          <h2>🎯 考研重点提醒</h2>
+
+          <h3>1. 古典概型解题模板 <span class="star">★</span></h3>
+          <ol>
+            <li>明确样本空间：写出 Ω 并计算 $|\Omega|$</li>
+            <li>验证条件：检查有限性和等可能性</li>
+            <li>计算事件：写出 A 并计算 $|A|$</li>
+            <li>应用公式：$ P(A) = |A|/|\Omega| $</li>
+          </ol>
+
+          <h3>2. 条件概率与独立性</h3>
+          <ul>
+            <li>独立 $\not\Rightarrow$ 互斥（除非 $P=0$）</li>
+            <li>两两独立 $\not\Rightarrow$ 整体独立</li>
+            <li>$P(ABC)=P(A)P(B)P(C)$ <strong>不能推出</strong> 两两独立</li>
+          </ul>
+
+          <h3>3. 概率空间三要素</h3>
+          <ul>
+            <li><strong>样本空间</strong> Ω — 所有可能结果</li>
+            <li><strong>事件域</strong> $\mathscr{F}$ — σ-代数（对补集和可数并封闭）</li>
+            <li><strong>概率测度</strong> P — 非负 + 规范 + 可列可加</li>
+          </ul>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout key">
+          <strong>🎯 必考</strong>
+          全概率公式与贝叶斯公式是考研必考大题，务必熟练掌握完备事件组的构造方法
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 易错</strong>
+          独立 ≠ 互斥；两两独立 ≠ 整体独立。$P(ABC)=P(A)P(B)P(C)$ 不能推出两两独立
+        </div>
+
+        <div class="callout tip">
+          <strong>💡 技巧</strong>
+          古典概型关键是分清"有序 vs 无序"和"有放回 vs 无放回"，用抽样计数对照表快速判定
+        </div>
+
+        <div class="callout">
+          <strong>📐 理论深化</strong>
+          概率空间三要素（Ω, $\mathscr{F}$, P）是概率论的公理化基础，理解 σ-代数概念有助于后续测度论学习
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ===== 统一尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 数学 · 概率与统计 · 随机事件与概率
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof renderMathInElement==='function')
+        renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});
+    });
+  </script>
+</body>
+</html>

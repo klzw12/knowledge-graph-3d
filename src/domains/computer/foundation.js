@@ -69,6 +69,21 @@ export default {
         color: '#b09800',
         src: '/pages/foundation/probability.html',
         children: [
+          {
+            id: 'prob-ch1',
+            label: '随机事件与概率',
+            color: '#a89000',
+            src: '/pages/foundation/probability/chapter-1.html',
+            content: { summary: '随机事件、概率空间公理化、古典概型、条件概率、全概率与贝叶斯公式、伯努利概型。概率论的基石章节，涵盖从直观到公理化的完整概率认知路径。', tags: ['概率论', '考研'] },
+            children: [
+              { id: 'ch1-basic', label: '随机事件与样本空间', color: '#a08400' },
+              { id: 'ch1-prob-def', label: '概率的定义与性质', color: '#987800' },
+              { id: 'ch1-classical', label: '古典概型与几何概型', color: '#8c7000' },
+              { id: 'ch1-conditional', label: '条件概率', color: '#806800' },
+              { id: 'ch1-total-bayes', label: '全概率与贝叶斯公式', color: '#746000' },
+              { id: 'ch1-bernoulli', label: '伯努利概型与二项分布', color: '#685800' },
+            ],
+          },
           { id: 'bayes', label: '贝叶斯定理', color: '#9c8400' },
           { id: 'distribution', label: '概率分布', color: '#887000' },
         ],
@@ -96,6 +111,10 @@ export default {
     { source: 'distribution', target: 'common-ml', label: '基础', color: '#eab308' },
     { source: 'matrix', target: 'dl', label: '张量运算基础', color: '#eab308' },
     { source: 'svd', target: 'recommender', label: '推荐系统基础', color: '#eab308' },
+    // 概率论内部
+    { source: 'ch1-total-bayes', target: 'bayes', label: '贝叶斯公式', color: '#b09800' },
+    { source: 'ch1-bernoulli', target: 'distribution', label: '伯努利→二项分布', color: '#b09800' },
+    { source: 'ch1-bernoulli', target: 'common-ml', label: '分类问题基础', color: '#b09800' },
     // 线代内部
     { source: 'determinant', target: 'matrix', label: '矩阵标量映射', color: '#d4a000' },
     { source: 'determinant', target: 'eigen', label: '特征方程基础', color: '#d4a000' },
