@@ -33,4 +33,8 @@ export const DOMAIN_COLORS = {
   humanities: '#f59e0b',    // 人文与成长 — 琥珀
   'self-help': '#d97706',   // 自我激励 — 深橙
   sheepskin:  '#b45309',    // 羊皮卷 — 赭石
+
+  // 社交与人际
+  social:     '#0ea5e9',    // 社交与人际 — 天蓝
+  weakness:   '#0284c7',    // 人性的弱点 — 深蓝
 }

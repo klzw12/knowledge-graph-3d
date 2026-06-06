@@ -24,7 +24,22 @@ export default {
             label: '羊皮卷',
             color: '#b45309',
             src: '/pages/humanities/sheepskin.html',
-            content: { summary: '奥格·曼狄诺 编著 · 自我激励经典。全书8篇 + 箴言，讲述保持心态、制定目标、坚持不懈、认识自我等人生课题。', tags: ['羊皮卷', '自我激励'] },
+            content: { summary: '奥格·曼狄诺 编著 · 自我激励经典。全书8篇，讲述保持心态、制定目标、坚持不懈、认识自我等人生课题。', tags: ['羊皮卷', '自我激励'] },
+          },
+        ],
+      },
+      {
+        id: 'social',
+        label: '社交与人际',
+        color: '#0ea5e9',
+        description: '人际交往与沟通技巧',
+        children: [
+          {
+            id: 'weakness',
+            label: '人性的弱点',
+            color: '#0284c7',
+            src: '/pages/humanities/weakness.html',
+            content: { summary: '戴尔·卡耐基 著 · 人际关系经典。4章22篇，讲述如何与人相处、赢得他人好感与信任。', tags: ['人性的弱点', '卡耐基'] },
           },
         ],
       },
