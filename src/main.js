@@ -236,22 +236,13 @@ async function main() {
   document.getElementById('start-hint')?.classList.add('visible')
 
   // ─── 搜索 ───
-  const DOMAINS = [
-    {
-      id: 'computer', label: '计算机科学', color: '#4d96ff',
-      children: [
-        { id: 'ai', label: '人工智能' },
-        { id: 'languages', label: '语言与框架' },
-      ]
-    },
-    { id: 'math', label: '数学', color: '#eab308', children: [] },
-    {
-      id: 'humanities', label: '人文与成长', color: '#f59e0b',
-      children: [
-        { id: 'self-help', label: '自我激励' },
-      ]
-    },
-  ]
+  // ─── 领域导航栏 — 从 graphData 自动生成 ───
+  const DOMAINS = (graphData.root.children || []).map(child => ({
+    id: child.id,
+    label: child.label,
+    color: child.color,
+    children: (child.children || []).map(c => ({ id: c.id, label: c.label })),
+  }))
 
   const searchUI = new SearchUI(
     nodes,
