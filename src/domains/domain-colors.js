@@ -28,4 +28,9 @@ export const DOMAIN_COLORS = {
 
   // 数学基础
   math:       '#eab308',    // 数学 — 黄
+
+  // 人文与成长
+  humanities: '#f59e0b',    // 人文与成长 — 琥珀
+  'self-help': '#d97706',   // 自我激励 — 深橙
+  sheepskin:  '#b45309',    // 羊皮卷 — 赭石
 }

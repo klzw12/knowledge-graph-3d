@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>羊皮卷 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="../../css/common.css" />
+  <style>
+    /* 赭石主题 */
+    .title-area .bar { background:#b45309; }
+    .aside-col .callout { border-left-color:#b45309; }
+    .aside-col .callout strong { color:#b45309; }
+    .chapter-block { display:flex; flex-direction:column; gap:24px; margin-bottom:48px; }
+
+    .chapter-title {
+      font-size:22px; font-weight:700; margin:0 0 4px;
+      display:flex; align-items:baseline; gap:10px;
+    }
+    .chapter-title .num {
+      font-size:13px; font-weight:400; 
+      background:rgba(180,83,9,.15); color:#b45309;
+      padding:2px 10px; border-radius:6px;
+    }
+    .chapter-bar { width:36px; height:3px; border-radius:2px; margin-bottom:16px; }
+
+    .section-item {
+      background:rgba(180,83,9,.04);
+      border:1px solid rgba(255,255,255,.04);
+      border-radius:10px;
+      padding:16px 18px;
+      transition:all .15s;
+    }
+    .section-item:hover {
+      background:rgba(180,83,9,.08);
+      border-color:rgba(180,83,9,.12);
+    }
+    .section-item .sec-title {
+      font-size:15px; font-weight:600; margin-bottom:6px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .section-item .sec-title .icon { font-size:16px; }
+    .section-item .sec-body {
+      font-size:13px; line-height:1.8; color:rgba(255,255,255,.6);
+    }
+    .section-item .sec-body em { color:rgba(255,255,255,.35); font-style:normal; }
+
+    .adage {
+      margin-top:8px; padding:8px 12px;
+      border-left:2px solid rgba(180,83,9,.2);
+      font-size:12.5px; line-height:1.7;
+      color:rgba(255,255,255,.45);
+      background:rgba(180,83,9,.03);
+      border-radius:0 6px 6px 0;
+    }
+
+    @media (max-width:720px) {
+      .layout { flex-direction:column; }
+      .nav-col { position:static; flex:none; width:100%; }
+      .aside-col { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="../../">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        羊皮卷
+        <span class="en">The Scrolls</span>
+      </h1>
+      <div class="bar" style="background:#b45309"></div>
+      <p class="brief">
+        奥格·曼狄诺 编著 · 自我激励的经典之作。全书共八篇，从心态、目标、意志、自我认知到自信心、潜能挖掘、能力展现与宽容助人，层层递进地引导读者走向更好的自己。
+      </p>
+    </div>
+
+    <!-- ===== 三栏 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#ch1">📖 保持良好的心态</a>
+        <a href="#ch2">🎯 制定成功的目标</a>
+        <a href="#ch3">⛰️ 坚持不懈的意志</a>
+        <a href="#ch4">🪞 充分认识自我</a>
+        <a href="#ch5">💪 树立自信心</a>
+        <a href="#ch6">🚀 充分发掘潜能</a>
+        <a href="#ch7">✨ 展现你的能力</a>
+        <a href="#ch8">❤️ 拥有助人、宽容之心</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ===== 第一篇 ===== -->
+        <section id="ch1">
+          <div class="chapter-title">
+            保持良好的心态
+            <span class="num">第一篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#b45309"></div>
+
+          <div class="chapter-block">
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🌱</span> 境由心生</div>
+              <div class="sec-body">一个人如果心态积极，乐观地面对人生，乐观地接受挑战和应付麻烦事，那他就成功了一半。在困境中，如果你能够不像一般人一样怨天尤人，抱怨不止，而是本着一颗乐观平和的心去对待生活，那么，还有什么能够难倒你呢？挫折、压力是难免的，向前看才有出路。做完一天的事，就让它过去。明天又是新的一天。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">⚡</span> 锤炼自信心</div>
+              <div class="sec-body">自信心是人人都有但少有人能"从一而终"的。自信是事业成功的有利心理条件，它可以使一个人认为自己有能力冒险，接受各种挑战和工作任务。自信是一个人最大的资本，是潜能发挥的催化剂。</div>
+              <div class="adage">约翰逊凭借强烈的自信心获得了成功。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🪟</span> 靠窗的卧床</div>
+              <div class="sec-body">快乐的心态比快乐的事更令人快乐。常怀着一颗快乐的心，即使是一片灰暗，在你眼里也是五彩斑斓。相反，即使在五光十色的生活里，心中的黯淡也会使一切蒙上一层灰。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🔔</span> 铃儿响叮当</div>
+              <div class="sec-body">生活在某一时刻里，出于种种因素，人们固然可能抛弃怀抱美好思想的人，但生活本身不会抛弃美好的思想。正因为知道事情存在成功的可能性，又不能确定它一定成功，才能引起我们试试看的兴趣。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">✈️</span> 让心先起飞</div>
+              <div class="sec-body">卡耐基经常提醒自己："我想赢，我一定能赢。" 战胜别人，不能算真正的超越；战胜从前的自己，才是真正的战胜。人有两个生命，一是父母给的生命形体；二是自己赋予自己生命的实质。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🎨</span> 感受过程的美</div>
+              <div class="sec-body">工作随着志向走，成就随着工作来。只有把工作定位在"享受"的高度，才能不断追求高素质。素质高，能力强，无论多么艰巨复杂的工作都能轻松且高标准地完成。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🧘</span> 心理调节方法</div>
+              <div class="sec-body">不要让压力占据你的头脑。保持乐观是控制心理压力的关键，应将挫折视为鞭策我们前进的动力。多聆听自己的心声，给自己留一点时间，在消极情绪中加入一些积极的思考。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">❤️</span> 没有健康就失去了一切</div>
+              <div class="sec-body">假设一个人有1000000，前面的1代表健康，后面的0代表财富。没有前面的健康1，后面都等于0。能够让你感到心情愉快的，不是财富，而是健康。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">☀️</span> 乐观就能向上</div>
+              <div class="sec-body">乐观向上的人生态度，不是靠和风细雨、豪言说教就能形成的，它更有赖于逆境的砥砺，有赖于苦难、悲伤、忧郁的体验。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 第二篇 ===== -->
+        <section id="ch2">
+          <div class="chapter-title">
+            制定成功的目标
+            <span class="num">第二篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#b45309"></div>
+
+          <div class="chapter-block">
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🗺️</span> 规划好你的人生</div>
+              <div class="sec-body">自己量身打造一个人生计划，把希望的未来画一幅蓝图，照着蓝图一步一步把自己推向人生胜利的高峰。一个明确的目标、一份清晰的计划，可令我们的努力得到双倍甚至数倍的回报。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">📅</span> 计划好你的每一天</div>
+              <div class="sec-body">认准了你的目标，就坚持下去，忠实于它，你就会得到自己想要的。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🎯</span> 测定目标</div>
+              <div class="sec-body">千万别低估了制定可测目标的重要性。设立目标必须经过严密的思考和精密的测算。目标设立后，绝不轻易改变或放弃，尤其是核心目标。</div>
+              <div class="adage">查德威克虽然是个游泳好手，但也需要看见目标，才能鼓足干劲。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">⭐</span> 最初的梦想</div>
+              <div class="sec-body">将理想记在心中，并且努力地一天天地去实现它。高尔基说："生活的意义寓于美和追求生活目标的力量，而且应当使生活的每一时辰都有崇高的目的。"</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">👣</span> 坚韧的脚步</div>
+              <div class="sec-body">一个人在追求成功的过程中不可避免地会受到外界因素的影响。要有为了目标锲而不舍的精神，提高自己的自制力，这样才有可能获得成功。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🛤️</span> 独辟蹊径</div>
+              <div class="sec-body">世界上没有完美的事物。一个很伟大的计划，如果确实可行并且继续发展，要远远胜过跟在别人后面走的仿制计划。有很多好计划没有实现，就是因为担心"我能不能去做"而耽误了。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🏆</span> 最佳目标</div>
+              <div class="sec-body">在合理的前提下，制定一个较长期的目标，再派生出若干短期的目标。长期目标是核心目标，要保持稳定；短期目标可以不断调整和修正。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🧭</span> 认清路线</div>
+              <div class="sec-body">使自己的心神集中在想做的事情上。当内心浮现出明确的目标时，就是自己开始产生信心的时刻。只有善于运用细分目标的智慧，加上坚忍的行动和正确的方向，才能获得成功。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🏃</span> 向目标奔跑</div>
+              <div class="sec-body">目光远大、目标明确的人往往非常自信。每个人的优越感目标具有独特性，取决于他赋予生活的意义。事业做得最好无疑是优越感目标之一，其本身体现着人生的自信。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 第三篇 ===== -->
+        <section id="ch3">
+          <div class="chapter-title">
+            拥有坚持不懈的意志
+            <span class="num">第三篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#b45309"></div>
+
+          <div class="chapter-block">
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🙏</span> 信念的收获</div>
+              <div class="sec-body">信念是一种动力，信念是一种希望，信念是成功的桥梁。正是因为有了信念，才使青春添加了亮丽的景点，才使平凡的人生多了几分精彩。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🎲</span> 抓住机遇</div>
+              <div class="sec-body">所谓"机遇"和"贵人"，就是在适当的时候出现适当的人、事、物的组合。人际网好比八脚章鱼，在适当的时候，任何一个普通人都有可能扭转乾坤，成为你的大贵人。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🌳</span> 成功无界定</div>
+              <div class="sec-body">老子让人知道，人最容易忽略的是想早早出名、脱颖而出。千万不要着急，千万不要拔苗助长，而应该顺其自然地水到渠成。年轻人应有"大器早成"的理念，也要用"大器晚成"来矫正自己。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">📝</span> 人生的考试</div>
+              <div class="sec-body">没有坚决的决心和力量，还能做什么事呢？凡是缺少决断力的人，往往失败的时候多，成功的机会少。认准了方向，意志坚定地行动起来，才能一步步向你的理想靠近。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🦢</span> 优败劣胜观</div>
+              <div class="sec-body">丑小鸭历经千辛万苦变成了白天鹅，因为她心中有梦想。命运其实没有轨迹，关键在于对美好境界的追求。每个人都可以像丑小鸭一样实现心中的梦想。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🔥</span> 逆境中再生</div>
+              <div class="sec-body">一帆风顺固然令人羡慕，但逆水行舟更令人钦佩。我们的意志永远不会垮，因为我们的血液里早已注入了顽强的精神，我们会在逆境中思索与探求。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">📈</span> 更上一层楼</div>
+              <div class="sec-body">人生没有目标，就好像被蒙住了眼睛。许多日子糊里糊涂地过去了，是因为我们没有在每个日子里插一个目标。无所事事，是生命的零状态。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">💫</span> 在欲望中努力</div>
+              <div class="sec-body">对知识的获取、对事业的成功的欲望是后天培养的。如果缺少了对知识的渴求、对事业的执着追求，就会缺少动力，缺少坚韧不拔的毅力，很难获得成功。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">💎</span> 精诚所至</div>
+              <div class="sec-body">古往今来，那些在事业上取得骄人成就的文坛泰斗、体坛名将、商场精英，无一不是"精诚所至，金石为开"的结果。辛勤的劳动，终有丰硕的收获。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 第四篇 ===== -->
+        <section id="ch4">
+          <div class="chapter-title">
+            充分认识自我
+            <span class="num">第四篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#b45309"></div>
+
+          <div class="chapter-block">
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🧭</span> 找到你的北斗星</div>
+              <div class="sec-body">如果你想改变现有的生活，一定要从选定方向开始。在短暂的生命中，盲目是人生最大的敌人，只有战胜了这一劲敌，才能一路披荆斩棘，登上一个又一个人生高点。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">👤</span> 造人的一生</div>
+              <div class="sec-body">上帝并不帮助他的臣民做出选择，他只提供可能性。只有了解人类自身、不断自我发掘的人，在人生的道路中才能有所收获。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">💎</span> 宝石与稻草</div>
+              <div class="sec-body">许多人在人生选择中，不研究周围的环境，分不清哪个更重要。只有打破定式思维，真理才会向人们露出笑容。忙忙碌碌地干完一天，却没解决什么实质性的问题。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🔄</span> 啥也没得到</div>
+              <div class="sec-body">失去未必是一件坏事，只要调整好心态，因祸得福的事时有发生。人们最难懂得的，是应该把什么放在第一位。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🌅</span> 新的开始</div>
+              <div class="sec-body">学到的越多，才会明白不知道的也越多。人生如果不能了解自身状况且随时改变自己以适应新的环境，必定没有多大作为。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">💰</span> 把持"出价"</div>
+              <div class="sec-body">坚持自己的"出价"，当中包含着一种信念，从而最终获得了胜利。我们做事不仅要有恒心，像他一样的智慧也是必不可少的。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🌀</span> 生活的怪圈</div>
+              <div class="sec-body">好多人一生都在生活的怪圈中不停地旋转。换个方式思考问题，有时会有意想不到的收获。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🙌</span> 自己是"圣人"</div>
+              <div class="sec-body">人们多半容易看清别人，却往往很难看清自己。看清自己的能力，自信地去工作，圣人就是我们自己。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">📊</span> 经营"失败"</div>
+              <div class="sec-body">聪明人总是做事半功倍的事，他们看到别人失败的原因并将其找出来。确立一种明智的解决问题的哲学是绝对必要的。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🌱</span> 多年后的种子</div>
+              <div class="sec-body">只要在心中存下一颗希望的种子，并坚持不懈地努力，终有一天奇迹会降临在你的头上。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 第五篇 ===== -->
+        <section id="ch5">
+          <div class="chapter-title">
+            树立自信心
+            <span class="num">第五篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#b45309"></div>
+
+          <div class="chapter-block">
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🔬</span> 潜在的兴趣</div>
+              <div class="sec-body">丁肇中说过："兴趣比天才重要。"实践证明，在影响个人职业生涯规划与发展的众多主观因素中，兴趣的作用最大。一个人如果能根据自己的爱好去选择职业生涯，即使十分疲倦和辛苦，也总是兴致勃勃，心情愉快；即使困难重重，也决不灰心丧气。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🦁</span> 无畏者生存</div>
+              <div class="sec-body">勇敢者的存在，是人类之所以高贵的根本。因为勇敢，人才能在面对力量悬殊的对手时面无惧色。时代需要勇敢者的无畏。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🌈</span> 特殊的才能</div>
+              <div class="sec-body">不要抱怨命运的不公，不要抱怨成功的艰辛。活出自己的个性，活出自己的魅力，活出自己的价值，活出自己的精彩！任庭前花开花落，任天边云卷云舒，只要自己活得个性十足。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🤝</span> 从自己做起</div>
+              <div class="sec-body">虚怀若谷、谦和谨慎，能广交朋友，获得他人的信任与好感；而孤芳自赏、自命不凡，则会使朋友离你而去。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">💪</span> 相信自己，毅然前行</div>
+              <div class="sec-body">很多时候，现实的环境我们不能改变，但能改变的是我们的心。我们可以不受周围环境的左右，反而利用环境，使危机化为转机。只要有信心，坚持下去，就一定能渡过任何难关。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🍀</span> 努力必好运</div>
+              <div class="sec-body">许多人的生命之所以变得脆弱，关键在于失去了生命的意志。生命力的顽强与否，完全取决于人的意志。一个人意志强了，生命力就会无比顽强。</div>
+              <div class="adage">如张海迪、奥斯特洛夫斯基等人。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">⛰️</span> 移山的行动</div>
+              <div class="sec-body">苏东坡曾云："古之成大事者，不唯有超世之才，亦有坚忍不拔之志。"坚强的意志是一个人成功的必要心理素质，只有坚持不懈、持之以恒，才能圆满地实现自己的人生目标。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🏔️</span> 态度决定高度</div>
+              <div class="sec-body">一棵苍松相信自己，便挺立在它扎根的那座险峰上。一面旗帜相信自己，便高扬在它呼唤的那片土地上。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🪶</span> 态度决定后果</div>
+              <div class="sec-body">良禽择木而栖。如果不能改变木，那就改变自己。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 第六篇 ===== -->
+        <section id="ch6">
+          <div class="chapter-title">
+            充分发掘潜能
+            <span class="num">第六篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#b45309"></div>
+
+          <div class="chapter-block">
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">💧</span> 水与容器</div>
+              <div class="sec-body">人有的时候必须去适应环境，因为只有适应才能生存，只有生存才能发掘潜能。然而一味地为了适应而改变自己又太傻了，潜能会被封杀掉。当条件成熟时，就要做环境的主人。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🏅</span> 跨栏定律</div>
+              <div class="sec-body">盲人的听觉、触觉、嗅觉都要比一般人灵敏；失去双臂的人的平衡感更强。竖在你面前的栏越高，你跳得越高。一个人的缺陷有时候就是上帝给他的成功信息。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🍳</span> 做饭的学者</div>
+              <div class="sec-body">只有理论知识而没有生活技能的人，不一定能实现自我价值与充分发挥自身潜能。处世能力和技巧远比知识更有意义，更能帮助自己找到智能的最佳点。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🙏</span> 乞丐的愿望</div>
+              <div class="sec-body">工作是上苍给人类最大的福气。工作中隐藏着无数成功的机会，体现着个人价值。你对工作的态度决定了你对人生的态度。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🧠</span> 理性的任务</div>
+              <div class="sec-body">感情是一种人文气质，一种心理经验。理性的任务是检验感情质量，承受感情压力，将感情转化为想象力。人的理性在于对必然性的认知。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">💡</span> 理性与灵感</div>
+              <div class="sec-body">每一个灵感的动机，每一环严谨的分析，每一次成功的抉择，都预示着下一次的理性与成功。在自己有了许多积累后，灵感思维可以随心所欲，这才是真正的幸福。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🌊</span> 潜意识的力量</div>
+              <div class="sec-body">如果把潜意识比喻成一辆汽车，意识就是驾驶。汽车的动力在车内而不是在驾驶身上。你的潜意识中沉睡着无穷的智慧和力量，正等着你去开发和利用。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🔨</span> 能力在于挖掘</div>
+              <div class="sec-body">博恩·崔西说："潜意识的力量比意识大三倍以上。"当潜意识与意识存在相反的想法时，潜意识通常会战胜。将积极正面的思考输入潜意识，让潜意识影响行为，变成习惯。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">💭</span> 加强意念</div>
+              <div class="sec-body">当一个人能够发现自己的优点，改变也就开始了。喜欢自己的心态，会让你培养出对外界的积极态度。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🧊</span> 播种潜意识</div>
+              <div class="sec-body">心灵如冰山，浮出水面的是意识，埋藏在水面下的是潜意识。人的言行举止大部分由潜意识主宰。一个人的进化程度，与他运用潜意识力量的能力成正比。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 第七篇 ===== -->
+        <section id="ch7">
+          <div class="chapter-title">
+            展现你的能力
+            <span class="num">第七篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#b45309"></div>
+
+          <div class="chapter-block">
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">⏰</span> 做个守时的人</div>
+              <div class="sec-body">准时的习惯像其他习惯一样，要早日加以训练。纳尔逊侯爵说过："我的事业要归功于总是提早一刻钟的习惯。准时是国王的礼貌、绅士的职责和商人的必要习惯。"</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">👔</span> 整洁的形象很重要</div>
+              <div class="sec-body">整洁的形象越来越被人们所重视。人总是首先从外表认识他人，印象会影响日后的交往，除非发生特别的事情，否则很难改变。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">⏳</span> 不要缩短你的生命</div>
+              <div class="sec-body">我们的生命都是有限的。如果把时间投入到无谓的事情中去，不仅不能产生收益，反而成为对生命最无益的消耗。怎样让有限的生命发挥最大的价值，是值得思考的课题。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🏢</span> 为自己工作</div>
+              <div class="sec-body">如果人人都能承认"我们在为他人工作的同时也在为自己工作"，责任、忠诚、敬业将不再是空洞的口号。把每一次都视为新的开始，一段新的经验，一扇通往成功的机会之门。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🚬</span> 马克思戒烟</div>
+              <div class="sec-body">某些习惯对人的影响是消极的。然而任何习惯也都是可以改变的。只要心中唤起强烈的意识，就没什么做不到的事。抛弃不好的习惯，培养新的良好习惯。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🔄</span> 塑造新的行为习惯</div>
+              <div class="sec-body">习惯的惯性力量让我们容易沿已经形成的路径行动。告别不良习惯，必须从内心深处认识到严重性，改变原来的思维方式，在日常生活和工作中时时提醒自己。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">👁️</span> 自己要看得起自己</div>
+              <div class="sec-body">自己看得起自己就拥有了两个看得起。人要自己喜欢自己，如果一个人一生中从来没有对自己有过埋怨，始终非常满意自己，那么他的一生一定非常美满和幸福。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">😊</span> 让你的性格开朗起来</div>
+              <div class="sec-body">在社交中，开朗的人永远是受朋友欢迎的人。开朗的人往往不计较一时的得失，无私的人、乐于奉献的人很少失去，也不会因得失而悲喜。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 第八篇 ===== -->
+        <section id="ch8">
+          <div class="chapter-title">
+            拥有助人、宽容之心
+            <span class="num">第八篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#b45309"></div>
+
+          <div class="chapter-block">
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🤝</span> 做人的互助原理</div>
+              <div class="sec-body">你在关键的时刻帮人一把，别人也会在重要时候助你一臂。要想让别人将来帮助你，就必须先付出精力去关心别人、感动别人。高明的为人技巧就是急人之难。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">📛</span> 另一种被人尊重的形式</div>
+              <div class="sec-body">记住别人的名字是通向良好人际关系的开始。在公众场合能够记住别人的名字并轻松地叫出来，就等于巧妙而有效地恭维了别人。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🥛</span> 一杯牛奶</div>
+              <div class="sec-body">帮助别人，有的时候就是帮助了自己。善良是可以储存的，付出多少就能回报多少。当然，帮助别人如果是抱着贪图回报的目的，也肯定事与愿违。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">😂</span> 幽默的哲理与启迪</div>
+              <div class="sec-body">笑是人类具备的特殊本能。真正的幽默不止是逗大家一笑，还要使人们在笑过之后能够得到某种哲理和启迪。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🌊</span> 学会宽容</div>
+              <div class="sec-body">面对吃亏、被误解、受委屈，最明智的选择是学会宽容。宽容不仅仅包含理解和原谅，更显示出气度和胸襟。不肯原谅别人的人，就是不给自己留有余地。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🎭</span> 要善于给别人面子</div>
+              <div class="sec-body">给人面子并不难，大家都在社会丛林中讨生活，给人面子就是一种互助。尤其是一些无关紧要的事，你更要善于给人面子。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">💝</span> 学会体谅别人</div>
+              <div class="sec-body">爱包含两方面：给予他人你的爱和接受他人的爱。默默地为别人端一杯水，递一本书，多做一些力所能及的事，这个世界就会成为爱的海洋。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">☀️</span> 让善良永驻</div>
+              <div class="sec-body">人大多有善恶两面。善于发现别人善良一面的人，自己也就是善良的人。试着打开心窗，让更多的善良进到自己的心里。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🏛️</span> 有一种品质叫胸怀大度</div>
+              <div class="sec-body">大凡有所作为的人，除自身才智卓越和执着追求外，还有一个共同的秉性——胸怀大度。容万物于胸襟，藏和善于心田，世间因他们多了祥和与宁静。</div>
+            </div>
+            <div class="section-item">
+              <div class="sec-title"><span class="icon">🔍</span> 小事之中体现修养</div>
+              <div class="sec-body">经路窄处，留一步与人行；滋味浓的，减三分让人尝。不为小事和好友闹翻，不为贪一时之快而赔上名誉。一个人能做到这样，就不太容易因小失大。</div>
+              <div class="adage">耶稣说："人纵然赚得了全世界，却赔上了自己的灵魂，为他有什么益处？"</div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="callout">
+          <strong>💡 核心主题</strong>
+          <p>从内在心态到外在能力，从个人意志到与人相处，构建完整的自我成长路径。</p>
+        </div>
+        <div class="callout" style="margin-top:16px">
+          <strong>📚 作者</strong>
+          <p>奥格·曼狄诺<br><span style="font-size:12px;color:rgba(255,255,255,.35)">Og Mandino</span></p>
+        </div>
+        <div class="callout" style="margin-top:16px">
+          <strong>📖 篇目</strong>
+          <p style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.8">
+            第一篇 · 保持良好的心态<br>
+            第二篇 · 制定成功的目标<br>
+            第三篇 · 拥有坚持不懈的意志<br>
+            第四篇 · 充分认识自我<br>
+            第五篇 · 树立自信心<br>
+            第六篇 · 充分发掘潜能<br>
+            第七篇 · 展现你的能力<br>
+            第八篇 · 拥有助人、宽容之心
+          </p>
+        </div>
+      </aside>
+
+    </div><!-- /layout -->
+  </div><!-- /page -->
+
+</body>
+</html>

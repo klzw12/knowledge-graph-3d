@@ -11,10 +11,12 @@
 
 import computer from './computer.js'
 import foundation from './computer/foundation.js'
+import humanities from './humanities.js'
 
 const categories = [
   computer,     // 💻 计算机科学
   foundation,   // 📐 数学
+  humanities,   // 📚 人文与成长
 ]
 
 export const graphData = {
