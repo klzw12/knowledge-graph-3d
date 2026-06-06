@@ -245,6 +245,12 @@ async function main() {
       ]
     },
     { id: 'math', label: '数学', color: '#eab308', children: [] },
+    {
+      id: 'humanities', label: '人文与成长', color: '#f59e0b',
+      children: [
+        { id: 'self-help', label: '自我激励' },
+      ]
+    },
   ]
 
   const searchUI = new SearchUI(
