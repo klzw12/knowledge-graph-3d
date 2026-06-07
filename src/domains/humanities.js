@@ -43,6 +43,21 @@ export default {
           },
         ],
       },
+      {
+        id: 'philosophy',
+        label: '哲学与世界观',
+        color: '#8b5cf6',
+        description: '哲思经典与世界观塑造',
+        children: [
+          {
+            id: 'daodejing',
+            label: '道德经',
+            color: '#7c3aed',
+            src: '/pages/humanities/daodejing.html',
+            content: { summary: '老子 著 · 道家根本经典。81章，以"道"为核心，阐述天地万物变化的根本规律与处世智慧。', tags: ['道德经', '老子', '道家'] },
+          },
+        ],
+      },
     ],
   },
   relations: [],
