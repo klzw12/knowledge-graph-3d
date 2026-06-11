@@ -56,6 +56,13 @@ export default {
             src: '/pages/humanities/daodejing.html',
             content: { summary: '老子 著 · 道家根本经典。81章，以"道"为核心，阐述天地万物变化的根本规律与处世智慧。', tags: ['道德经', '老子', '道家'] },
           },
+          {
+            id: 'sunzi',
+            label: '孙子兵法',
+            color: '#dc2626',
+            src: '/pages/humanities/sunzi.html',
+            content: { summary: '孙武 著 · 兵家根本经典。13篇，以"计"为首，系统阐述战争规律与战略智慧。', tags: ['孙子兵法', '孙武', '兵家'] },
+          },
         ],
       },
     ],

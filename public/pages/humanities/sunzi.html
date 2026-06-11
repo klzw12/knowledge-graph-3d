@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>孙子兵法 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="../../css/common.css" />
+  <style>
+    .title-area .bar { background:#dc2626; }
+    .aside-col .callout { border-left-color:#dc2626; }
+    .aside-col .callout strong { color:#dc2626; }
+
+    .chapter-block { display:flex; flex-direction:column; gap:20px; margin-bottom:48px; }
+    .chapter-title {
+      font-size:22px; font-weight:700; margin:0 0 4px;
+      display:flex; align-items:baseline; gap:10px;
+    }
+    .chapter-title .num {
+      font-size:13px; font-weight:400;
+      background:rgba(220,38,38,.15); color:#dc2626;
+      padding:2px 10px; border-radius:6px;
+    }
+    .chapter-bar { width:36px; height:3px; border-radius:2px; margin-bottom:16px; }
+
+    .section-item {
+      background:rgba(220,38,38,.04);
+      border:1px solid rgba(255,255,255,.04);
+      border-radius:10px;
+      padding:16px 20px;
+      transition:all .15s;
+    }
+    .section-item:hover {
+      background:rgba(220,38,38,.08);
+      border-color:rgba(220,38,38,.12);
+    }
+    .section-item .verse {
+      font-size:16px; font-weight:500; line-height:2;
+      color:rgba(255,255,255,.85);
+      margin-bottom:10px;
+      padding:8px 12px;
+      background:rgba(220,38,38,.06);
+      border-radius:6px;
+      font-family:'KaiTi','STKaiti','Noto Serif SC',serif;
+    }
+    .section-item .trans {
+      font-size:13px; line-height:1.8; color:rgba(255,255,255,.6);
+    }
+    .section-item .trans strong { color:#ef4444; font-weight:500; }
+    .section-item .comment {
+      margin-top:10px;
+      padding:10px 14px;
+      border-left:2px solid rgba(220,38,38,.25);
+      font-size:12.5px; line-height:1.7;
+      color:rgba(255,255,255,.45);
+      background:rgba(220,38,38,.03);
+      border-radius:0 6px 6px 0;
+    }
+    .section-item .case-block {
+      margin-top:12px;
+      padding:12px 14px;
+      border-left:2px solid rgba(220,38,38,.35);
+      font-size:12.5px; line-height:1.7;
+      color:rgba(255,255,255,.55);
+      background:rgba(220,38,38,.05);
+      border-radius:0 8px 8px 0;
+    }
+    .case-block .case-label {
+      font-size:11px; font-weight:600; text-transform:uppercase;
+      color:#ef4444; letter-spacing:1px;
+      margin-bottom:6px;
+    }
+
+    @media (max-width:720px) {
+      .layout { flex-direction:column; }
+      .nav-col { position:static; flex:none; width:100%; }
+      .aside-col { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <div class="title-area">
+      <h1>
+        孙子兵法
+        <span class="en">The Art of War</span>
+      </h1>
+      <div class="bar" style="background:#dc2626"></div>
+      <p class="brief">
+        孙武 著 · 兵家根本经典。13篇，以"计"为首，系统阐述战争规律与战略智慧。
+        共 692 页（欧俊编本），每篇配案例解析，兵法计谋与实战相互印证。
+      </p>
+    </div>
+
+    <div class="layout">
+
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#shiji">📜 始计篇 · 原文</a>
+        <a href="#wushi">🏛 五事七计</a>
+        <a href="#guidao">🎭 诡道十二法</a>
+        <a href="#miaosuan">🧮 庙算</a>
+        <a href="#santiao">📋 三条原则</a>
+        <a href="#rizhi">🌱 日常应用</a>
+        <a href="#case-goujian">🏯 案例 · 勾践灭吴</a>
+        <a href="#case-hans">🥫 案例 · 汉斯57牌罐头</a>
+        <a href="#case-nantang">🏛 案例 · 后唐南唐</a>
+        <a href="#case-songxiang">⚔️ 案例 · 宋襄公泓水</a>
+        <a href="#zuozhan">⚡ 作战篇</a>
+        <a href="#zuozhan-case">💰 作战篇 · 案例</a>
+        <a href="#mougong">🎯 谋攻篇</a>
+        <a href="#mougong-case">🏛 谋攻篇 · 案例</a>
+        <a href="#xing">🛡️ 形篇</a>
+        <a href="#xing-case">⚔️ 形篇 · 案例</a>
+        <a href="#shi">🔥 势篇</a>
+        <a href="#shi-case">⚡ 势篇 · 案例</a>
+        <a href="#xushi">🌊 虚实篇</a>
+        <a href="#xushi-case">🎮 虚实篇 · 案例</a>
+      </nav>
+
+      <main class="main-col">
+
+        <!-- ===== 始计篇 ===== -->
+        <section id="shiji">
+          <div class="chapter-title">
+            始计篇
+            <span class="num">第一篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="verse">
+              <strong>（一）五事七计</strong><br><br>
+              孙子曰：兵者，国之大事，死生之地，存亡之道，不可不察也。<br><br>
+              故经之以五事，校之以计，而索其情：一曰道，二曰天，三曰地，四曰将，五曰法。<br>
+              道者，令民与上同意也，故可以与之死，可以与之生，而不畏危。<br>
+              天者，阴阳、寒暑、时制也。<br>
+              地者，远近、险易、广狭、死生也。<br>
+              将者，智、信、仁、勇、严也。<br>
+              法者，曲制、官道、主用也。<br><br>
+              凡此五者，将莫不闻，知之者胜，不知者不胜。<br><br>
+              故校之以计，而索其情。曰：主孰有道？将孰有能？天地孰得？法令孰行？兵众孰强？士卒孰练？赏罚孰明？吾以此知胜负矣。
+            </div>
+
+            <div class="verse">
+              <strong>（二）因利制权</strong><br><br>
+              将听吾计，用之必胜，留之；将不听吾计，用之必败，去之。<br>
+              计利以听，乃为之势，以佐其外。势者，因利而制权也。
+            </div>
+
+            <div class="verse">
+              <strong>（三）诡道十二法</strong><br><br>
+              兵者，诡道也。故能而示之不能，用而示之不用，近而示之远，远而示之近。<br>
+              利而诱之，乱而取之，实而备之，强而避之，怒而挠之，卑而骄之，佚而劳之，亲而离之。<br>
+              攻其无备，出其不意。此兵家之胜，不可先传也。
+            </div>
+
+            <div class="verse">
+              <strong>（四）庙算</strong><br><br>
+              夫未战而庙算胜者，得算多也；未战而庙算不胜者，得算少也。多算胜，少算不胜，而况于无算乎？<br>
+              吾以此观之，胜负见矣。
+            </div>
+
+            <div class="trans">
+              <strong>🔖 释义</strong><br><br>
+              战争是国家的大事，关乎军民生死、国家存亡，不可不认真考察研究。<br><br>
+              <strong>五事</strong>——道（民心向背）、天（天时季节）、地（地形远近险易）、将（智信仁勇严）、法（编制管理后勤），是决定战争胜负的五个基本维度。<br><br>
+              <strong>七计</strong>——哪一方君主有道义？哪一方将领有才能？哪一方得天时地利？哪一方法令能执行？哪一方兵力更强？哪一方士卒更训练有素？哪一方赏罚更分明？<br><br>
+              计算有利条件后，还要创造"势"——根据有利条件随机应变。<br><br>
+              战争是诡诈之道：能打装作不能打，要打装作不想打，近处装作远处……利诱、乱取、实备、强避、怒挠、卑骄、佚劳、亲离——这就是著名的"诡道十二法"。<br><br>
+              作战前在宗庙里计算优劣，算得多的胜算就大，算得少的胜算就小，何况不算呢？
+            </div>
+
+            <div class="comment">
+              <strong>💬 感悟</strong><br><br>
+              <strong>「兵者，国之大事」的止战底色</strong><br>
+              开篇第一句就把战争的残酷性摆出来了——不是教人好战，而是因为战争太重要、太危险，所以必须极其慎重。研究战争是为了更好地止战。<br><br>
+              <strong>五事七计 = 一种战略评估框架</strong><br>
+              它不是算命，而是一种结构化的"力量对比分析"。把模糊的"能不能打"拆成了五个维度、七个问题。每一个都可以独立评估，最后综合判断。<br><br>
+              <strong>诡道的本质：信息不对称</strong><br>
+              诡道十二法的核心不是"骗"，而是制造信息不对称——让对手不知道你的真实状态，同时尽可能掌握对手的状态。能→不能，近→远，都是对对手认知的操纵。<br><br>
+              <strong>庙算与概率思维</strong><br>
+              「多算胜少算」——不是算中了就赢，而是算得越充分，赢的概率越大。与现代决策科学中的"概率思维"异曲同工。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 五事七计 ===== -->
+        <section id="wushi">
+          <div class="chapter-title">
+            五事七计详析
+            <span class="num">核心框架</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="trans">
+              <strong>🏛 五事</strong><br>
+              <table style="width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;">
+                <tr style="border-bottom:1px solid rgba(255,255,255,.08);">
+                  <td style="padding:6px 10px;font-weight:500;color:#ef4444;">道</td>
+                  <td style="padding:6px 10px;color:rgba(255,255,255,.55);">民心向背，上下同心。令民与上同意，可与之死、与之生。</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,.08);">
+                  <td style="padding:6px 10px;font-weight:500;color:#ef4444;">天</td>
+                  <td style="padding:6px 10px;color:rgba(255,255,255,.55);">天时季节，阴阳寒暑。不可逆天时而行。</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,.08);">
+                  <td style="padding:6px 10px;font-weight:500;color:#ef4444;">地</td>
+                  <td style="padding:6px 10px;color:rgba(255,255,255,.55);">地形条件——远近、险易、广狭、死生。行军的空间基础。</td>
+                </tr>
+                <tr style="border-bottom:1px solid rgba(255,255,255,.08);">
+                  <td style="padding:6px 10px;font-weight:500;color:#ef4444;">将</td>
+                  <td style="padding:6px 10px;color:rgba(255,255,255,.55);">将领的五德：智（谋略）、信（威信）、仁（爱兵）、勇（决断）、严（纪律）。</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 10px;font-weight:500;color:#ef4444;">法</td>
+                  <td style="padding:6px 10px;color:rgba(255,255,255,.55);">组织体系——编制管理（曲制）、军官体系（官道）、后勤保障（主用）。</td>
+                </tr>
+              </table>
+
+              <br>
+              <strong>📊 七计（七个比较维度）</strong><br><br>
+              ① 主孰有道？——哪方君主更有道义基础<br>
+              ② 将孰有能？——哪方将领更有才能<br>
+              ③ 天地孰得？——哪方占据天时地利<br>
+              ④ 法令孰行？——哪方法令执行更彻底<br>
+              ⑤ 兵众孰强？——哪方兵力更强大<br>
+              ⑥ 士卒孰练？——哪方士兵更训练有素<br>
+              ⑦ 赏罚孰明？——哪方赏罚更分明<br><br>
+
+              <strong>💡 核心逻辑</strong><br>
+              五事是五个静态维度，七计是七个比较问题。五事→七计：从"有什么"到"比谁强"的推演路径。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 诡道十二法 ===== -->
+        <section id="guidao">
+          <div class="chapter-title">
+            诡道十二法
+            <span class="num">造势之法</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="trans">
+              <strong>🎭 十二法详解</strong><br><br>
+
+              <strong>第一组 · 示形（制造错觉）</strong><br>
+              • 能而示之不能——明明能打，装成不能打<br>
+              • 用而示之不用——想打，装成不想打<br>
+              • 近而示之远——在近处，装成在远处<br>
+              • 远而示之近——在远处，装成在近处<br><br>
+
+              <strong>第二组 · 因敌（根据对手状态出招）</strong><br>
+              • 利而诱之——用小利引诱对手上钩<br>
+              • 乱而取之——趁混乱攻取<br>
+              • 实而备之——对手强大就做好防备<br>
+              • 强而避之——对手锋芒正盛就暂避<br><br>
+
+              <strong>第三组 · 攻心（扰乱对手心理）</strong><br>
+              • 怒而挠之——激怒对手使其失去理智<br>
+              • 卑而骄之——示弱使对手骄傲轻敌<br>
+              • 佚而劳之——对手安逸就设法使其疲劳<br>
+              • 亲而离之——对手团结就离间他们<br><br>
+
+              <strong>第四组 · 总纲</strong><br>
+              • 攻其无备，出其不意——在对手无准备处进攻，在其意料之外行动<br><br>
+
+              <strong>💡 核心洞察</strong><br>
+              诡道不是教人做骗子，而是揭示一个客观规律：<strong>信息不对称是战争中最大的变量</strong>。谁掌握的信息更多、更准，同时谁的意图更少暴露，谁就掌握了主动权。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 庙算 ===== -->
+        <section id="miaosuan">
+          <div class="chapter-title">
+            庙算
+            <span class="num">决胜之本</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="trans">
+              <strong>🧮 庙算解读</strong><br><br>
+              "庙算"原指古代出兵前在宗庙里举行的战前推演和谋略计算。<br><br>
+              <strong>核心逻辑链条：</strong><br>
+              庙算（战前规划）→ 得算多 → 胜率高 → 未战先知胜负<br><br>
+              「多算胜，少算不胜，而况于无算乎」——<br>
+              这不是宿命论，而是<strong>概率论</strong>：算得越充分，筹码越多，赢面越大。什么都不算，就是赌。<br><br>
+              <strong>与"诡道"的关系：</strong><br>
+              庙算是"正"（基础条件评估），诡道是"奇"（临场应变）。二者缺一不可：没有庙算的诡道是瞎蒙，没有诡道的庙算是纸上谈兵。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 三条原则 ===== -->
+        <section id="santiao">
+          <div class="chapter-title">
+            计篇三条原则
+            <span class="num">全书总纲</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="trans">
+              <strong>📋 计篇归纳为三条原则</strong><br><br>
+
+              <strong>① 先计而后胜</strong><br>
+              先谋划周密再行动，而非打起来再想办法。计是胜的前提。<br><br>
+
+              <strong>② 以庙算胜</strong><br>
+              胜利来源于庙堂之上充分的推演和计算。五事七计是庙算的工具箱。<br><br>
+
+              <strong>③ 攻其无备，出其不意</strong><br>
+              行动要打在对手的意料之外、准备不足之处。这是诡道的总纲。<br><br>
+
+              <strong>💡 止战底色</strong><br>
+              孙武开篇"兵者，国之大事，死生之地，存亡之道，不可不察也"——整部兵法在最深层逻辑上是为了<strong>止战</strong>：<br>
+              因为战争太残酷，所以必须研究透它；研究透不是为了更好打仗，而是为了<strong>不打无准备之仗、不打可避之战</strong>。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 日常应用 ===== -->
+        <section id="rizhi">
+          <div class="chapter-title">
+            日常应用
+            <span class="num">智慧落地</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="trans">
+              <strong>🌱 将计篇思想引入日常生活</strong><br><br>
+
+              <strong>先计——用规则驱动行动</strong><br>
+              例："15页读书 = 1章小说"奖励机制。<br>
+              先定好规则再执行——没有规划就没有动力。即使暂时"欠着"，规则在就有方向。这就是"先计而后胜"的最小化实践。<br><br>
+
+              <strong>五事七问自检框架</strong><br>
+              做一件事之前，用五事七问的结构问自己：<br><br>
+
+              · 道 = 我真心想做吗？动机是什么？（主孰有道）<br>
+              · 天 = 现在时机对吗？（天地孰得）<br>
+              · 地 = 我有什么条件和限制？（天地孰得）<br>
+              · 将 = 我/团队有这个能力吗？（将孰有能）<br>
+              · 法 = 执行路径和方法靠谱吗？（法令孰行）<br><br>
+
+              问完就相当于做了"庙算"，能清晰地知道"这件事做成我的胜率是多少"，做到<strong>未战而先知</strong>。<br><br>
+
+              <strong>诡道的积极应用</strong><br>
+              不用于欺骗，而用于<strong>策略性思维</strong>：<br>
+              · "能而示之不能"→ 不要过早暴露全部实力<br>
+              · "强而避之"→ 不要硬碰硬，换条路走<br>
+              · "卑而骄之"→ 保持谦逊，让对方低估你
+            </div>
+
+            <div class="comment">
+              <strong>💬 感悟</strong><br><br>
+              计篇最妙的一点是：它表面上讲战争，内核却是一个通用的<strong>决策框架</strong>。<br>
+              五事七计 ≈ SWOT分析的高级版；<br>
+              诡道十二法 ≈ 博弈论中的"信息操纵"策略；<br>
+              庙算 ≈ 决策树分析中的"期望值计算"。<br><br>
+              2500年前的思维工具，与现代管理学的底层逻辑惊人地一致。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 案例 · 勾践灭吴 ===== -->
+        <section id="case-goujian">
+          <div class="chapter-title">
+            案例 · 勾践灭吴
+            <span class="num">庙算的完整闭环</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="case-block">
+              <div class="case-label">🏯 案例</div>
+
+              <strong>背景：</strong><br>
+              越王勾践兵败被俘，入吴为奴三年。归国后卧薪尝胆，十年生聚、十年教训。<br><br>
+
+              <strong>按五事七计分析：</strong><br><br>
+
+              · <strong>道</strong> ✓ — 越国上下同仇敌忾，百姓愿与勾践共生死<br>
+              · <strong>天</strong> ✓ — 趁夫差黄池会盟、吴都空虚之际发兵（时间窗口）<br>
+              · <strong>地</strong> △ — 越人善水战，勾践伐吴走水路攻姑苏；但"地利"本质更偏向"虚实"——避实击虚<br>
+              · <strong>将</strong> ✓ — 勾践（隐忍坚毅）+ 范蠡（谋略）+ 文种（内政）vs 夫差（骄横）+ 伍子胥（被赐死）→ 将才高下立判<br>
+              · <strong>法</strong> ✓ — 越国军队编制严整，赏罚分明<br><br>
+
+              <strong>诡道运用：</strong><br>
+              · 卑而骄之 — 勾践卑辞厚礼，让夫差放松警惕<br>
+              · 亲而离之 — 文种用美女、贿赂离间夫差与伍子胥，最终伍子胥被赐死<br>
+              · 利而诱之 — 送厚礼／献美女／割地求和，麻痹吴国<br><br>
+
+              <strong>庙算结果：</strong><br>
+              勾践从被俘那一刻就在"算"——算夫差的性格、算吴国的弱点、算自己需要多少年恢复国力。<br>
+              第一次伐吴（前482年）只是试探，第二次伐吴（前473年）才真正决胜。<br>
+              这就是"多算胜"的经典演绎：算了二十年的仗，一战灭吴。
+            </div>
+
+            <div class="comment">
+              <strong>💬 关于"地利"的延伸讨论</strong><br><br>
+              勾践伐吴能否算"地利"？<br>
+              · 狭义地形（通挂支隘险远）→ ❌ 不算<br>
+              · 虚实（敌疲打敌虚处）→ ✅ 核心是"虚实"而非"地"<br>
+              · 战略空间（吴军远在黄池，回援空间距离漫长）→ ⚠️ 勉强沾边，本质还是时机<br>
+              结论：黄池伐吴的核心是利用了"虚实"避实击虚，而非地形的优势。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 案例 · 汉斯57牌罐头 ===== -->
+        <section id="case-hans">
+          <div class="chapter-title">
+            案例 · 汉斯57牌罐头
+            <span class="num">现代造势</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="case-block">
+              <div class="case-label">🥫 案例</div>
+
+              <strong>背景：</strong><br>
+              汉斯（Hans）牌罐头参加展销会，被分配到偏僻角落的展馆，无人问津，打不出名号。<br><br>
+
+              <strong>造势之法：</strong><br>
+              汉斯在展馆各处撒下大量牌子，宣称"捡到牌子的观众可到汉斯展馆领取纪念品"。<br>
+              结果人群蜂拥而至，展馆从门可罗雀变成人山人海，一夜之间打出名气。<br><br>
+
+              <strong>对应计篇诡道：</strong><br>
+              · <strong>利而诱之</strong> — "领纪念品"就是"饵"，用小利吸引目标人群<br>
+              · <strong>乱而取之</strong> — 利用"从众效应"引发的混乱，快速占领消费者的注意力<br>
+              · <strong>能而示之不能</strong> — 看似"无名气"的展摊，实则藏着精心策划的营销<br><br>
+
+              <strong>本质：</strong><br>
+              用"诱饵"重构了注意力场——先让一小部分人因为利益驱动而来，然后利用从众效应放大影响力。<br>
+              这与兵法中"造势"的原理完全一致：势者，因利而制权也。
+            </div>
+
+            <div class="comment">
+              <strong>💬 现代启示</strong><br><br>
+              汉斯的案例完美说明了"造势"的核心——<strong>不是改变客观条件，而是利用现有条件制造出有利于己的局面</strong>。<br>
+              展馆位置偏僻是客观事实，但通过撒牌子的方式，把"位置劣势"转化为"反差优势"：越偏僻→撒牌越多→反差越大→引爆话题。<br><br>
+              这就是"因利而制权"的现代版本。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 案例 · 后唐南唐 ===== -->
+        <section id="case-nantang">
+          <div class="chapter-title">
+            案例 · 后唐南唐
+            <span class="num">不查始计的教训</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="case-block">
+              <div class="case-label">🏛 案例</div>
+
+              <strong>背景：</strong><br>
+              后唐庄宗李存勖灭梁建唐，但短短三年后身死国灭——"死于妇人之手"，被伶人所杀。<br>
+              宋太祖赵匡胤陈桥兵变篡后周，随后伐南唐。<br>
+              南唐后主李煜，国破被俘，作"十四万人齐解甲，更无一个是男儿"（实际上是花蕊夫人所作，说的是后蜀而非南唐，典故常被混淆）。<br><br>
+
+              <strong>对应计篇："死生之地，不可不查"</strong><br>
+              · <strong>后唐之亡</strong> — 李存勖打天下时知兵法、用诡道，但得天下后忘了"存亡之道，不可不察"——宠信伶人、荒废朝政，这是"前计后不察"的典型。<br>
+              · <strong>南唐之亡（李煜）</strong> — 面对北宋大军压境，李煜不修武备、不查庙算，沉醉诗词，最终"十四万人齐解甲"——兵再多，不先算，等于没有。<br>
+              · <strong>对比</strong> — 后唐是"得了天下忘了计"，南唐是"根本没算过"。两者的共同点：失败不是因为敌人太强，而是因为自己没有"察"——没把"死生之地，存亡之道"当回事。<br><br>
+
+              <strong>本喵的补暗扣：</strong><br>
+              三个朝代（后唐→后周→南唐）都亡于同一个问题——<strong>在位者没有把"计"当作持续的行为，而是一次性的</strong>。<br>
+              始计篇的"察"不是开战前查一次就完了，而是<strong>时时刻刻都在察</strong>。李存勖察了前半生、放纵了后半生，等于白察。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 案例 · 宋襄公泓水之战 ===== -->
+        <section id="case-songxiang">
+          <div class="chapter-title">
+            案例 · 宋襄公泓水之战
+            <span class="num">不守诡道的反面教材</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="case-block">
+              <div class="case-label">⚔️ 案例</div>
+
+              <strong>背景：</strong><br>
+              宋楚泓水之战（前638年）。宋襄公率军与楚军在泓水对阵。<br><br>
+              宋军已列阵完毕，楚军正在渡河。<br>
+              部下建议："敌众我寡，趁其半渡而击之。"<br>
+              宋襄公拒绝："君子不重伤，不禽二毛……寡人虽亡国之余，不鼓不成列。"<br>
+              结果楚军渡河后列阵完毕，大败宋军，宋襄公自己也受重伤而死。<br><br>
+
+              <strong>对应计篇："攻其无备，出其不意"</strong><br>
+              孙子说"兵者，诡道也"——战争不是君子游戏。<br>
+              半渡而击，恰恰是"攻其无备"的完美时机——楚军渡河时阵型未成、无法还击，是最脆弱的时刻。<br>
+              宋襄公死守"仁义"的教条，等于主动放弃"诡道"赋予的优势，这是彻头彻尾的<strong>"不查"——没搞清楚兵法的本质是什么</strong>。<br><br>
+
+              <strong>本喵的补暗扣：</strong><br>
+              宋襄公的错误不在于他讲仁义，而在于他<strong>在错误的地方讲仁义</strong>。<br>
+              孙武说"兵者诡道"、又说"不可不察"——察的就是：<strong>当前情境下，什么规则适用</strong>。<br>
+              战场上讲礼让仁义，等于让对手按你的"规则"赢你。这不是道德高尚，是<strong>战略文盲</strong>。<br>
+              所以泓水之战是最好的反面教材，与勾践（灵活用诡道）形成鲜明对比。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 作战篇 ===== -->
+        <section id="zuozhan">
+          <div class="chapter-title">
+            作战篇
+            <span class="num">第二篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="verse">
+              <strong>（一）贵速 · 战争经济学</strong><br><br>
+              其用战也胜，久则钝兵挫锐，攻城则力屈，久暴师则国用不足。<br>
+              夫钝兵挫锐，屈力殚货，则诸侯乘其弊而起，虽有智者不能善其后矣。<br>
+              故兵闻拙速，未睹巧之久也。夫兵久而国利者，未之有也。<br><br>
+              <strong>（二）因粮于敌</strong><br><br>
+              善用兵者，役不再籍，粮不三载；取用于国，因粮于敌，故军食可足也。<br>
+              故智将务食于敌。食敌一钟，当吾二十钟；忌杆一石，当吾二十石。<br><br>
+              <strong>（三）卒善而养</strong><br><br>
+              杀敌者，怒也；取敌之利者，货也。<br>
+              车战，得车十乘以上，赏其先得者，而更其旌旗。车杂而乘之，卒善而养之，是谓胜敌而益强。<br><br>
+              <strong>（四）兵贵胜不贵久</strong><br><br>
+              故兵贵胜，不贵久。故知兵之将，民之司命，国家安危之主也。
+            </div>
+
+            <div class="trans">
+              <strong>🔖 释义</strong><br><br>
+              作战篇是计篇之后的"算账环节"——计篇定了能不能打，作战篇算怎么打、多久打、打了之后撑不撑得住。<br><br>
+              核心思想只有四个字：<strong>速战速决</strong>。战争旷日持久，必然导致"钝兵挫锐、屈力殚货"——士兵疲惫、武器钝了、国库空了。更要命的是：你一弱，诸侯就会趁火打劫。<br><br>
+              "因粮于敌"——客场作战，补给线越长越脆弱。从敌人那里抢粮，既解决了自给问题，又削弱了敌人。吃敌人一钟粮，相当于省了自家二十钟的运输成本。<br><br>
+              "卒善而养"——俘虏敌人后，善待他们、改编入己军，就能做到"胜敌而益强"——打一仗壮大一次。
+            </div>
+
+            <div class="comment">
+              <strong>💬 感悟</strong><br><br>
+              <strong>对事贵速，对己贵久</strong><br>
+              孙子讲的"速胜"是面对战争而言的。但放到人生中，成长这件事不能速胜——学习一门技能、建立一个体系，都需要"久"的积累。作战篇的智慧在于：<strong>分清什么事该快、什么事该慢</strong>。对项目执行要快（避免资源消耗），但对自我建设要慢（没有捷径）。<br><br>
+              <strong>"胜敌而益强"的飞轮效应</strong><br>
+              这是最惊艳的洞见：一场仗打完，你不是变弱了，而是变强了——因为缴获了敌人的装备、收编了敌人的士兵。如果能设计一套"越打越强"的飞轮，而不是"越打越亏"的消耗战，才是真正理解作战篇。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 作战篇 · 案例 ===== -->
+        <section id="zuozhan-case">
+          <div class="chapter-title">
+            作战篇 · 案例
+            <span class="num">速胜与因粮</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="case-block">
+              <div class="case-label">🌾 案例一 · 孔明抢麦</div>
+              蜀军北伐，粮草补给线漫长。诸葛亮派兵抢割魏国上邽的麦子，以敌之粮养我之兵——这正是"因粮于敌"的经典操作。可惜街亭失守，粮道被断，最终功亏一篑。<br><br>
+              正反两面说明了作战篇的核心：因粮于敌是策略正确，但粮道安全是底线。粮道一断，再能打也是徒劳。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">⚔️ 案例二 · 萨尔浒之战</div>
+              明万历四十七年（1619年），杨镐率四路大军合击后金努尔哈赤，号称47万（实际约10万）。<br><br>
+              杜松贪功冒进——率先抵达萨尔浒，被后金军分割包围全灭。<br>
+              马林闻杜松败，转攻为守——但仍被后金逐个击破。<br>
+              杨镐坐镇沈阳指挥失灵——四路大军互不知情，无统一调度。<br>
+              李如柏一路闻讯撤退——唯一保全的一路。<br><br>
+              对应作战篇：明军违反了"兵贵胜，不贵久"——不是因为他们不够快，而是因为四路分兵、互不协调，违反了"卒善而养"（没有善待和整合资源）。从五事角度看——"将"（杨镐无能将才）、"法"（四路无统一指挥体系）全部崩塌。<br><br>
+              本喵的补暗扣：萨尔浒的教训不在"慢"——四路同时进攻在纸面上是速战。真正的问题是"将"和"法"的崩塌。杨镐知兵吗？不知。这就是"将孰有能"的直接回答。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🏯 案例三 · 吴楚柏举之战</div>
+              前506年，吴王阖闾以孙武为将、伍子胥为副，三万吴军长途奔袭，五战五胜直破楚都郢城。<br><br>
+              对应作战篇：<br>
+              · <strong>速胜</strong>——三万军队深入敌境，拖不起。从出兵到破郢，前后不过数月。<br>
+              · <strong>因粮于敌</strong>——长途奔袭，全靠沿途夺取楚军粮仓补给。<br>
+              · <strong>卒善而养</strong>——伍子胥虽因私仇毁楚，但吴军在破城前的战术确实是"胜敌而益强"的体现：每次战胜后利用缴获继续推进。<br><br>
+              柏举之战是"兵贵胜，不贵久"的极限演示——三万破二十万，速胜的极致。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">📟 案例四 · 卡西欧与夏普</div>
+              上世纪七八十年代电子计算器市场，夏普占据技术优势，卡西欧通过<strong>缩短产品更新周期</strong>（三个月一款新机型）打得夏普措手不及——夏普的研发周期是一年。卡西欧用"快"耗尽了夏普的优势，最终在红海中胜出。<br><br>
+              对应"兵闻拙速，未睹巧之久"——卡西欧的产品不一定比夏普厉害（拙速 vs 巧久），但就是快：更快推出、更快迭代。在商战中，"快"本身就是一种战略武器。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🥤 案例五 · 黑松经销商策略</div>
+              台湾黑松饮料进入新市场时，没有自建渠道，而是利用现有经销网络，让经销商优先铺货黑松产品——通过让利和培训，"卒善而养"经销商，把外部渠道变成自己的"降兵"，最终"胜敌而益强"。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 谋攻篇 ===== -->
+        <section id="mougong">
+          <div class="chapter-title">
+            谋攻篇
+            <span class="num">第三篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="verse">
+              <strong>（一）全国为上 · 伐谋伐交</strong><br><br>
+              孙子曰：凡用兵之法，全国为上，破国次之；全军为上，破军次之……是故百战百胜，非善之善者也；不战而屈人之兵，善之善者也。<br><br>
+              故上兵伐谋，其次伐交，其次伐兵，其下攻城。攻城之法，为不得已。<br><br>
+              <strong>（二）善用兵者</strong><br><br>
+              故善用兵者，屈人之兵而非战也，拔人之城而非攻也，毁人之国而非久也。必以全争于天下，故兵不顿而利可全，此谋攻之法也。<br><br>
+              <strong>（三）三患五胜</strong><br><br>
+              故知胜有五：知可以战与不可以战者胜，识众寡之用者胜，上下同欲者胜，以虞待不虞者胜，将能而君不御者胜。此五者，知胜之道也。<br><br>
+              故曰：知彼知己，百战不殆；不知彼而知己，一胜一负；不知彼不知己，每战必殆。<br><br>
+              <strong>（四）三患</strong><br><br>
+              故君之所以患于军者三：不知军之不可以进而谓之进，不知军之不可以退而谓之退，是为縻军；不知三军之事而同三军之政，则军士惑矣；不知三军之权而同三军之任，则军士疑矣。三军既惑且疑，则诸侯之难至矣。是谓乱军引胜。
+            </div>
+
+            <div class="trans">
+              <strong>🔖 释义</strong><br><br>
+              谋攻篇的核心是"成本核算"——从四个层次（伐谋>伐交>伐兵>攻城）思考如何用最低成本获胜。<br><br>
+              <strong>① 伐谋</strong>——在计谋层面粉碎敌人的计划，让战争还没打就赢了。最高境界。<br>
+              <strong>② 伐交</strong>——在外交层面瓦解敌人的联盟，或建立自己的联盟，使敌人孤立。<br>
+              <strong>③ 伐兵</strong>——不得已时野战对阵，堂堂正正地打。<br>
+              <strong>④ 攻城</strong>——最下策。攻城损耗最大，时间最长，除非万不得已绝不选。<br><br>
+              核心原则："不战而屈人之兵"——不是不打，而是用最小代价让敌人屈服。<br><br>
+              末段的"三患"告诫君主不要瞎指挥——不懂军队进退、不懂军事内政、不懂战场权变，却强行插手，就是"乱军引胜"——自己把胜利送给敌人。
+            </div>
+
+            <div class="comment">
+              <strong>💬 感悟</strong><br><br>
+              <strong>知彼知己——知彼易，知己难</strong><br>
+              现实中，"知彼"可以靠情报、分析、调研；但"知己"才是最难的——人容易高估自己、低估困难。孙武把"知己"放在"知彼"之前，是有深意的：先搞清楚自己能做什么，再去研究对手。<br><br>
+              <strong>三患：管理层乱指挥的千古难题</strong><br>
+              孙武提出的三大患——不懂业务的人瞎指挥、外行管理内行、高层干预一线决策——在现代企业里天天发生。谋攻篇的警示是：<strong>信任一线、放权给专业的人</strong>。将能而君不御，才是最高效的组织形态。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 谋攻篇 · 案例 ===== -->
+        <section id="mougong-case">
+          <div class="chapter-title">
+            谋攻篇 · 案例
+            <span class="num">伐谋与伐交</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="case-block">
+              <div class="case-label">🏯 案例一 · 韩信灭赵（背水一战 / 伐谋）</div>
+              前204年，韩信率数万新兵攻赵。赵王歇与陈余聚兵二十万于井陉口。韩信兵力悬殊，但他用了一计：<br><br>
+              背水列阵——把军队排在河边，无路可退。士兵只能死战求生。同时派两千骑兵偷袭赵营，拔掉赵军旗帜换上汉旗。<br><br>
+              赵军见汉军背水而战以为傻，倾巢出击。汉军死战不退，骑兵趁机偷营插旗。赵军回头见营地已失，以为赵王被俘，全线溃逃。<br><br>
+              <strong>对应谋攻篇：</strong>韩信没有"伐兵"（硬打二十万大军），而是通过"伐谋"——利用赵军轻敌心理、制造背水无退路的心理势能、配合偷袭营寨的奇兵——在战场上"谋"出了胜利。典型的"上兵伐谋"。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🤝 案例二 · 苏秦谏齐（伐交）</div>
+              苏秦为燕国去齐国当卧底，劝说齐王攻宋而非攻燕：宋国富庶但军弱，攻宋可得利；而燕国是齐国的北方屏障，攻燕只会让赵国渔翁得利。<br><br>
+              对应谋攻篇：<strong>"伐交"</strong>——通过外交手段改变齐国的攻击目标，保护燕国不战而安。<br><br>
+              本喵的补暗扣：苏秦更妙的是一边伐交、一边伐谋——他以齐攻宋，宋国求救于楚，楚齐相争，燕国乘机壮大。一计同时运用了伐交和伐谋。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🔥 案例三 · 赤壁之战（伐交 + 伐谋）</div>
+              曹操南下，号称83万大军。东吴朝堂分裂为战和两派。诸葛亮出使东吴，舌战群儒，劝孙权联刘抗曹——这是<strong>"伐交"</strong>（促成孙刘联盟）。<br><br>
+              黄盖献火攻计——利用曹操铁索连船的弱点——这是<strong>"伐谋"</strong>。<br><br>
+              最终以弱胜强，三分天下之局由此奠定。没有孙刘联盟（伐交），火攻再妙也无用；没有火攻（伐谋），联盟再坚固也打不赢——二者缺一不可。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🖥️ 案例四 · 戴尔直销模式（伐谋）</div>
+              戴尔电脑没有自己的工厂和渠道（"破国次之"），而是通过直销模式——按需定制、缩短供应链、直接面向消费者——绕过了经销商环节。这不是打败了竞争对手，而是"不战而屈人之兵"——用模式创新让传统PC厂商的优势（渠道、库存）变成劣势。<br><br>
+              对应"上兵伐谋"：在开打之前，用商业模式的设计赢得竞争。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🍔 案例五 · 麦当劳标准化（伐兵层级的系统化）</div>
+              麦当劳的胜利不是靠"伐谋"（创新商业模式），也不是"伐交"（建立联盟），而是<strong>"伐兵"层面的极致系统化</strong>——整个操作流程标准化到每一个动作，确保全球任何一家店的出品一致。虽是最基础的"伐兵"，但做到极致，反而形成了别人无法复制的系统优势。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 形篇 ===== -->
+        <section id="xing">
+          <div class="chapter-title">
+            形篇
+            <span class="num">第四篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="verse">
+              <strong>（一）先为不可胜</strong><br><br>
+              昔之善战者，先为不可胜，以待敌之可胜。不可胜在己，可胜在敌。<br>
+              故善战者，能为不可胜，不能使敌之必可胜。故曰：胜可知而不可为。<br><br>
+              <strong>（二）胜兵先胜</strong><br><br>
+              不可胜者，守也；可胜者，攻也。守则不足，攻则有余。<br>
+              善守者，藏于九地之下；善攻者，动于九天之上，故能自保而全胜也。<br><br>
+              故善战者之胜也，无智名，无勇功。故其战胜不忒。不忒者，其所措必胜，胜已败者也。<br>
+              是故胜兵先胜而后求战，败兵先战而后求胜。<br><br>
+              <strong>（三）度量数称胜</strong><br><br>
+              善用兵者，修道而保法，故能为胜败之政。<br><br>
+              兵法：一曰度，二曰量，三曰数，四曰称，五曰胜。<br>
+              地生度，度生量，量生数，数生称，称生胜。<br><br>
+              故胜兵若以镒称铢，败兵若以铢称镒。
+            </div>
+
+            <div class="trans">
+              <strong>🔖 释义</strong><br><br>
+              形篇讲的是"先为不可胜"——先让自己立于不败之地，再等待敌人露出破绽。<br><br>
+              <strong>先为不可胜</strong>——修建防御、训练军队、储备粮草、巩固内部。这些事不受敌人影响，完全取决于自己。<br><br>
+              <strong>以待敌之可胜</strong>——敌人什么时候犯错，不是你能控制的。但你可以做到"准备好了等着"——他犯错时你就能抓住。<br><br>
+              <strong>胜兵先胜</strong>——真正会打仗的人，在开战前就已经赢了——因为他已经创造了必胜的条件。这就是"先胜后战"和"先战后求胜"的区别。<br><br>
+              <strong>度、量、数、称、胜</strong>——五级递进：土地面积（度）→ 物产资源（量）→ 可征兵力（数）→ 双方对比（称）→ 胜负预判（胜）。这是一种系统性的国力对比模型。<br><br>
+              善战者之胜，看似平淡——没有轰轰烈烈的战斗、没有惊世骇俗的计谋，因为他打的是"已败之敌"——敌人在他动手前就已经败了。
+            </div>
+
+            <div class="comment">
+              <strong>💬 感悟</strong><br><br>
+              <strong>形 vs 势——量变 vs 质变</strong><br>
+              形是静态的实力积累——土地、人口、粮草、训练度。<br>
+              势是动态的能量释放——在正确的时间、正确的地点释放形。<br>
+              形是量变，势是质变。没有形的积累，就没有势的爆发。形是给自己的积累，势是给别人的压迫感。<br><br>
+              <strong>"无智名，无勇功"——赢得太轻松反而没人喝彩</strong><br>
+              真正的高手赢在战前——他布置好了，敌人一碰就碎。这看上去不够精彩，但恰恰是最高境界。孙子说"天下曰善，非善也"——天下人都叫好的胜利，往往赢得太艰难了。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 形篇 · 案例 ===== -->
+        <section id="xing-case">
+          <div class="chapter-title">
+            形篇 · 案例
+            <span class="num">不可胜与先胜</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="case-block">
+              <div class="case-label">🏛 案例一 · 隋文帝灭陈（先为不可胜）</div>
+              隋文帝杨坚篡北周后，没有立即伐陈。他先做了三件事：<br>
+              ① 收拢北周旧部，巩固国内统治（"修道保法"）<br>
+              ② 发展经济，储备粮食（累积"形"）<br>
+              ③ 利用突厥内乱，解除北方威胁（消除后顾之忧）<br><br>
+              等到隋朝国力远超南陈时，高颎献计：隋军每至收获季节就在边境佯动，陈军不得不全国戒备、耽误农时。连续几年，陈国经济被拖垮，民心离散。<br>
+              最终隋军南下时，陈军已不堪一击——这就是"胜兵先胜而后求战"——仗还没打，胜局已定。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🐂 案例二 · 李牧破匈奴（先示弱，后决胜）</div>
+              战国末期，赵国边将李牧防御匈奴。他在雁门关采取"坚壁清野"策略——匈奴来犯就闭城不出，不交战、不追击。匈奴以为李牧胆怯，赵王也认为李牧无能，将其撤换。<br><br>
+              新将主动出击，屡战屡败，边民无法耕种放牧。赵王无奈再请李牧复出。李牧回任后继续坚壁清野——匈奴更加轻敌。<br><br>
+              等李牧认为条件成熟，精选战车1300乘、骑兵13000人、步兵5万、弓弩手10万，在雁门设伏。先用少数百姓放牧引诱匈奴，匈奴单于率大军来抢，李牧伏兵尽出，大破匈奴，此后十余年匈奴不敢近赵边。<br><br>
+              对应形篇：<br>
+              · <strong>先为不可胜</strong>——坚壁清野，让匈奴打不着自己<br>
+              · <strong>以待敌之可胜</strong>——等到匈奴轻敌冒进<br>
+              · <strong>先胜而后求战</strong>——李牧复出后不急打，等到条件完全成熟才一战
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🏯 案例三 · 王翦灭楚（坚壁示弱，一击决胜）</div>
+              秦始皇问王翦伐楚需要多少兵。王翦说：非六十万不可。李信说：二十万足矣。秦始皇派李信伐楚，大败而归。<br><br>
+              秦始皇再请王翦，王翦坚持六十万兵力，秦始皇子孙尽出才凑齐。王翦率六十万大军到了楚国边境，却坚壁不出——筑垒固守，每天让士兵洗澡、吃饭、训练，就是不打。<br><br>
+              楚军以为秦军畏战，多次挑衅无果，日久松懈，开始撤军回防。王翦趁楚军移动、阵型涣散之际，六十万大军全线出击，一战灭楚。<br><br>
+              对应形篇：<br>
+              · <strong>先为不可胜</strong>——六十万大军驻守不出，楚军攻不动<br>
+              · <strong>以待敌之可胜</strong>——等到楚军疲惫松懈、开始撤退<br>
+              · <strong>度、量、数、称、胜</strong>——王翦坚持六十万，是对秦楚两国的国力做了精确计算
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🌾 案例四 · 农村包围城市（先占形胜）</div>
+              毛泽东在井冈山时期的战略：先在敌人统治薄弱的农村建立根据地，积蓄力量、发展组织、训练军队——这是典型的"先为不可胜"。等到农村根据地足够大、军队足够强，再逐步包围城市。<br><br>
+              对应形篇的"度→量→数→称→胜"链条：占领的农村土地（度）→ 产出粮食和兵源（量）→ 可动员的军队数量（数）→ 与国民党政府的力量对比（称）→ 最终的胜利（胜）。这是一个完整的形势积累过程。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 势篇 ===== -->
+        <section id="shi">
+          <div class="chapter-title">
+            势篇
+            <span class="num">第五篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="verse">
+              <strong>（一）分数 · 形名 · 奇正 · 虚实</strong><br><br>
+              孙子曰：凡治众如治寡，分数是也；斗众如斗寡，形名是也；三军之众，可使必受敌而无败者，奇正是也；兵之所加，如以碫投卵者，虚实是也。<br><br>
+              <strong>（二）以正合，以奇胜</strong><br><br>
+              凡战者，以正合，以奇胜。故善出奇者，无穷如天地，不竭如江河。<br>
+              声不过五，五声之变，不可胜听也；色不过五，五色之变，不可胜观也；味不过五，五味之变，不可胜尝也；战势不过奇正，奇正之变，不可胜穷也。奇正相生，如循环之无端，孰能穷之？<br><br>
+              <strong>（三）势险 · 节短</strong><br><br>
+              激水之疾，至于漂石者，势也；鸷鸟之疾，至于毁折者，节也。<br>
+              是故善战者，其势险，其节短。势如彍弩，节如发机。<br><br>
+              <strong>（四）求之于势，不责于人</strong><br><br>
+              故善战者，求之于势，不责于人，故能择人而任势。<br>
+              任势者，其战人也，如转木石。木石之性，安则静，危则动，方则止，圆则行。<br>
+              故善战人之势，如转圆石于千仞之山者，势也。
+            </div>
+
+            <div class="trans">
+              <strong>🔖 释义</strong><br><br>
+              势篇讲的是"动态能量释放"——不是说你有多少资源（那是形），而是你怎么用一种不可阻挡的方式把资源的力量释放出来。<br><br>
+              <strong>奇正相生</strong>——"正"是正面迎敌的常规部队，"奇"是侧翼突袭的非常规部队。二者是循环转换的：你以为是正，其实是奇；你以为预备队是正，投入战场时可以是奇。核心在于让对方永远猜不透你用什么方式打。<br><br>
+              <strong>势险节短</strong>——蓄势要凶（如拉满的弩），出手要短（闪电一击）。不发则已，一发就要让敌人来不及反应。<br><br>
+              <strong>求之于势，不责于人</strong>——好的将领不责备士兵为什么不英勇，而是创造一个"不得不英勇"的势——如把圆石推上高山，松手时它自然滚落，不费吹灰之力。<br><br>
+              <strong>治众如治寡，分数是也</strong>——人再多，只要组织建制清晰（层层分职），管理起来就和管几个人一样。体系比方法更优先。
+            </div>
+
+            <div class="comment">
+              <strong>💬 感悟</strong><br><br>
+              <strong>势是同一份形的不同用法</strong><br>
+              势不是形的质变，而是"同一份形的不同用法"。关键在于<strong>位置、时机和释放的节奏</strong>。同样的兵力，摆在山脚下和推上山再推下来，效果天差地别。<br><br>
+              <strong>治众如治寡——帝国时代的分组编队</strong><br>
+              就像在帝国时代里，100个兵乱糟糟冲上去被一一消灭，但编成两群（骑兵分队+步兵分队），操作就是"框选+右键"这么简单——这就是"分数"的力量。建好体系，大规模管理就和管几个人一样。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 势篇 · 案例 ===== -->
+        <section id="shi-case">
+          <div class="chapter-title">
+            势篇 · 案例
+            <span class="num">奇正与势险节短</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="case-block">
+              <div class="case-label">⚔️ 案例一 · 耿弇打巨里（正奇相生）</div>
+              东汉耿弇攻张步，先围巨里城。他故意放俘虏回去报信，声称"我将全力攻城"。巨里守将费邑得知后，果然率军来救——耿弇在半路伏击，斩费邑，巨里守军失去外援+主将被杀，精神崩溃，不战而降。<br><br>
+              对应势篇：<br>
+              <strong>正</strong>——围攻巨里（明面上的行动）<br>
+              <strong>奇</strong>——放俘虏报信，诱费邑来救（暗藏的杀招）<br>
+              <strong>以正合，以奇胜</strong>——正兵围城牵制，奇兵半路截杀<br><br>
+              耿弇的妙处在于"正中有奇、奇中有正"——围城是正，但"放俘虏"这个动作本身已是奇。"形之"（示形示实）让敌人信以为真、不得不来救，然后在他们以为最安全的路线上设伏。"先夺其气，再取其城"——势的经典释放。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🌿 案例二 · 淝水之战（势的临界点）</div>
+              前秦苻坚率80万大军南下，东晋谢玄率8万北府兵迎战。两军隔淝水对峙。<br><br>
+              谢玄提议：秦军后撤一点，让晋军渡河决战。苻坚想趁晋军半渡而击，同意后撤——但一撤就出了大事。<br><br>
+              秦军没有预备队压阵。前军后撤，后方部队不知前方情况，看见后退就跟着退，一退变溃。谢玄抓住这个临界点，命精锐迅速渡河冲杀。同时朱序在秦军后方大喊"秦军败了！秦军败了！"——80万大军瞬间溃散。<br><br>
+              对应势篇：<br>
+              · <strong>势险节短</strong>——晋军抓住秦军后撤的瞬间（节短）发动冲锋（势险）<br>
+              · <strong>势如彍弩，节如发机</strong>——蓄力到临界点猛然释放<br>
+              · <strong>求之于势，不责于人</strong>——谢玄没有训练出比秦军更强的士兵，而是创造了一个"秦军必乱"的势<br><br>
+              引申出两个典故：草木皆兵、风声鹤唳——正是"势"从凝聚到溃散的写照。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🏹 案例三 · 孙膑减灶马陵道（形之，敌必从之）</div>
+              魏国伐韩，韩国向齐国求救。孙膑率齐军救韩，但没有直接迎击魏军——而是利用魏军求胜心切的心理，逐日减灶：<br>
+              第一天做饭挖十万灶，第二天五万灶，第三天三万灶——制造"齐军大量溃逃"的假象。<br><br>
+              庞涓果然中计，以为齐军已溃散大半，丢下步兵、率精锐轻装急追。追至马陵道——地势险狭、两旁树木茂密。孙膑在此设伏，万弩齐发，庞涓兵败自杀。<br><br>
+              对应势篇：<br>
+              · <strong>形之</strong>——减灶示弱，制造"溃逃假象"<br>
+              · <strong>敌必从之</strong>——庞涓果然贪功急追<br>
+              · <strong>以卒待之</strong>——马陵道设伏，万弩齐发<br><br>
+              与耿弇的"放俘虏示实"形成对比：一个是示实诱敌来救，一个是示虚诱敌来追——同一原理，两个相反的形。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">💼 案例四 · 巨人集团还债（以信造势）</div>
+              史玉柱的巨人集团因国家宏观调控和资金链断裂而破产。他做了一个让所有人吃惊的决定：<strong>主动还清所有债务</strong>。<br><br>
+              从兵法来看，这不是做慈善——是在"蓄势"：<br>
+              · <strong>势的消散</strong>——巨人倒下，势已散尽，硬撑更惨<br>
+              · <strong>蓄势</strong>——隐退还债数年，每还一笔，信誉巨石就往上推一寸<br>
+              · <strong>势成</strong>——高调宣布"还清所有债务"，媒体大量报道，全社会惊呼"史玉柱是条汉子"——舆论势能蓄满<br>
+              · <strong>推出脑白金</strong>——乘着"诚信翻身"的信任势能推出产品，势如破竹<br><br>
+              对应"转圆石于千仞之山"——还债就是那个把巨石推上山的过程，脑白金就是松手的瞬间。<br><br>
+              本喵的补暗扣：还债表面是"舍了小利"，实则是"以利动之"——用还债这个动作吸引舆论关注和消费者信任，再用脑白金"以卒待之"接住这股势。这不是舍，是换——投入产出比极高。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 虚实篇 ===== -->
+        <section id="xushi">
+          <div class="chapter-title">
+            虚实篇
+            <span class="num">第六篇</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="verse">
+              <strong>（一）致人而不致于人</strong><br><br>
+              孙子曰：凡先处战地而待敌者佚，后处战地而趋战者劳。故善战者，致人而不致于人。<br><br>
+              故我欲战，敌虽高垒深沟，不得不与我战者，攻其所必救也；我不欲战，虽画地而守之，敌不得与我战者，乖其所之也。<br><br>
+              <strong>（二）形人而我无形</strong><br><br>
+              故形人而我无形，则我专而敌分。我专为一，敌分为十，是以十攻其一也，则我众而敌寡。<br>
+              能以众击寡者，则吾之所与战者约矣。<br><br>
+              吾所与战之地不可知，不可知则敌所备者多，敌所备者多，则吾所与战者寡矣。<br>
+              故备前则后寡，备后则前寡，无所不备则无所不寡。<br><br>
+              <strong>（三）知战之地，知战之日</strong><br><br>
+              故知战之地，知战之日，则可千里而会战。不知战地，不知战日，则左不能救右，右不能救左……<br><br>
+              故策之而知得失之计，作之而知动静之理，形之而知死生之地，角之而知有余不足之处。<br><br>
+              <strong>（四）兵无常势，水无常形</strong><br><br>
+              夫兵形象水，水之形避高而趋下，兵之形避实而击虚。<br>
+              水因地而制流，兵因敌而制胜。故兵无常势，水无常形。能因敌变化而取胜者，谓之神。
+            </div>
+
+            <div class="trans">
+              <strong>🔖 释义</strong><br><br>
+              虚实篇的核心是"致人而不致于人"——掌握主动权，让敌人跟着自己的节奏走。<br><br>
+              <strong>以逸待劳</strong>——先抵达战场的人有体力优势（佚），后到的是疲惫之师（劳）。哪怕你走得更远，只要选对路线（行于无人之地），仍然可以不劳。<br><br>
+              <strong>形人而我无形</strong>——让敌人暴露，而自己不露痕迹。他暴露了、你藏好了，你就可以集中（我专为一），而敌人被迫分兵防守（敌分为十）。"无所不备则无所不寡"——敌人处处防守，就等于处处兵力不足。<br><br>
+              <strong>避实击虚</strong>——像水流一样，水避开高处的岩石（实），从低洼处流过（虚）。打敌人最脆弱的地方，不打敌人防守最严密的地方。<br><br>
+              <strong>策之作之形之角之</strong>——四种主动探明虚实的方法：<br>
+              策之（分析推演）、作之（挑动试探）、形之（示形诱导）、角之（小规模对抗）。不需要内应，主动挑衅就能让敌人暴露虚实。
+            </div>
+
+            <div class="comment">
+              <strong>💬 感悟</strong><br><br>
+              <strong>虚实篇的本质是"节奏论"</strong><br>
+              表面讲的是"知"（知道打哪、什么时候打），内核是"节奏"——敌人被我裹挟着走、分兵应对、处处落空。你永远是时间的设定者、地点的选择者，敌人永远是时间的应对者、地点的赶路人。一直赶，就虚了。<br><br>
+              <strong>预判链的博弈——形 → 因形 → 无形</strong><br>
+              ① 我假装打左路，敌人信了去守左路（形）<br>
+              ② 我预判敌人会识破，所以真打右路（因形）<br>
+              ③ 我预判了敌人的预判——做到"无形"后，敌人无论怎么猜都猜不透<br>
+              四渡赤水就是这场博弈的极致演示——每次"形"都是真的已经预定了下一步的假象，永远不留下可预判的规律。<br><br>
+              <strong>"设实成虚"——反着用避实击虚</strong><br>
+              把自己最强的点放在敌人必经之路上（如峡口建城堡封路），迫使敌人在你的优势地形上和你打——他的实（大军）因为没有施展空间，自动变成了虚。
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 虚实篇 · 案例 ===== -->
+        <section id="xushi-case">
+          <div class="chapter-title">
+            虚实篇 · 案例
+            <span class="num">致人与形人</span>
+          </div>
+          <div class="chapter-bar" style="background:#dc2626"></div>
+
+          <div class="section-item">
+            <div class="case-block">
+              <div class="case-label">🏯 案例一 · 司马懿平辽（知彼在先，避实击虚）</div>
+              司马懿受命征辽东公孙渊。出发前先找魏明帝要了一年的粮草——满朝觉得荒谬（辽东战事撑死一个月），但司马懿算准了：公孙渊会认为魏军粮草不足、撑不久，所以能拖就拖。一年的粮草先破了公孙渊的算盘——这是"料敌在先"。<br><br>
+              进军途中遇大暴雨，辽水暴涨，军营被泡在水里。部下急求移营，司马懿下令"敢言移营者斩"——他知道公孙渊的探子在山上看他，如果移营，公孙渊就会趁机追击。安坐水中不动——这是<strong>"形"</strong>（示弱），让公孙渊以为他走不动了、可以慢慢耗。<br><br>
+              对峙一段时间后，司马懿暗渡济水直取襄平——<strong>"避实击虚"</strong>。公孙渊大本营被围，外围兵力回援不及，城破身亡。<br><br>
+              更妙的是：司马懿打孟达时八天急行军1200里（速战速决），打辽东时却日行三十里（持久战）。同一将领、同一套兵法，打出完全相反的战术——<strong>"因敌变化而取胜，兵无常势"</strong>的完美演示。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">⚔️ 案例二 · 虎牢之战（控要打援，一战两克）</div>
+              唐初，李世民围洛阳王世充。窦建德率十万大军来救。李世民分兵：少量兵力继续围洛阳（牵制），自己率主力扼守虎牢关（阻击窦建德）。<br><br>
+              李世民先派小股部队诱敌，探明窦军虚实。又带几个骑兵到窦军营前"巡视"，让窦建德觉得唐军主力松懈、可以一鼓作气吃掉。窦建德果然按捺不住，主动列阵出战——这个"阵"一旦摆好，李世民就拿到了决战的机会。<br><br>
+              唐军避战不出，让窦军列阵一整天，从早站到晚，士兵又饿又累。等到窦军阵型涣散、开始撤退做饭时，李世民率精锐骑兵突击——一举击溃窦建德十万大军。窦建德被俘。<br><br>
+              洛阳王世充得知窦建德败亡，自知无援，开城投降。<br><br>
+              对应虚实篇：<br>
+              · <strong>致人而不致于人</strong>——李世民是节奏的掌控者，窦建德被他调动着列阵、站着等、累崩<br>
+              · <strong>以逸待劳</strong>——唐军以逸待劳，窦军列阵一整天成了"趋战者劳"<br>
+              · <strong>攻其所必救</strong>——围洛阳（必救），逼窦建德不得不来虎牢决战<br>
+              严格说这不是"围城打援"（主力在围城、分兵打援），而是<strong>"控要打援"</strong>——主力扼守要道先吃掉援军，围城自然瓦解。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🍎 案例三 · 苹果个人计算机（商业蓝海）</div>
+              上世纪70年代末，计算机市场是军用/工业大型机的天下（IBM等统治的"实"）。苹果Apple II选择做个人计算机——面向普通消费者、插电即用、有彩屏和BASIC解释器。<br><br>
+              对应虚实篇：<br>
+              · <strong>避实击虚</strong>——避开军用计算机的红海（对手太强），开辟个人消费市场（需求虚）<br>
+              · <strong>无形</strong>——IBM没看到个人计算机的价值，而苹果已经在暗中定义了一个新市场<br>
+              · <strong>致人而不致于人</strong>——别人在卷参数，苹果重新定义了"消费者是谁"。IBM后来追进来时，已经在苹果的战场上了<br><br>
+              所以"避实击虚"不是简单地选一个没人做的行业——是在一个快被做烂的市场里，重新定义"战场"本身。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🌊 案例四 · 四渡赤水（预判链的极致）</div>
+              红军长征中最经典的机动战。面对国民党几十万大军的围追堵截，毛泽东指挥红军在赤水河上四次来回穿插：<br><br>
+              · 一渡赤水 → 蒋介石以为红军要北渡长江<br>
+              · 二渡赤水 → 以为红军要回遵义<br>
+              · 三渡赤水 → 以为红军要西进<br>
+              · 四渡赤水 → 突然南渡乌江，兵锋直指贵阳，蒋介石本人吓得从贵阳跑路<br><br>
+              对应虚实篇：<br>
+              · <strong>形兵之极，至于无形</strong>——每次"形"都是假的，或者说每次都是真的已预定好下一步的假象。永远不留下可预判的规律。<br>
+              · <strong>我专而敌分</strong>——红军集中主力一路穿插，中央军、川军、黔军、滇军各守一方、互相不知情<br>
+              · <strong>无所不备则无所不寡</strong>——蒋介石处处设防，但处处都是薄弱点<br><br>
+              四渡赤水还藏着一条隐藏逻辑：四个军阀体系的信息天然滞后，红军在它们之间来回穿插，每家都只看到红军的"一面之形"——加在一起反而更乱。
+            </div>
+
+            <div class="case-block">
+              <div class="case-label">🎮 案例五 · 帝国时代地形封路（设实成虚）</div>
+              在峡口建城堡封锁通道——这不是"避实击虚"，而是它的反向应用：<br><br>
+              <strong>"设实成虚"</strong>——把自己最强的点（城堡）放在敌人必经之路上，迫使敌人必须攻你的实。敌人从海上过不去，陆路迂回又太远，他的实（大军）因为没有施展空间，自动变成了虚（在小路口被射）。<br><br>
+              对应虚实篇：<br>
+              · <strong>先处战地而待敌者佚</strong>——你先到峡口，敌人后到，是他"趋战者劳"<br>
+              · <strong>我不欲战，虽画地而守之，敌不得与我战者，乖其所之也</strong>——你不想打时，设个城堡守着，敌人打不进来，自然被你"乖其所之"
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 核心洞察</strong>
+          计篇是全书总纲，后续12篇都是在"计"的框架下的展开。五事、七计、诡道、庙算四个概念贯穿全书。
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 常见误解</strong>
+          "诡道"不是教人阴谋诡计，而是揭示信息不对称的客观规律。孙武本人强调"以正合，以奇胜"，诡道是"奇"而非全部。
+        </div>
+
+        <div class="callout">
+          <strong>⚡ 形与势</strong>
+          形是静态的实力积累（土地、人口、粮草），势是动态的能量释放（奇正相生、势险节短）。形是量变，势是质变。没有形的积累，就没有势的爆发。
+        </div>
+
+        <div class="callout warn">
+          <strong>🌊 虚实要义</strong>
+          "致人而不致于人"是虚实篇的灵魂。"无所不备则无所不寡"——让敌人处处设防，等于处处弱防。节奏在手，敌人就只能跟着跑。
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 思考方式</strong>
+          把五事七计当作一个通用的"决策检查清单"。遇到重要决定，无论大小，试着用这个框架过一遍——会让你更清楚自己在做什么。
+        </div>
+      </aside>
+
+    </div>
+
+    <div class="footer">
+      知识图谱 3D · 人文与成长 · 孙子兵法 · 计·作战·谋攻·形·势·虚实 （1-6篇）
+    </div>
+
+  </div>
+</body>
+</html>
