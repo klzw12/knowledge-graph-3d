@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>三十六计 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="../../css/common.css" />
+  <style>
+    .title-area .bar { background:#059669; }
+    .aside-col .callout { border-left-color:#059669; }
+    .aside-col .callout strong { color:#059669; }
+
+    .chapter-block { display:flex; flex-direction:column; gap:20px; margin-bottom:48px; }
+    .chapter-title {
+      font-size:22px; font-weight:700; margin:0 0 4px;
+      display:flex; align-items:baseline; gap:10px;
+    }
+    .chapter-title .num {
+      font-size:13px; font-weight:400;
+      background:rgba(5,150,105,.15); color:#059669;
+      padding:2px 10px; border-radius:6px;
+    }
+    .chapter-bar { width:36px; height:3px; border-radius:2px; margin-bottom:16px; }
+
+    .section-item {
+      background:rgba(5,150,105,.04);
+      border:1px solid rgba(255,255,255,.04);
+      border-radius:10px;
+      padding:16px 20px;
+      transition:all .15s;
+    }
+    .section-item:hover {
+      background:rgba(5,150,105,.08);
+      border-color:rgba(5,150,105,.12);
+    }
+    .section-item .verse {
+      font-size:16px; font-weight:500; line-height:2;
+      color:rgba(255,255,255,.85);
+      margin-bottom:10px;
+      padding:8px 12px;
+      background:rgba(5,150,105,.06);
+      border-radius:6px;
+      font-family:'KaiTi','STKaiti','Noto Serif SC',serif;
+    }
+    .section-item .trans {
+      font-size:13px; line-height:1.8; color:rgba(255,255,255,.6);
+    }
+    .section-item .trans strong { color:#10b981; font-weight:500; }
+    .section-item .comment {
+      margin-top:10px;
+      padding:10px 14px;
+      border-left:2px solid rgba(5,150,105,.25);
+      font-size:12.5px; line-height:1.7;
+      color:rgba(255,255,255,.45);
+      background:rgba(5,150,105,.03);
+      border-radius:0 6px 6px 0;
+    }
+    .section-item .case-block {
+      margin-top:12px;
+      padding:12px 14px;
+      border-left:2px solid rgba(5,150,105,.35);
+      font-size:12.5px; line-height:1.7;
+      color:rgba(255,255,255,.55);
+      background:rgba(5,150,105,.05);
+      border-radius:0 8px 8px 0;
+    }
+    .case-block .case-label {
+      font-size:11px; font-weight:600; text-transform:uppercase;
+      color:#10b981; letter-spacing:1px;
+      margin-bottom:6px;
+    }
+
+    @media (max-width:720px) {
+      .layout { flex-direction:column; }
+      .nav-col { position:static; flex:none; width:100%; }
+      .aside-col { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="/">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>三十六计</h1>
+      <div class="bar" style="background:#059669"></div>
+      <p class="brief">
+        中国古代三十六个兵法策略，语出南北朝《南齐书·王敬则传》，成书于明清。每六计为一套，共六套：胜战计、敌战计、攻战计、混战计、并战计、败战计。前三套处优势，后三套处劣势。每计含解语（原典）与按语，依《易经》阴阳变化之理推演。
+      </p>
+    </div>
+
+    <!-- ===== 三栏 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#general">📜 总说</a>
+        <div class="nav-subtitle">第一套 · 胜战计</div>
+        <a href="#shengzhan">📋 概述</a>
+        <a href="#s1">① 瞒天过海</a>
+        <a href="#s2">② 围魏救赵</a>
+        <a href="#s3">③ 借刀杀人</a>
+        <a href="#s4">④ 以逸待劳</a>
+        <a href="#s5">⑤ 趁火打劫</a>
+        <a href="#s6">⑥ 声东击西</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ========== 总说 ========== -->
+        <section id="general" style="margin-bottom:48px">
+          <h2>📜 总说</h2>
+          <div class="section-item">
+            <div class="verse">六六三十六，数中有术，术中有数。阴阳燮理，机在其空，机不可设，设则不中。</div>
+            <div class="trans">六六三十六，数字中蕴含着谋略，谋略中蕴含着数字。阴阳和谐变化，时机存在于空隙之中；时机不可人为预设，预设则不会成功。</div>
+            <div class="comment">
+              <strong>按语</strong>：解语重数不重理——盖理，术语自明；而数，则在言外。若徒知术之为术，而不知术中有数，则术多不应。且诡谋权术，原在事理之中，人情之内。倘事出不经，则诡异立见，诧世惑俗，而机谋泄矣。<br/><br/>
+              每六计成一套：第一套胜战计、第二套敌战计、第三套攻战计、第四套混战计、第五套并战计、第六套败战计。
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== 第一套·胜战计 ========== -->
+        <section id="shengzhan">
+          <h2>📋 第一套·胜战计</h2>
+          <p style="color:rgba(255,255,255,.5); margin-bottom:24px; font-size:13px;">
+            处于绝对优势地位之计谋。君御臣、大国御小国之术也。六计以瞒天过海开篇，以声东击西收束，核心逻辑是用"示形"制造敌人判断误差，以最小代价获取最大战果。
+          </p>
+
+          <!-- 第一计 -->
+          <div class="chapter-block" id="s1">
+            <div class="chapter-title">
+              <span>① 瞒天过海</span>
+              <span class="num">第一计</span>
+            </div>
+            <div class="chapter-bar" style="background:#059669"></div>
+            <div class="section-item">
+              <div class="verse">备周则意怠；常见则不疑。阴在阳之内，不在阳之对。太阳，太阴。</div>
+              <div class="trans"><strong>本意</strong>：防备周密，反而容易松懈；习以为常，反而不会怀疑。秘密藏在公开事物之中，而非与公开事物相对立。极端公开的背后，是最隐秘的谋略。</div>
+              <div class="comment">
+                <strong>主公解读</strong>：越摆在明面上越能瞒，而非摆在暗处。出处是太宗征高丽，对渡海生了退却之心，薛仁贵瞒着天子渡海，反而成功——告诉了天子，他反而会担心害怕。核心是以说谎或伪装隐瞒真实意图，同时偷偷行动，达到出其不意的效果。<br/><br/>
+                <strong>与孙子对应</strong>：源自"静以幽，正以治"的根本心态，演变为"形人而我无形"的操作策略。
+              </div>
+              <div class="case-block">
+                <div class="case-label">📖 战例</div>
+                <strong>贺若弼伐陈</strong>：每次调防大列旗帜营幕，陈国习以为常、戒备松懈，隋军遂一举渡江。<br/>
+                <strong>刘邦荥阳脱困</strong>：先离间项羽与范增，再诈降（纪信假扮刘邦），自己趁机逃脱。外层是瞒天过海（诈降示形），内层含李代桃僵（纪信代死）。<br/>
+                <strong>檀道济量沙</strong>：被断粮道后用沙子伪装成粮食，整肃军容，北魏军疑有伏不敢追，成功撤退——防御向的瞒天过海。<br/>
+                <strong>刘备脱袁绍</strong>：刘备与简雍一个假借劝刘表伐曹，一个假借督促监视，顺利从袁绍处脱离。<br/><br/>
+                <strong>四种形式</strong>：制造假象、阳奉阴违、隐藏踪迹、混淆视听。
+              </div>
+            </div>
+          </div>
+
+          <!-- 第二计 -->
+          <div class="chapter-block" id="s2">
+            <div class="chapter-title">
+              <span>② 围魏救赵</span>
+              <span class="num">第二计</span>
+            </div>
+            <div class="chapter-bar" style="background:#059669"></div>
+            <div class="section-item">
+              <div class="verse">共敌不如分敌，敌阳不如敌阴。</div>
+              <div class="trans"><strong>本意</strong>：攻打集中的敌人，不如先分散他再打；正面打击气势旺盛的敌人，不如攻击其薄弱之处。</div>
+              <div class="comment">
+                <strong>主公解读</strong>：标准的避实就虚、先其所爱。本质是——我想做什么，不直接做，曲线去做，反而取得更好效果。让敌人进退维谷，用逆向思维。围魏是救赵的前提，要确保能围魏能救赵，否则就是一厢情愿。
+              </div>
+              <div class="case-block">
+                <div class="case-label">📖 战例</div>
+                <strong>曹操杀马腾全家</strong>：曹操想打江东，因顾虑后方，先杀马腾一家。孔明修书告诉马超，马超一闹凉州，曹操后方不稳，自然不敢全力攻江东——孔明借马超之势，连兵都不用动就退了曹军。<br/>
+                <strong>王阳明平宁王之乱</strong>：虚假宣称自己兵多，瓦解宁王士气后攻占南昌，解了安庆之围，之后伏兵打败叛军。<br/>
+                <strong>李秀成解天京之围</strong>：趁雨夜清军疲惫攻占杭州，吸引江南大营来救，天京之围自解。<br/><br/>
+                <strong>评语</strong>：用兵如用水——面对弱敌消灭它，面对强敌要避其锋芒。
+              </div>
+            </div>
+          </div>
+
+          <!-- 第三计 -->
+          <div class="chapter-block" id="s3">
+            <div class="chapter-title">
+              <span>③ 借刀杀人</span>
+              <span class="num">第三计</span>
+            </div>
+            <div class="chapter-bar" style="background:#059669"></div>
+            <div class="section-item">
+              <div class="verse">敌已明，友未定，引友杀敌，不自出力，以《损》推演。</div>
+              <div class="trans"><strong>本意</strong>：敌人已经明确，但盟友态度未定。引导盟友去杀敌人，自己不出力。这是从《损》卦推演出的策略——借盟友之力打击敌人，盟友受损但我方得利。</div>
+              <div class="comment">
+                <strong>主公解读</strong>：曹操不喜祢衡，又不想担害贤骂名，让他去刘表处，刘表又转给黄祖，黄祖杀之——层层转嫁。刘秀宣扬李铁归顺之事，借朱鲔之手杀李铁。此计天生带有反间计内核——当B是"敌人内部的人"时，借刀杀人和反间计就叠加在一起。<br/><br/>
+                <strong>与孙子对应</strong>："上兵伐谋，其次伐交"——借刀杀人本质是"伐交"思想的具体化。
+              </div>
+              <div class="case-block">
+                <div class="case-label">📖 战例</div>
+                <strong>范仲淹政敌</strong>：让范仲淹领兵打西夏，借西夏军之手除掉政敌。<br/>
+                <strong>商业·干式打印机</strong>：借法律这把公器刀——禁止高价是"杀自己"（示形），质量过关后消费者无法购买，转为出租，租金反而更赚钱。刀要锋利，不能露出马脚。
+              </div>
+            </div>
+          </div>
+
+          <!-- 第四计 -->
+          <div class="chapter-block" id="s4">
+            <div class="chapter-title">
+              <span>④ 以逸待劳</span>
+              <span class="num">第四计</span>
+            </div>
+            <div class="chapter-bar" style="background:#059669"></div>
+            <div class="section-item">
+              <div class="verse">困敌之势，不以战；损刚益柔。</div>
+              <div class="trans"><strong>本意</strong>：迫使敌人陷入困顿的境地，不必通过直接交战的方式。让刚强的敌人消耗削弱，让柔弱的我方增长强势。</div>
+              <div class="comment">
+                <strong>主公解读</strong>：以逸待劳和避实就虚差不多，"劳"可以直接当"虚"看。出自孙子"凡先处战地而待敌者逸，后处战地而趋战者劳"——掌握主动权，不一定要一味进攻。<br/><br/>
+                <strong>质疑</strong>：曹刿论战"一鼓作气，再而衰，三而竭"、"视其辙乱，望其旗靡"——如果主将"静以幽"连自己人都骗，那士兵是真的在溃退，表现和真败一致，这个判断方法到底准不准？关键在于，主将的"静以幽"必然在撤退路线和接应点上有预设安排——这些更深层的组织性痕迹才是真正的判断依据。
+              </div>
+              <div class="case-block">
+                <div class="case-label">📖 战例</div>
+                <strong>城濮之战</strong>：晋文公退避三舍，全了信义，避开了楚军锋芒，后发制人。<br/>
+                <strong>铁木真vs扎木合</strong>：草原粮草少，铁木真避其锋芒以逸待劳，顺利打败扎木合。<br/>
+                <strong>陆逊火烧连营</strong>：刘备复仇心切士气高昂，陆逊坚守不出，最终抓住时机火烧连营七百里。<br/><br/>
+                <strong>商业</strong>：日本人靠时差消耗美商团精力，获取谈判主动权；福特不跟风对手，推出新产品抢占市场；友尼利福以退为进抢占非洲市场。
+              </div>
+            </div>
+          </div>
+
+          <!-- 第五计 -->
+          <div class="chapter-block" id="s5">
+            <div class="chapter-title">
+              <span>⑤ 趁火打劫</span>
+              <span class="num">第五计</span>
+            </div>
+            <div class="chapter-bar" style="background:#059669"></div>
+            <div class="section-item">
+              <div class="verse">敌之害大，就势取利，刚决柔也。</div>
+              <div class="trans"><strong>本意</strong>：敌人的处境极为困难时，就趁势取利。以刚决柔——我方是刚，趁敌方柔弱之时果断出击。</div>
+              <div class="comment">
+                <strong>主公解读</strong>：趁他病、要他命——核心是抓住时机。与《势篇》借势而非造势相关，更接近《火攻篇》"火发而兵静者，待而勿攻。极其火力，可从而从之"。<br/><br/>
+                <strong>出处</strong>：《西游记》观音禅院主持点火趁乱想偷唐僧袈裟。<br/><br/>
+                <strong>四种含义</strong>：①乘乱取利 ②落井下石 ③名为救火实则取利 ④他人趁火打劫，我方相助，之后论功行赏（假保护真控制）。
+              </div>
+              <div class="case-block">
+                <div class="case-label">📖 战例</div>
+                <strong>曹丕五路伐蜀</strong>：刘备死后，曹丕修书五路大军伐蜀——表面趁火打劫，内里是借刀杀人。诸葛亮安居平五路，是为趁火打劫被反杀的经典案例。<br/>
+                <strong>晋惠公伐秦</strong>：趁火打劫却不顾秦之前对己的帮助，背信弃义，背负不义之名。<br/>
+                <strong>清军入关</strong>：先隔岸观火看明末各方互耗，等李自成攻破北京、吴三桂被夹击，再趁火打劫入关，一箭双雕。<br/><br/>
+                <strong>商业</strong>：天津自行车厂低价收购濒临倒闭的摩托厂；摩根趁金融危机组建辛迪加逼迫国会就范。乱有三种：内忧、外患、内外交困。要抓住时机，乘势打劫，但要把握度，否则引火烧身。
+              </div>
+            </div>
+          </div>
+
+          <!-- 第六计 -->
+          <div class="chapter-block" id="s6">
+            <div class="chapter-title">
+              <span>⑥ 声东击西</span>
+              <span class="num">第六计</span>
+            </div>
+            <div class="chapter-bar" style="background:#059669"></div>
+            <div class="section-item">
+              <div class="verse">敌志乱萃，不虞，坤下兑上之象，利其不自主而取之。</div>
+              <div class="trans"><strong>本意</strong>：敌人神志混乱、猝不及防，就像洪水冲溃大地一样。利用敌人失去自主判断的时机，一举夺取胜利。</div>
+              <div class="comment">
+                <strong>主公解读</strong>：结合孙子"故善动敌者，形之，敌必从之"——你摆出一个假方向，敌人就会跟着你的节奏走。制造假象、佯动以伪装进攻方向，让敌人被你的假动作牵着鼻子走，真目标反而轻松得手。<br/><br/>
+                <strong>命门</strong>：贾诩识破曹操的声东击西，将计就计大败曹操——如果敌人不上当，此计就变成送人头。"须视敌志乱否为定，乱则胜，不乱将自取败亡"，险策也。
+              </div>
+              <div class="case-block">
+                <div class="case-label">📖 战例</div>
+                <strong>班超打莎车</strong>：先佯装撤退，诱使龟兹王追击，班超趁机夺取莎车。<br/>
+                <strong>郑成功收复台湾</strong>：假装攻打南航道吸引荷兰注意力，主力趁涨潮从鹿耳门水道通过，攻破赤崁城。<br/>
+                <strong>韩信打魏王豹</strong>：假装攻打蒲坂，实则从夏阳渡河。<br/>
+                <strong>姜维复汉中</strong>：假装打雍州，实际夺取阴平桥、收复剑阁，进而收复汉中。<br/><br/>
+                <strong>商业</strong>：娄维川假装和西方商人谈价掌握主动权；哈利先卖花生再卖柠檬水（客人口渴就买得多）。<br/>
+                <strong>教训</strong>：雅马哈和本田恶性竞争，没考虑市场与经济，生产过剩，在竞争中惨居三巨头最后一名。
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="aside-title">着重注意</div>
+
+        <div class="callout">
+          <strong>💡 胜战计内核</strong>
+          六计共享同一逻辑：<strong>示形误敌</strong>。瞒天过海（示假隐真）、围魏救赵（示远击近）、借刀杀人（示弱借力）、以逸待劳（示静制动）、趁火打劫（示机乘势）、声东击西（示此击彼）——全是让敌人看错、想错、动错。
+        </div>
+
+        <div class="callout warn">
+          <strong>⚠️ 险策警示</strong>
+          声东击西是险策——敌人不上当则自取败亡。趁火打劫需要"度"，过度则引火烧身。瞒天过海一要"常见则不疑"（铺垫周期长），二不能露出马脚。
+        </div>
+
+        <div class="callout tip">
+          <strong>🔧 与孙子对应</strong>
+          胜战计六计的哲学根基均可在《孙子兵法》中找到：静以幽正以治（九地）→瞒天过海；避实而击虚（虚实）→围魏救赵；上兵伐谋/伐交（谋攻）→借刀杀人；先处战地而待敌（虚实）→以逸待劳；极其火力可从而从之（火攻）→趁火打劫；形之敌必从之（虚实）→声东击西。
+        </div>
+
+        <div class="callout">
+          <strong>📌 趋势</strong>
+          越是前几计，越依赖铺垫（备周则意怠需要反复示形）；越往后，越是抓住瞬间战机（趁火打劫、声东击西）。胜战计整体是"以奇胜"的集中体现。
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- ===== 尾部 ===== -->
+    <div class="footer">
+      知识图谱 3D · 人文与成长 · 三十六计 · 第一套 胜战计
+    </div>
+
+  </div>
+
+</body>
+</html>

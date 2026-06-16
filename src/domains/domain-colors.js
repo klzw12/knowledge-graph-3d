@@ -41,4 +41,6 @@ export const DOMAIN_COLORS = {
   // 哲学与世界观
   philosophy: '#8b5cf6',    // 哲学与世界观 — 紫
   daodejing:  '#7c3aed',    // 道德经 — 深紫
+  '36ji':     '#059669',    // 三十六计 — 翠绿
+  sunzi:      '#dc2626',    // 孙子兵法 — 红（已在 top 列出）
 }
