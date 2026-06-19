@@ -77,7 +77,12 @@ a { color:inherit; text-decoration:none; }
 .nav-col {
   flex:0 0 180px;
   position:sticky; top:60px;
+  max-height:calc(100vh - 100px);
+  overflow-y:auto;
 }
+.nav-col::-webkit-scrollbar { width:4px; }
+.nav-col::-webkit-scrollbar-track { background:transparent; }
+.nav-col::-webkit-scrollbar-thumb { background:rgba(255,255,255,.08); border-radius:2px; }
 .nav-col .nav-title {
   font-size:12px; font-weight:600; text-transform:uppercase;
   color:rgba(255,255,255,.25); letter-spacing:1px;

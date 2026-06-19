@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>墨菲定律 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="../../css/common.css" />
+  <style>
+    .title-area .bar { background:#0891b2; }
+    .aside-col .callout { border-left-color:#0891b2; }
+    .aside-col .callout strong { color:#0891b2; }
+
+    .chapter-block { display:flex; flex-direction:column; gap:20px; margin-bottom:48px; }
+    .chapter-title {
+      font-size:22px; font-weight:700; margin:0 0 4px;
+      display:flex; align-items:baseline; gap:10px;
+    }
+    .chapter-title .num {
+      font-size:13px; font-weight:400;
+      background:rgba(8,145,178,.15); color:#0891b2;
+      padding:2px 10px; border-radius:6px;
+    }
+    .chapter-bar { width:36px; height:3px; border-radius:2px; margin-bottom:16px; }
+
+    .section-item {
+      background:rgba(8,145,178,.04);
+      border:1px solid rgba(255,255,255,.04);
+      border-radius:10px;
+      padding:14px 18px;
+      transition:all .15s;
+    }
+    .section-item:hover {
+      background:rgba(8,145,178,.08);
+      border-color:rgba(8,145,178,.12);
+    }
+    .section-item .sec-title {
+      font-size:15px; font-weight:600; margin-bottom:6px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .section-item .sec-title .icon { font-size:16px; }
+    .section-item .sec-body {
+      font-size:13px; line-height:1.8; color:rgba(255,255,255,.6);
+    }
+    .section-item .sec-body em { color:rgba(255,255,255,.35); font-style:normal; }
+    .section-item .highlight {
+      margin-top:8px; padding:8px 12px;
+      border-left:2px solid rgba(8,145,178,.25);
+      font-size:12.5px; line-height:1.7;
+      color:rgba(255,255,255,.45);
+      background:rgba(8,145,178,.04);
+      border-radius:0 6px 6px 0;
+    }
+
+    @media (max-width:720px) {
+      .layout { flex-direction:column; }
+      .nav-col { position:static; flex:none; width:100%; }
+      .aside-col { display:none; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="../../">← 🕸️ 返回图谱</a>
+
+  <div class="page">
+
+    <!-- ===== title ===== -->
+    <div class="title-area">
+      <h1>
+        墨菲定律
+        <span class="en">Murphy's Law</span>
+      </h1>
+      <div class="bar" style="background:#0891b2"></div>
+      <p class="brief">
+        阿瑟·布洛赫 提出 · 弘丰/编。心理与职场法则经典。4章34节，涵盖墨菲定律、因果定律、零和游戏定律、鸟笼效应、刺猬法则等经典心理学定律，揭示工作与生活中那些"看似理所当然却暗藏陷阱"的隐性规律。
+      </p>
+    </div>
+
+    <!-- ===== 三栏 ===== -->
+    <div class="layout">
+
+      <!-- 左侧导航 -->
+      <nav class="nav-col">
+        <div class="nav-title">📖 成功基本法则</div>
+        <a href="#murphy">墨菲定律</a>
+        <a href="#cause">因果定律</a>
+        <a href="#emotion">困难与情绪</a>
+        <a href="#sourgrapes">酸葡萄与甜柠檬</a>
+        <a href="#diminish">幸福递减定律</a>
+        <a href="#weber">贝勃定律</a>
+        <a href="#happiness">幸福的源泉</a>
+        <a href="#wildhorse">野马结局</a>
+        <a href="#carroll">卡瑞尔公式</a>
+        <div class="nav-title" style="margin-top:10px">🏆 成功竞争法则</div>
+        <a href="#zero">零和游戏定律</a>
+        <a href="#stress">压力与动力</a>
+        <a href="#porter">波特法则</a>
+        <a href="#contingency">权变理论</a>
+        <a href="#davidow">达维多定律</a>
+        <a href="#jouffret">儒佛尔定律</a>
+        <a href="#feith">费斯法则</a>
+        <a href="#smith">史密斯原则</a>
+        <a href="#rogers">罗杰斯论断</a>
+        <div class="nav-title" style="margin-top:10px">🤝 人际关系法则</div>
+        <a href="#first">首因效应</a>
+        <a href="#hedgehog">刺猬法则</a>
+        <a href="#project">投射效应</a>
+        <a href="#selfexpose">自我暴露定律</a>
+        <a href="#stereotype">刻板效应</a>
+        <a href="#reciprocal">互惠定律</a>
+        <a href="#empathy">换位思考</a>
+        <a href="#silence">沉默定律</a>
+        <a href="#need">需求定律</a>
+        <div class="nav-title" style="margin-top:10px">💼 成功职场法则</div>
+        <a href="#mushroom">蘑菇定律</a>
+        <a href="#confidence">自信定律</a>
+        <a href="#frog">青蛙法则</a>
+        <a href="#birdcage">鸟笼效应</a>
+        <a href="#rooney">鲁尼恩定律</a>
+        <a href="#chain">链状效应</a>
+        <a href="#feedback">反馈效应</a>
+      </nav>
+
+      <!-- 中间正文 -->
+      <main class="main-col">
+
+        <!-- ═════════ 第一章 成功基本法则 ═════════ -->
+        <section id="ch1">
+          <div class="chapter-title">
+            成功基本法则
+            <span class="num">第一章 · 9节</span>
+          </div>
+          <div class="chapter-bar" style="background:#06b6d4"></div>
+
+          <div class="chapter-block">
+
+            <div id="murphy" class="section-item">
+              <div class="sec-title"><span class="icon">⚠️</span> 墨菲定律</div>
+              <div class="sec-body">如果事情有变坏的可能，无论概率多小，它总会发生。核心是<strong>可能性与不确定性</strong>——侥幸心理是最大的风险。与"大数定律"有数学关联：样本足够大时，小概率事件必然发生。对应孙子"先为不可胜"——与其赌不会出事，不如确保出事也能扛。</div>
+              <div class="highlight">关联道德经"知足常乐"：墨菲让人敬畏不确定性，老子让人降低欲望，殊途同归。</div>
+            </div>
+
+            <div id="cause" class="section-item">
+              <div class="sec-title"><span class="icon">⚖️</span> 因果定律</div>
+              <div class="sec-body">种瓜得瓜，种豆得豆——凡事有因必有果。不对称性在于：帮人不一定被帮，伤人必定被伤。对应孙子"聚形"——善战者先为不可胜，以待敌之可胜，因果关系本质上是长期累积的必然。</div>
+            </div>
+
+            <div id="emotion" class="section-item">
+              <div class="sec-title"><span class="icon">🪷</span> 困难与情绪</div>
+              <div class="sec-body">心中有佛，所见皆佛。面对困难的心态决定了你能走多远。与"苏东坡与佛印"典故相通——你是什么样的人，就会看到什么样的世界。关联孙子火攻篇"主不可以怒而兴师"——情绪管理是决策的第一道门槛。</div>
+            </div>
+
+            <div id="sourgrapes" class="section-item">
+              <div class="sec-title"><span class="icon">🍇</span> 酸葡萄与甜柠檬</div>
+              <div class="sec-body">酸葡萄：得不到就说不好（嫉妒）。甜柠檬：拥有的就说是好的（自我满足）。酸葡萄是向外否定，甜柠檬是向内接纳。过度甜柠檬不利进取——与道德经"知足"的区别在于：知足是主动选择，甜柠檬是被动美化。</div>
+            </div>
+
+            <div id="diminish" class="section-item">
+              <div class="sec-title"><span class="icon">📉</span> 幸福递减定律</div>
+              <div class="sec-body">同一份幸福，获得次数越多，感受越弱。核心即"知足"。与经济学"边际效用递减"相通——第一个馒头救命，第二个管饱，第三个多余。反用：拉开间隔体验，让每一次都像第一次。</div>
+            </div>
+
+            <div id="weber" class="section-item">
+              <div class="sec-title"><span class="icon">🔄</span> 贝勃定律</div>
+              <div class="sec-body">心理适应——人对重复刺激的感受会递减，习以为常后阈值升高。可类比"受体脱敏"的神经机制。反用：保持新鲜感需要引入变化，而非加大剂量。多巴胺学习法中的"盲盒机制"正是对抗贝勃定律的设计。</div>
+            </div>
+
+            <div id="happiness" class="section-item">
+              <div class="sec-title"><span class="icon">☀️</span> 幸福的源泉</div>
+              <div class="sec-body">幸福不取决于拥有多少，而取决于心态与知足。同一处境下，知足的人比贪求的人更幸福——幸福是一种能力，不是一种状态。</div>
+            </div>
+
+            <div id="wildhorse" class="section-item">
+              <div class="sec-title"><span class="icon">🐎</span> 野马结局</div>
+              <div class="sec-body">吸血蝙蝠吸野马的血量很少，但野马因暴怒狂奔而死——杀死它的不是蝙蝠，是情绪。不是不能生气，而是<strong>管理情绪并和平宣泄</strong>。对应孙子火攻篇：不在生气时做重大决策，愤怒可以恢复，覆水难收。</div>
+            </div>
+
+            <div id="carroll" class="section-item">
+              <div class="sec-title"><span class="icon">🧘</span> 卡瑞尔公式</div>
+              <div class="sec-body">接受最坏结果 → 全力改善 → 接受现实。三步法本质是心态管理：先接纳最坏情况，才能放下恐惧专注应对。与"墨菲定律"形成呼应——既然不可能万无一失，那就先接受最坏。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═════════ 第二章 成功竞争法则 ═════════ -->
+        <section id="ch2">
+          <div class="chapter-title">
+            成功竞争法则
+            <span class="num">第二章 · 9节</span>
+          </div>
+          <div class="chapter-bar" style="background:#0d9488"></div>
+
+          <div class="chapter-block">
+
+            <div id="zero" class="section-item">
+              <div class="sec-title"><span class="icon">🎲</span> 零和游戏定律</div>
+              <div class="sec-body">竞争中总有一赢一输。但跳出零和框架，化敌为友、双赢有时更划算。对应孙子"全国为上，破国次之"——不战而屈人之兵，善之善者也。最高明的竞争是让对手变成伙伴。</div>
+            </div>
+
+            <div id="stress" class="section-item">
+              <div class="sec-title"><span class="icon">🔥</span> 压力与动力</div>
+              <div class="sec-body">适度的压力转化为动力，过度则压垮人。对应孙子"投之亡地然后存，陷之死地然后生"——但并非无退路就一定爆发，完全无退路也可能直接躺平。耶基斯-多德森定律：中等压力水平最优，过高过低都不好。</div>
+            </div>
+
+            <div id="porter" class="section-item">
+              <div class="sec-title"><span class="icon">🎯</span> 波特法则</div>
+              <div class="sec-body">不求第一，但求独特——不能同时走两条路。差异化才是竞争壁垒。与孙子"无所不备则无所不寡"相通：什么都想做，什么都做不好。也与三十六计"釜底抽薪"关联——不要去对方最强的战场打。</div>
+            </div>
+
+            <div id="contingency" class="section-item">
+              <div class="sec-title"><span class="icon">🌊</span> 权变理论</div>
+              <div class="sec-body">没有唯一最优的管理方法，因时因地因人而异。对应孙子"兵无常势，水无常形"。管理与决策的精髓在于判断环境、调整策略，而非信奉某套万能公式。</div>
+            </div>
+
+            <div id="davidow" class="section-item">
+              <div class="sec-title"><span class="icon">🚀</span> 达维多定律</div>
+              <div class="sec-body">不断更新产品，先发制人——第一个进入市场往往占据最大份额。但反思：所有人挤在同一条路上（如Transformer架构）反而难以真正创新。先发优势的前提是你走的是正确的路。</div>
+            </div>
+
+            <div id="jouffret" class="section-item">
+              <div class="sec-title"><span class="icon">🔮</span> 儒佛尔定律</div>
+              <div class="sec-body">有效预测才有有效决策。对应孙子"庙算胜"——多算胜少算。形成"形→预测→势"的闭环：了解现状（形）→基于规律推演（预测）→创造有利态势（势）。预测不是算命，是推演。</div>
+            </div>
+
+            <div id="feith" class="section-item">
+              <div class="sec-title"><span class="icon">🛡️</span> 费斯法则</div>
+              <div class="sec-body">步步为营——拿到第二个之前，别丢了第一个。对应孙子"胜兵先胜而后求战"：先确保立于不败，再寻求胜机。在扩张前先巩固已有成果，以免贪多嚼不烂。</div>
+            </div>
+
+            <div id="smith" class="section-item">
+              <div class="sec-title"><span class="icon">🤝</span> 史密斯原则</div>
+              <div class="sec-body">不能战胜敌人就加入他。这是竞争的最高智慧——识别哪些对手值得对抗、哪些更适合合作。如小米初期通过合作整合供应链，将对手的壁垒变成自己的跳板。</div>
+            </div>
+
+            <div id="rogers" class="section-item">
+              <div class="sec-title"><span class="icon">👀</span> 罗杰斯论断</div>
+              <div class="sec-body">居安思危，未雨绸缪——成功时最危险，因为你会放松警惕。不是"莫向外求"，而是<strong>在得意时看得更远</strong>。与鲁尼恩定律异曲同工：成功是最大的失败诱因。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═════════ 第三章 成功人际关系法则 ═════════ -->
+        <section id="ch3">
+          <div class="chapter-title">
+            成功人际关系法则
+            <span class="num">第三章 · 9节</span>
+          </div>
+          <div class="chapter-bar" style="background:#7c3aed"></div>
+
+          <div class="chapter-block">
+
+            <div id="first" class="section-item">
+              <div class="sec-title"><span class="icon">👋</span> 首因效应</div>
+              <div class="sec-body">第一印象至关重要，后续的信息都会被它"染色"。与羊皮卷、人性的弱点中的形象管理相通——整洁的外表、守时、礼貌，这些细节在初次接触中决定了对方如何看待你。</div>
+            </div>
+
+            <div id="hedgehog" class="section-item">
+              <div class="sec-title"><span class="icon">🦔</span> 刺猬法则</div>
+              <div class="sec-body">天冷时刺猬挤在一起取暖，太近扎痛，太远又冷——找到合适的距离。爱德华博士的四类距离：亲密(0-45cm)、个人(45-120cm)、社交(1.2-3.6m)、公众(>3.6m)。人际关系好的关键不是靠近，是保持正确距离。</div>
+            </div>
+
+            <div id="project" class="section-item">
+              <div class="sec-title"><span class="icon">🪞</span> 投射效应</div>
+              <div class="sec-body">人倾向于把自己的特质投射到别人身上——"佛心自现"（苏东坡与佛印），"情人眼里出西施"。投射有时偶然正确（因为人性有共性），但不能作为判断依据。己所不欲勿施于人，己所欲亦勿强加于人。</div>
+            </div>
+
+            <div id="selfexpose" class="section-item">
+              <div class="sec-title"><span class="icon">💬</span> 自我暴露定律</div>
+              <div class="sec-body">适当暴露自己的弱点或私事能增进亲密感，但需注意三原则：适度（别掏心掏肺）、对等（单向不行）、循序渐进（别第一次见面就讲人生创伤）。相互暴露是建立信任的有效路径。</div>
+            </div>
+
+            <div id="stereotype" class="section-item">
+              <div class="sec-title"><span class="icon">🏷️</span> 刻板效应</div>
+              <div class="sec-body">基于群体特征对个体形成固定印象，源于"个体推共性"的思维捷径。刻板印象可能正确也可能错误——它对黑人的偏见是错的，对身体特征的一些推断可能有概率依据。关键是别让人被你贴的标签定义。</div>
+            </div>
+
+            <div id="reciprocal" class="section-item">
+              <div class="sec-title"><span class="icon">🎁</span> 互惠定律</div>
+              <div class="sec-body">投桃报李，礼尚往来——人天然感到有义务回报别人的好意。先付出再索取，比直接索取效果好得多。骆驼商队中先给水的人，总能得到更多帮助。</div>
+            </div>
+
+            <div id="empathy" class="section-item">
+              <div class="sec-title"><span class="icon">🫂</span> 换位思考</div>
+              <div class="sec-body">己所不欲，勿施于人——站到对方的角度看问题。这不是放弃自己的立场，而是获得理解他人的能力。大多数人际冲突源于双方只看到自己的角度，根本不知道对方在想什么。</div>
+            </div>
+
+            <div id="silence" class="section-item">
+              <div class="sec-title"><span class="icon">🤫</span> 沉默定律</div>
+              <div class="sec-body">在合适的时候保持沉默，比滔滔不绝更有力量。三书联动：人性的弱点（善于倾听的人受欢迎）、三十六计之假痴不癫（装傻有时比聪明有用）、道德经（收敛锋芒，大智若愚）。</div>
+            </div>
+
+            <div id="need" class="section-item">
+              <div class="sec-title"><span class="icon">🎣</span> 需求定律</div>
+              <div class="sec-body">欲取先予，欲擒故纵——满足对方的需求才能达到自己的目的。别总想着自己要什么，先搞清楚对方要什么。与互惠定律互补：互惠是"给出去等回报"，需求定律是"给对了对方才接"。</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═════════ 第四章 成功职场法则 ═════════ -->
+        <section id="ch4">
+          <div class="chapter-title">
+            成功职场法则
+            <span class="num">第四章 · 7节</span>
+          </div>
+          <div class="chapter-bar" style="background:#06b6d4"></div>
+
+          <div class="chapter-block">
+
+            <div id="mushroom" class="section-item">
+              <div class="sec-title"><span class="icon">🍄</span> 蘑菇定律</div>
+              <div class="sec-body">管理者倾向于把新人放在阴暗角落（干杂活、无人问津），像种蘑菇一样。能承受苦难也得懂得收敛锋芒——在证明自己之前，别急着出风头。对应：要想改变环境，必须先适应环境。</div>
+            </div>
+
+            <div id="confidence" class="section-item">
+              <div class="sec-title"><span class="icon">💪</span> 自信定律</div>
+              <div class="sec-body">自信是成功的第一秘诀。相信自己能行，才会真的去尝试，才能积累成功的经验，进而更自信——这是正向循环。缺乏自信的人连第一步都不敢迈，再好的能力也无从发挥。</div>
+            </div>
+
+            <div id="frog" class="section-item">
+              <div class="sec-title"><span class="icon">🐸</span> 青蛙法则</div>
+              <div class="sec-body">把青蛙扔进沸水会跳出来，放进冷水慢慢加热则会不知不觉被煮死——对渐变危机的麻木是最大的危险。对应：突然的打击往往能扛住，温水煮青蛙式的慢性侵蚀最致命。警惕那些"一点点变坏"的事情。</div>
+            </div>
+
+            <div id="birdcage" class="section-item">
+              <div class="sec-title"><span class="icon">🪹</span> 鸟笼效应</div>
+              <div class="sec-body">拥有一个鸟笼，要么买鸟放进去，要么扔掉笼子——很少有人能让它空着。本质是<strong>认知失调+社会期待</strong>的双重压力。不同于刻板效应（归因偏差）和投影效应（特质投射），鸟笼是"被物件/符号驱动填补空白"的压力机制。职场案例：加班≠加薪——加班买的是"不出错"的保险，加薪买的是"不可替代性"，两者对应的是不同系统。</div>
+              <div class="highlight">可用性启发（availability heuristic）解释：因为看到加班多的人加薪了，就把两件事绑定，忽略了能力强但不加班的人拿得更多。</div>
+            </div>
+
+            <div id="rooney" class="section-item">
+              <div class="sec-title"><span class="icon">🏆</span> 鲁尼恩定律</div>
+              <div class="sec-body">成功的人更容易因成就气盛，安于现状，进而无法获得更大成功。三层次拆解：①<strong>结构性陷阱</strong>——成功改变了激励结构，从"纯收益"变为"保地位"，保守成为理性选择；②<strong>五十至七十的陷阱</strong>——初胜后的飘飘然比半九十的咬牙更致命（没有咬牙动机）；③<strong>骄傲vs傲慢</strong>——骄傲是对自己能力的满足（可正反馈），傲慢是轻视对手（死穴）。曹操赤壁败于傲慢，非骄傲。</div>
+              <div class="highlight">对应孙子计篇"骄兵必败"——骄不是骄傲，是傲慢，意味着停止侦察、停止应变。</div>
+            </div>
+
+            <div id="chain" class="section-item">
+              <div class="sec-title"><span class="icon">⛓️</span> 链状效应</div>
+              <div class="sec-body">近朱者赤，近墨者黑——人易被环境影响。三层递进：①<strong>单向性陷阱</strong>——染坏习惯3天，养好习惯3月，净速度负值；②<strong>排放污染</strong>——抱怨者在给自己贴"情绪输出者"标签，好事不找他，苦水倒给他，链子锁死；③<strong>完整替代</strong>——不抱怨≠自动讨喜，要用正面输出（价值/幽默/关心）填充沉默。</div>
+            </div>
+
+            <div id="feedback" class="section-item">
+              <div class="sec-title"><span class="icon">🔄</span> 反馈效应</div>
+              <div class="sec-body">有反馈才有动力，有反馈才有进步。与费曼学习法的区别：费曼是主动自我检验（自己照镜子），反馈是被动校准机制（别人告诉你领子翻了）。时间效果曲线：无反馈→原地踏步，低频高质→稳步上升，高频→边际递减，过度→干扰。有效反馈=对的人×及时的时间×有信息量的回应。反面教材：空话"做得不错"=无反馈，模糊指令"再改改"=负反馈变体，事后点评"为什么不做"=不是反馈是纠错。</div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- 右侧着重 -->
+      <aside class="aside-col">
+        <div class="callout">
+          <strong>💡 核心主题</strong>
+          <p>心理学定律的职场与生活应用——揭示成功、竞争、人际、职场四大领域中那些"看似理所当然却暗藏陷阱"的隐性规律。</p>
+        </div>
+        <div class="callout" style="margin-top:16px">
+          <strong>📚 提出者 / 编者</strong>
+          <p>阿瑟·布洛赫 · 弘丰/编<br><span style="font-size:12px;color:rgba(255,255,255,.35)">Arthur Bloch</span></p>
+        </div>
+        <div class="callout" style="margin-top:16px">
+          <strong>📖 全书结构</strong>
+          <p style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.8">
+            第一章 成功基本法则 · 9节<br>
+            第二章 成功竞争法则 · 9节<br>
+            第三章 人际关系法则 · 9节<br>
+            第四章 成功职场法则 · 7节
+          </p>
+        </div>
+        <div class="callout" style="margin-top:16px">
+          <strong>🔄 跨书关联</strong>
+          <p style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.7">
+            孙子兵法 · 道德经 · 三十六计<br>
+            羊皮卷 · 人性的弱点 · 多巴胺学习法
+          </p>
+        </div>
+      </aside>
+
+    </div><!-- /layout -->
+  </div><!-- /page -->
+
+</body>
+</html>
