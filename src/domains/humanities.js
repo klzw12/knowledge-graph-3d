@@ -63,6 +63,67 @@ export default {
             src: '/pages/humanities/daodejing.html',
             content: { summary: '老子 著 · 道家根本经典。81章，以"道"为核心，阐述天地万物变化的根本规律与处世智慧。', tags: ['道德经', '老子', '道家'] },
           },
+          {
+            id: 'marxism',
+            label: '马克思主义基本原理',
+            color: '#ec4899',
+            src: '/pages/humanities/marxism.html',
+            content: { summary: '马克思主义基本原理。三大组成部分：马克思主义哲学、政治经济学、科学社会主义，构成严密的内在逻辑体系。', tags: ['马原', '马克思主义', '哲学', '政治经济学', '科学社会主义'] },
+            children: [
+              // ============ 哲学篇 ============
+              {
+                id: 'marxist-dialectics',
+                label: '唯物论与辩证法',
+                color: '#db2777',
+                src: '/pages/humanities/marxism.html#dialectics',
+                content: { summary: '马克思主义哲学基础。包含世界的物质统一性、物质与意识辩证关系、对立统一规律、量变质变规律、否定之否定规律、五对范畴。', tags: ['唯物论', '辩证法', '对立统一', '量变质变', '否定之否定'] },
+              },
+              {
+                id: 'marxist-epistemology',
+                label: '实践与认识',
+                color: '#be185d',
+                src: '/pages/humanities/marxism.html#epistemology',
+                content: { summary: '马克思主义认识论。实践是认识的基础与检验标准；认识的两次飞跃；真理的客观性、绝对性与相对性；真理与价值的辩证统一。', tags: ['认识论', '实践', '真理', '价值'] },
+              },
+              {
+                id: 'marxist-historical',
+                label: '唯物史观',
+                color: '#9d174d',
+                src: '/pages/humanities/marxism.html#historical',
+                content: { summary: '唯物史观。社会存在决定社会意识；社会基本矛盾（生产力-生产关系/经济基础-上层建筑）；阶级斗争；人民群众是历史的创造者。', tags: ['唯物史观', '社会基本矛盾', '生产力', '生产关系', '阶级斗争'] },
+              },
+              // ============ 政治经济学 ============
+              {
+                id: 'marxist-capital',
+                label: '资本主义本质',
+                color: '#0891b2',
+                src: '/pages/humanities/marxism.html#capital',
+                content: { summary: '资本主义经济制度本质。商品与价值规律；剩余价值理论（c+v+m）；资本循环与周转；社会资本再生产（I II两部类）；资本主义基本矛盾与经济危机。', tags: ['政治经济学', '剩余价值', 'cvm', '两部类', '资本循环'] },
+              },
+              {
+                id: 'marxist-monopoly',
+                label: '垄断资本主义',
+                color: '#0e7490',
+                src: '/pages/humanities/marxism.html#monopoly',
+                content: { summary: '垄断资本主义阶段。自由竞争→垄断；金融资本与金融寡头；经济全球化；当代资本主义新变化及其实质。', tags: ['垄断', '金融资本', '全球化', '帝国主义'] },
+              },
+              // ============ 科学社会主义 ============
+              {
+                id: 'marxist-socialist',
+                label: '社会主义理论',
+                color: '#7c3aed',
+                src: '/pages/humanities/marxism.html#socialist',
+                content: { summary: '科学社会主义理论。从空想到科学的历史进程；十大基本原则；社会主义建设长期性与道路多样性。', tags: ['科学社会主义', '空想社会主义', '基本原则', '实践探索'] },
+              },
+              {
+                id: 'marxist-communism',
+                label: '共产主义学说',
+                color: '#6d28d9',
+                src: '/pages/humanities/marxism.html#communism',
+                content: { summary: '共产主义崇高理想。预见未来社会的方法论原则；共产主义基本特征（物质极大丰富、按需分配、自由全面发展）；历史必然性与长期性。', tags: ['共产主义', '按需分配', '自由王国', '共同理想'] },
+              },
+            ],
+          },
         ],
       },
       {
@@ -113,7 +174,7 @@ export default {
             label: '鬼谷子',
             color: '#6366f1',
             src: '/pages/humanities/guiguzi.html',
-            content: { summary: '战国·鬼谷子（王诩）著 · 纵横家根本经典。共存15篇（亡佚2篇），以捭阖为核心，系统阐述游说、揣摩、决策之术，兼内功心法。', tags: ['鬼谷子', '纵横家'] },
+            content: { summary: '战国·鬼谷子（王诩）著 · 纵横家根本经典。共存15篇（亡佚2篇），以捭阖为核心，系统阐述游说、揣摩、决策之术，兼内功心法。', tags: ['鬼谷子', '纵横家', '阴阳开合', '揣摩权谋', '决断'] },
             children: [
               { id: 'guiguzi-baihe', label: '捭阖第一', color: '#6366f1', src: '/pages/humanities/guiguzi.html#baihe' },
               { id: 'guiguzi-fanying', label: '反应第二', color: '#6366f1', src: '/pages/humanities/guiguzi.html#fanying' },
@@ -122,11 +183,40 @@ export default {
               { id: 'guiguzi-feiqian', label: '飞箝第五', color: '#4f46e5', src: '/pages/humanities/guiguzi.html#feiqian' },
               { id: 'guiguzi-wuhe', label: '忤合第六', color: '#4f46e5', src: '/pages/humanities/guiguzi.html#wuhe' },
               { id: 'guiguzi-chuai', label: '揣篇第七', color: '#4f46e5', src: '/pages/humanities/guiguzi.html#chuai' },
+              { id: 'guiguzi-mo', label: '摩篇第八', color: '#4f46e5', src: '/pages/humanities/guiguzi.html#mo', content: { tags: ['十摩', '微摩探应'] } },
+              { id: 'guiguzi-quan', label: '权篇第九', color: '#4f46e5', src: '/pages/humanities/guiguzi.html#quan', content: { tags: ['权衡', '九依法则'] } },
+              { id: 'guiguzi-mou', label: '谋篇第十', color: '#4f46e5', src: '/pages/humanities/guiguzi.html#mou', content: { tags: ['三仪', '奇谋'] } },
+              { id: 'guiguzi-jue', label: '决篇第十一', color: '#4f46e5', src: '/pages/humanities/guiguzi.html#jue', content: { tags: ['决断', '利之'] } },
+              { id: 'guiguzi-fuyan', label: '符言第十二', color: '#4f46e5', src: '/pages/humanities/guiguzi.html#fuyan', content: { tags: ['君主术', '循名责实'] } },
+              { id: 'guiguzi-benshu', label: '本经阴符七术', color: '#3730a3', src: '/pages/humanities/guiguzi.html#benshu', content: { tags: ['内修', '盛神养志', '道术'] } },
+              { id: 'guiguzi-chishu', label: '持枢', color: '#3730a3', src: '/pages/humanities/guiguzi.html#chishu', content: { tags: ['天道枢纽', '自然规律'] } },
+              { id: 'guiguzi-zhongjing', label: '中经', color: '#3730a3', src: '/pages/humanities/guiguzi.html#zhongjing', content: { tags: ['制人', '控制之术'] } },
             ],
           },
         ],
       },
     ],
   },
-  relations: [],
+  relations: [
+    // ========== 马原 · 内部联系（以联系的观点看问题） ==========
+    // 哲学内部：辩证法贯穿一切
+    { source: 'marxist-dialectics', target: 'marxist-epistemology', label: '辩证规律贯穿认识过程', color: '#db2777' },
+    { source: 'marxist-dialectics', target: 'marxist-historical', label: '辩证唯物论向社会领域延伸', color: '#db2777' },
+    { source: 'marxist-dialectics', target: 'marxist-capital', label: '矛盾分析→解剖资本主义', color: '#db2777' },
+    // 认识论→政治经济学：实践出真知
+    { source: 'marxist-epistemology', target: 'marxist-capital', label: '实践→揭示资本主义本质规律', color: '#be185d' },
+    // 唯物史观→政治经济学：社会基本矛盾分析法
+    { source: 'marxist-historical', target: 'marxist-capital', label: '社会结构分析→资本主义生产方式', color: '#9d174d' },
+    { source: 'marxist-historical', target: 'marxist-monopoly', label: '生产力发展→垄断阶段必然', color: '#9d174d' },
+    // 政治经济学内部：资本主义从自由竞争到垄断
+    { source: 'marxist-capital', target: 'marxist-monopoly', label: '自由竞争→垄断的必然发展', color: '#0891b2' },
+    // 政治经济学→科学社会主义：否定之否定
+    { source: 'marxist-capital', target: 'marxist-socialist', label: '资本主义矛盾→社会主义必然', color: '#7c3aed' },
+    { source: 'marxist-monopoly', target: 'marxist-communism', label: '资本主义发展终结论', color: '#7c3aed' },
+    // 唯物史观→科学社会主义
+    { source: 'marxist-historical', target: 'marxist-socialist', label: '社会发展规律→科学社会主义', color: '#7c3aed' },
+    // ========== 跨域连线（哲学与世界观大类内） ==========
+    { source: 'marxist-dialectics', target: 'daodejing', label: '对立统一 vs 阴阳相生', color: '#8b5cf6' },
+    { source: 'marxist-dialectics', target: 'guiguzi', label: '矛盾规律 vs 捭阖之道', color: '#8b5cf6' },
+  ],
 }
