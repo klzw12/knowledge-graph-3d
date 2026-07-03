@@ -67,60 +67,50 @@ export default {
             id: 'marxism',
             label: '马克思主义基本原理',
             color: '#ec4899',
-            src: '/pages/humanities/marxism.html',
+            src: '/pages/humanities/marxism-philosophy.html',
             content: { summary: '马克思主义基本原理。三大组成部分：马克思主义哲学、政治经济学、科学社会主义，构成严密的内在逻辑体系。', tags: ['马原', '马克思主义', '哲学', '政治经济学', '科学社会主义'] },
             children: [
               // ============ 哲学篇 ============
               {
-                id: 'marxist-dialectics',
-                label: '唯物论与辩证法',
+                id: 'marxist-philosophy',
+                label: '马克思主义哲学',
                 color: '#db2777',
-                src: '/pages/humanities/marxism.html#dialectics',
-                content: { summary: '马克思主义哲学基础。包含世界的物质统一性、物质与意识辩证关系、对立统一规律、量变质变规律、否定之否定规律、五对范畴。', tags: ['唯物论', '辩证法', '对立统一', '量变质变', '否定之否定'] },
-              },
-              {
-                id: 'marxist-epistemology',
-                label: '实践与认识',
-                color: '#be185d',
-                src: '/pages/humanities/marxism.html#epistemology',
-                content: { summary: '马克思主义认识论。实践是认识的基础与检验标准；认识的两次飞跃；真理的客观性、绝对性与相对性；真理与价值的辩证统一。', tags: ['认识论', '实践', '真理', '价值'] },
-              },
-              {
-                id: 'marxist-historical',
-                label: '唯物史观',
-                color: '#9d174d',
-                src: '/pages/humanities/marxism.html#historical',
-                content: { summary: '唯物史观。社会存在决定社会意识；社会基本矛盾（生产力-生产关系/经济基础-上层建筑）；阶级斗争；人民群众是历史的创造者。', tags: ['唯物史观', '社会基本矛盾', '生产力', '生产关系', '阶级斗争'] },
+                src: '/pages/humanities/marxism-philosophy.html',
+                content: { summary: '唯物论与辩证法→实践与认识→唯物史观逐层推进。从世界的物质统一性出发，揭示矛盾规律、认识到社会发展的根本动力。', tags: ['唯物论', '辩证法', '认识论', '唯物史观'] },
+                children: [
+                  { id: 'marxist-materialism', label: '唯物论', color: '#db2777', src: '/pages/humanities/marxism-philosophy.html#materialism' },
+                  { id: 'marxist-dialectics', label: '辩证法', color: '#db2777', src: '/pages/humanities/marxism-philosophy.html#dialectics' },
+                  { id: 'marxist-epistemology', label: '实践与认识', color: '#be185d', src: '/pages/humanities/marxism-philosophy.html#epistemology' },
+                  { id: 'marxist-historical', label: '唯物史观', color: '#9d174d', src: '/pages/humanities/marxism-philosophy.html#historical' },
+                ],
               },
               // ============ 政治经济学 ============
               {
-                id: 'marxist-capital',
-                label: '资本主义本质',
+                id: 'marxist-economics',
+                label: '政治经济学',
                 color: '#0891b2',
-                src: '/pages/humanities/marxism.html#capital',
-                content: { summary: '资本主义经济制度本质。商品与价值规律；剩余价值理论（c+v+m）；资本循环与周转；社会资本再生产（I II两部类）；资本主义基本矛盾与经济危机。', tags: ['政治经济学', '剩余价值', 'cvm', '两部类', '资本循环'] },
-              },
-              {
-                id: 'marxist-monopoly',
-                label: '垄断资本主义',
-                color: '#0e7490',
-                src: '/pages/humanities/marxism.html#monopoly',
-                content: { summary: '垄断资本主义阶段。自由竞争→垄断；金融资本与金融寡头；经济全球化；当代资本主义新变化及其实质。', tags: ['垄断', '金融资本', '全球化', '帝国主义'] },
+                src: '/pages/humanities/marxism-economics.html',
+                content: { summary: '商品二因素→劳动二重性→价值规律→剩余价值→资本积累→垄断资本主义，逐层揭示资本主义经济制度的本质、矛盾和发展趋势。', tags: ['政治经济学', '剩余价值', 'cvm', '资本积累', '垄断'] },
+                children: [
+                  { id: 'marxist-commodity', label: '商品与货币', color: '#0891b2', src: '/pages/humanities/marxism-economics.html#commodity' },
+                  { id: 'marxist-surplus', label: '剩余价值', color: '#0e7490', src: '/pages/humanities/marxism-economics.html#surplus' },
+                  { id: 'marxist-accumulation', label: '资本积累', color: '#0d5c70', src: '/pages/humanities/marxism-economics.html#accumulation' },
+                  { id: 'marxist-monopoly', label: '垄断资本主义', color: '#0e7490', src: '/pages/humanities/marxism-economics.html#monopoly' },
+                ],
               },
               // ============ 科学社会主义 ============
               {
-                id: 'marxist-socialist',
-                label: '社会主义理论',
+                id: 'marxist-socialism',
+                label: '科学社会主义',
                 color: '#7c3aed',
-                src: '/pages/humanities/marxism.html#socialist',
-                content: { summary: '科学社会主义理论。从空想到科学的历史进程；十大基本原则；社会主义建设长期性与道路多样性。', tags: ['科学社会主义', '空想社会主义', '基本原则', '实践探索'] },
-              },
-              {
-                id: 'marxist-communism',
-                label: '共产主义学说',
-                color: '#6d28d9',
-                src: '/pages/humanities/marxism.html#communism',
-                content: { summary: '共产主义崇高理想。预见未来社会的方法论原则；共产主义基本特征（物质极大丰富、按需分配、自由全面发展）；历史必然性与长期性。', tags: ['共产主义', '按需分配', '自由王国', '共同理想'] },
+                src: '/pages/humanities/marxism-socialism.html',
+                content: { summary: '从空想到科学→十大基本原则→社会主义实践→共产主义崇高理想。唯物史观和剩余价值学说两大发现使社会主义从空想变为科学。', tags: ['科学社会主义', '空想社会主义', '共产主义', '基本原则'] },
+                children: [
+                  { id: 'marxist-scientific', label: '从空想到科学', color: '#7c3aed', src: '/pages/humanities/marxism-socialism.html#scientific' },
+                  { id: 'marxist-principles', label: '基本原则', color: '#6d28d9', src: '/pages/humanities/marxism-socialism.html#principles' },
+                  { id: 'marxist-practice', label: '社会主义实践', color: '#6d28d9', src: '/pages/humanities/marxism-socialism.html#practice' },
+                  { id: 'marxist-communism', label: '共产主义学说', color: '#6d28d9', src: '/pages/humanities/marxism-socialism.html#communism' },
+                ],
               },
             ],
           },
@@ -198,24 +188,26 @@ export default {
     ],
   },
   relations: [
-    // ========== 马原 · 内部联系（以联系的观点看问题） ==========
-    // 哲学内部：辩证法贯穿一切
+    // ========== 马原 · 内部联系（哲学→政经→科社 层层推进） ==========
+    // 哲学内部
     { source: 'marxist-dialectics', target: 'marxist-epistemology', label: '辩证规律贯穿认识过程', color: '#db2777' },
     { source: 'marxist-dialectics', target: 'marxist-historical', label: '辩证唯物论向社会领域延伸', color: '#db2777' },
-    { source: 'marxist-dialectics', target: 'marxist-capital', label: '矛盾分析→解剖资本主义', color: '#db2777' },
-    // 认识论→政治经济学：实践出真知
-    { source: 'marxist-epistemology', target: 'marxist-capital', label: '实践→揭示资本主义本质规律', color: '#be185d' },
-    // 唯物史观→政治经济学：社会基本矛盾分析法
-    { source: 'marxist-historical', target: 'marxist-capital', label: '社会结构分析→资本主义生产方式', color: '#9d174d' },
+    // 哲学→政经：方法论指导
+    { source: 'marxist-dialectics', target: 'marxist-surplus', label: '矛盾分析→解剖资本主义的钥匙', color: '#db2777' },
+    { source: 'marxist-epistemology', target: 'marxist-surplus', label: '实践→揭示资本主义本质规律', color: '#be185d' },
+    { source: 'marxist-historical', target: 'marxist-economics', label: '社会结构分析→政治经济学起点', color: '#9d174d' },
     { source: 'marxist-historical', target: 'marxist-monopoly', label: '生产力发展→垄断阶段必然', color: '#9d174d' },
-    // 政治经济学内部：资本主义从自由竞争到垄断
-    { source: 'marxist-capital', target: 'marxist-monopoly', label: '自由竞争→垄断的必然发展', color: '#0891b2' },
-    // 政治经济学→科学社会主义：否定之否定
-    { source: 'marxist-capital', target: 'marxist-socialist', label: '资本主义矛盾→社会主义必然', color: '#7c3aed' },
-    { source: 'marxist-monopoly', target: 'marxist-communism', label: '资本主义发展终结论', color: '#7c3aed' },
-    // 唯物史观→科学社会主义
-    { source: 'marxist-historical', target: 'marxist-socialist', label: '社会发展规律→科学社会主义', color: '#7c3aed' },
-    // ========== 跨域连线（哲学与世界观大类内） ==========
+    // 政经内部
+    { source: 'marxist-commodity', target: 'marxist-surplus', label: '商品二因素→剩余价值的逻辑起点', color: '#0891b2' },
+    { source: 'marxist-surplus', target: 'marxist-accumulation', label: '剩余价值资本化→资本积累', color: '#0891b2' },
+    { source: 'marxist-accumulation', target: 'marxist-monopoly', label: '生产集中→自由竞争走向垄断', color: '#0891b2' },
+    // 政经→科社
+    { source: 'marxist-surplus', target: 'marxist-socialism', label: '资本主义矛盾→社会主义必然', color: '#7c3aed' },
+    { source: 'marxist-monopoly', target: 'marxist-communism', label: '垄断资本主义→共产主义终结论', color: '#7c3aed' },
+    { source: 'marxist-economics', target: 'marxist-socialism', label: '经济分析→科学社会主义的物质基础', color: '#7c3aed' },
+    // 唯物史观→科社
+    { source: 'marxist-historical', target: 'marxist-socialism', label: '社会发展规律→科学社会主义', color: '#7c3aed' },
+    // ========== 跨域连线（与其他著作的思想对话） ==========
     { source: 'marxist-dialectics', target: 'daodejing', label: '对立统一 vs 阴阳相生', color: '#8b5cf6' },
     { source: 'marxist-dialectics', target: 'guiguzi', label: '矛盾规律 vs 捭阖之道', color: '#8b5cf6' },
   ],

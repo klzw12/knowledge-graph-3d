@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>科学社会主义 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="../../css/common.css" />
+  <style>
+    .title-area .bar { background:#7c3aed; }
+    .aside-col .callout { border-left-color:#7c3aed; }
+    .aside-col .callout strong { color:#7c3aed; }
+
+    .chapter-block { display:flex; flex-direction:column; gap:20px; margin-bottom:48px; }
+    .chapter-title {
+      font-size:22px; font-weight:700; margin:0 0 4px;
+      display:flex; align-items:baseline; gap:10px;
+    }
+    .chapter-title .num {
+      font-size:13px; font-weight:400;
+      background:rgba(124,58,237,.15); color:#7c3aed;
+      padding:2px 10px; border-radius:6px;
+    }
+    .chapter-bar { width:36px; height:3px; border-radius:2px; margin-bottom:16px; }
+
+    .section-item {
+      background:rgba(124,58,237,.04);
+      border:1px solid rgba(255,255,255,.04);
+      border-radius:10px;
+      padding:16px 20px;
+      transition:all .15s;
+    }
+    .section-item:hover {
+      background:rgba(124,58,237,.08);
+      border-color:rgba(124,58,237,.12);
+    }
+    .section-item .sec-title {
+      font-size:15px; font-weight:600; color:rgba(255,255,255,.8);
+      margin-bottom:10px;
+    }
+    .section-item .sec-title .tag {
+      font-size:11px; font-weight:400;
+      background:rgba(124,58,237,.12); color:#7c3aed;
+      padding:1px 8px; border-radius:4px; margin-left:8px;
+    }
+    .section-item .card-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+      gap:10px; margin:10px 0;
+    }
+    .section-item .card {
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:8px; padding:12px 14px;
+    }
+    .section-item .card .card-title {
+      font-size:12px; font-weight:600; color:#7c3aed;
+      margin-bottom:4px; text-transform:uppercase; letter-spacing:.5px;
+    }
+    .section-item .card p {
+      font-size:12.5px; line-height:1.7; color:rgba(255,255,255,.5);
+      margin:0;
+    }
+    .section-item .card p strong { color:#8b5cf6; }
+
+    .reasoning-chain {
+      background:rgba(124,58,237,.06);
+      border:1px solid rgba(124,58,237,.15);
+      border-radius:10px;
+      padding:16px 20px;
+      margin:10px 0;
+    }
+    .reasoning-chain .chain-title {
+      font-size:12px; font-weight:600; color:#7c3aed;
+      margin-bottom:8px; letter-spacing:.5px;
+    }
+    .reasoning-chain .step {
+      display:flex; align-items:flex-start; gap:8px;
+      margin:6px 0;
+      font-size:13px; line-height:1.7;
+      color:rgba(255,255,255,.6);
+    }
+    .reasoning-chain .step .num {
+      flex-shrink:0;
+      width:20px; height:20px; border-radius:50%;
+      background:rgba(124,58,237,.15); color:#7c3aed;
+      font-size:11px; font-weight:600;
+      display:flex; align-items:center; justify-content:center;
+      margin-top:2px;
+    }
+    .reasoning-chain .step .arr {
+      color:rgba(124,58,237,.3);
+      font-size:18px; flex-shrink:0;
+    }
+
+    .section-item .insight {
+      margin-top:10px;
+      padding:10px 14px;
+      border-left:2px solid rgba(124,58,237,.25);
+      font-size:12.5px; line-height:1.7;
+      color:rgba(255,255,255,.45);
+      background:rgba(124,58,237,.03);
+      border-radius:0 6px 6px 0;
+    }
+
+    .chain-map {
+      display:flex; flex-wrap:wrap; align-items:center; gap:4px 6px;
+      margin:20px 0 28px; padding:18px 20px;
+      background:rgba(124,58,237,.04);
+      border:1px solid rgba(124,58,237,.12);
+      border-radius:12px;
+    }
+    .chain-map .node {
+      display:inline-flex; align-items:center; gap:4px;
+      padding:6px 14px; border-radius:8px;
+      font-size:13px; font-weight:500;
+      background:rgba(124,58,237,.10);
+      border:1px solid rgba(124,58,237,.20);
+      color:rgba(255,255,255,.8);
+      white-space:nowrap;
+    }
+    .chain-map .arrow { font-size:16px; color:rgba(124,58,237,.4); flex-shrink:0; }
+
+    @media (max-width:720px) {
+      .layout { flex-direction:column; }
+      .nav-col { position:static; flex:none; width:100%; }
+      .aside-col { display:none; }
+      .chain-map { flex-direction:column; align-items:flex-start; }
+      .chain-map .arrow { transform:rotate(90deg); }
+      .card-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="../humanities.html">← 📚 人文与成长</a>
+
+  <div class="page">
+
+    <div class="title-area">
+      <h1>
+        科学社会主义
+        <span class="en">Scientific Socialism</span>
+      </h1>
+      <div class="bar"></div>
+      <p class="brief">
+        科学社会主义是马克思主义的<strong>核心结论</strong>部分——马克思和恩格斯在唯物史观和剩余价值学说两大发现的基础上，
+        将社会主义从空想发展为科学，揭示了资本主义必然灭亡、社会主义必然胜利的历史规律，描绘了共产主义的远大理想。
+      </p>
+    </div>
+
+    <!-- 逻辑链概览 -->
+    <div class="chain-map">
+      <span class="node">🌫️ 空想社会主义</span>
+      <span class="arrow">→</span>
+      <span class="node">🔬 两大发现</span>
+      <span class="arrow">→</span>
+      <span class="node">🚩 科学社会主义</span>
+      <span class="arrow">→</span>
+      <span class="node">🛠️ 社会主义实践</span>
+      <span class="arrow">→</span>
+      <span class="node">🌟 共产主义理想</span>
+    </div>
+
+    <div class="layout">
+
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#scientific">🔬 从空想发展到科学</a>
+        <a href="#principles">🚩 科学社会主义的基本原则</a>
+        <a href="#practice">🛠️ 社会主义的实践与探索</a>
+        <a href="#communism">🌟 共产主义崇高理想</a>
+      </nav>
+
+      <main class="main-col">
+
+        <!-- ============================================================ -->
+        <!-- 第一章：从空想到科学 -->
+        <!-- ============================================================ -->
+        <section id="scientific">
+          <div class="chapter-title">
+            从空想发展到科学
+            <span class="num">两大发现是基石</span>
+          </div>
+          <div class="chapter-bar"></div>
+
+          <div class="chapter-block">
+
+            <div class="section-item">
+              <div class="sec-title">🌫️ 空想社会主义——社会主义的思想源头</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：空想为什么"空"？</div>
+                <div class="step"><span class="num">1</span><span>早期（16-17世纪）：莫尔《乌托邦》、康帕内拉《太阳城》——文学描绘理想社会</span></div>
+                <div class="step"><span class="num">2</span><span>18世纪：摩莱里、马布利——用法律条文规定理想社会，带有平均主义倾向</span></div>
+                <div class="step"><span class="num">3</span><span>19世纪初<strong>三大空想家</strong>：圣西门·傅立叶·欧文——深刻批判资本主义，对未来有天才设想</span></div>
+                <div class="step"><span class="num" style="background:rgba(124,58,237,.08)">✗</span><span>但——<strong>不成熟的生产力状况 × 不成熟的阶级状况</strong>→只能从头脑中发明新社会</span></div>
+                <div class="step"><span class="arr">↓</span><span>根本缺陷：不了解社会发展的客观规律，找不到改造社会的物质力量（无产阶级）</span></div>
+              </div>
+            </div>
+
+            <!-- 两大发现 -->
+            <div class="section-item">
+              <div class="sec-title">🔬 两大发现——让社会主义从空想变为科学</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：唯物史观 + 剩余价值 = 科学社会主义</div>
+                <div class="step"><span class="num">①</span><span><strong>唯物史观</strong>——揭示了人类社会发展的客观规律</span></div>
+                <div class="step"><span class="num" style="background:rgba(124,58,237,.08);font-size:11px">↪</span><span>社会存在决定社会意识 → 社会基本矛盾推动社会形态更替 → 人类社会发展像自然界一样有客观规律</span></div>
+                <div class="step"><span class="num">②</span><span><strong>剩余价值学说</strong>——揭示了资本主义被社会主义代替的必然性</span></div>
+                <div class="step"><span class="num" style="background:rgba(124,58,237,.08);font-size:11px">↪</span><span>资本主义基本矛盾（生产社会化 vs 私人占有）→ 经济危机频发 → 资本主义生产关系已无法容纳生产力发展 → 必须以更高级的社会形态取而代之</span></div>
+                <div class="step"><span class="arr">↓</span><span><strong>结论</strong>：社会主义不再是天才头脑的偶然发现，而是历史发展的<strong>必然结果</strong>。无产阶级不再是受苦的群众，而是<strong>资本主义的掘墓人</strong>。</span></div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 第二章：基本原则 -->
+        <!-- ============================================================ -->
+        <section id="principles">
+          <div class="chapter-title">
+            科学社会主义的基本原则
+            <span class="num">社会主义的本质要求</span>
+          </div>
+          <div class="chapter-bar"></div>
+
+          <div class="chapter-block">
+
+            <div class="section-item">
+              <div class="sec-title">📋 十大基本原则</div>
+              <div class="card-grid">
+                <div class="card">
+                  <div class="card-title">① 两个必然</div>
+                  <p>资本主义必然灭亡，社会主义必然胜利——从资本主义基本矛盾中推导出的<strong>历史必然性</strong>。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">② 无产阶级使命</div>
+                  <p>无产阶级是资本主义的<strong>掘墓人</strong>和社会主义的建设者——唯一彻底革命的阶级。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">③ 革命与专政</div>
+                  <p>无产阶级通过革命夺取政权，建立无产阶级专政——从资本主义到共产主义的政治过渡。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">④ 公有制</div>
+                  <p>生产资料归全社会公共占有——消灭私有制和剥削的根源。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">⑤ 按劳分配</div>
+                  <p>按劳动量分配个人消费品——社会主义阶段的分配原则。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">⑥ 有计划调节</div>
+                  <p>对生产进行有计划的调节——克服社会生产的无政府状态。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">⑦ 人与自然和谐</div>
+                  <p>合理调节人与自然之间的物质变换——可持续发展。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">⑧ 科学理论指导</div>
+                  <p>以马克思主义科学理论为行动指南——没有革命的理论就没有革命的运动。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">⑨ 党的正确领导</div>
+                  <p>无产阶级政党是社会主义事业的领导核心——实现历史使命的根本保证。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">⑩ 解放与发展生产力</div>
+                  <p>大力发展生产力是社会主义的根本任务——最终实现共产主义。</p>
+                </div>
+              </div>
+              <div class="insight">
+                <strong>💡 基本原则不等于固定模式</strong><br>
+                科学社会主义基本原则是<strong>普遍真理</strong>，但各国在具体实践中必须从本国国情出发，探索适合自身的发展道路。基本原则的<strong>实现形式</strong>可以多样化。
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 第三章：社会主义实践 -->
+        <!-- ============================================================ -->
+        <section id="practice">
+          <div class="chapter-title">
+            社会主义的实践与探索
+            <span class="num">从理论到现实的飞跃</span>
+          </div>
+          <div class="chapter-bar"></div>
+
+          <div class="chapter-block">
+
+            <!-- 十月革命 -->
+            <div class="section-item">
+              <div class="sec-title">🇷🇺 十月革命——社会主义从理论变为现实</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：一国胜利论 → 十月革命</div>
+                <div class="step"><span class="num">1</span><span>马克思、恩格斯认为社会主义将在发达资本主义国家"<strong>同时胜利</strong>"</span></div>
+                <div class="step"><span class="num">2</span><span>列宁发展了这一理论：帝国主义阶段，社会主义可在<strong>薄弱环节首先胜利</strong></span></div>
+                <div class="step"><span class="num">3</span><span>1917年俄国十月革命建立世界上第一个社会主义国家——理论变成现实的制度</span></div>
+              </div>
+            </div>
+
+            <!-- 苏联模式 - 纯史实 -->
+            <div class="section-item">
+              <div class="sec-title">🏭 苏联模式——历史成就与弊端</div>
+              <div class="card-grid">
+                <div class="card">
+                  <div class="card-title">成就</div>
+                  <p>快速实现工业化，成为欧洲第一工业强国；为反法西斯战争胜利奠定物质基础；科技文化教育大发展。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">弊端</div>
+                  <p>片面发展重工业、忽视农业轻工业；计划经济抑制企业和劳动者积极性；民主法治不健全、个人崇拜。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 东欧剧变 -->
+            <div class="section-item">
+              <div class="sec-title">📉 东欧剧变的教训</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：东欧剧变证明了什么？</div>
+                <div class="step"><span class="num">1</span><span>经济发展缓慢动摇了社会主义的物质基础——生产力没有持续发展</span></div>
+                <div class="step"><span class="num">2</span><span>→ 苏联模式的僵化——没有及时改革，脱离本国实际</span></div>
+                <div class="step"><span class="num">3</span><span>→ 加上西方和平演变的外部压力、共产党内部出现问题</span></div>
+                <div class="step"><span class="arr">↓</span><span><strong>教训</strong>：①必须在实践中不断改革完善 ②必须大力发展生产力 ③必须坚持和改善党的领导</span></div>
+              </div>
+              <div class="insight">
+                <strong>💡 剧变≠社会主义的失败</strong><br>
+                东欧剧变是<strong>一种模式的失败</strong>（苏联模式的僵化），不是科学社会主义本身的失败。
+                它证明了：社会主义必须从本国国情出发、不断改革创新，才有生命力。
+              </div>
+            </div>
+
+            <!-- 列宁经验 -->
+            <div class="section-item">
+              <div class="sec-title">📜 列宁探索社会主义建设的经验</div>
+              <table>
+                <tr><th>经验</th><th>说明</th></tr>
+                <tr><td>长期探索</td><td>把建设当作一个长期探索、不断实践的过程</td></tr>
+                <tr><td>发展生产力优先</td><td>把大力发展生产力、提高劳动生产率放在首位</td></tr>
+                <tr><td>利用商品货币</td><td>在多种经济成分并存条件下利用商品、货币和市场发展经济（新经济政策）</td></tr>
+                <tr><td>利用资本主义</td><td>借鉴和利用资本主义的先进技术和管理经验</td></tr>
+              </table>
+            </div>
+
+            <!-- 社会主义建设长期性 -->
+            <div class="section-item">
+              <div class="sec-title">⏳ 社会主义建设长期性的原因</div>
+              <div class="card-grid">
+                <div class="card">
+                  <div class="card-title">生产力制约</div>
+                  <p>经济文化相对落后的国家需要更长时间发展生产力——社会主义从经济落后国家开始是历史常态。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">制度需要完善</div>
+                  <p>社会主义制度是新生事物，作为社会制度需要不断完善和发展。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">国际环境</div>
+                  <p>资本主义世界在实力上长期占优势，外部遏制与挑战严峻。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">认识需深化</div>
+                  <p>执政党对社会主义建设规律的认识和把握是一个长期的探索过程。</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 第四章：共产主义 -->
+        <!-- ============================================================ -->
+        <section id="communism">
+          <div class="chapter-title">
+            共产主义崇高理想
+            <span class="num">人类社会的最高形态</span>
+          </div>
+          <div class="chapter-bar"></div>
+
+          <div class="chapter-block">
+
+            <!-- 预见方法论 -->
+            <div class="section-item">
+              <div class="sec-title">🔮 预见未来的方法论——马克思如何描绘未来？</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：如何科学地预见未来社会？</div>
+                <div class="step"><span class="num">1</span><span>在揭示人类社会发展<strong>一般规律</strong>的基础上，指明社会发展的总方向</span></div>
+                <div class="step"><span class="num">2</span><span>在剖析资本主义<strong>旧世界</strong>的过程中，发现新世界的萌芽和要素</span></div>
+                <div class="step"><span class="num">3</span><span>→ 只揭示未来社会的<strong>一般特征</strong>，不做细节描绘（区别于空想社会主义）</span></div>
+                <div class="step"><span class="num">4</span><span>→ 在实践中不断深化和发展对未来社会的认识</span></div>
+                <div class="step"><span class="arr">↓</span><span>原则：从实际出发，不是从主观愿望出发</span></div>
+              </div>
+            </div>
+
+            <!-- 共产主义基本特征 -->
+            <div class="section-item">
+              <div class="sec-title">🌟 共产主义社会的基本特征</div>
+              <table>
+                <tr><th>维度</th><th>基本特征</th></tr>
+                <tr>
+                  <td>物质层面</td>
+                  <td>生产力高度发展，物质财富<strong>极大丰富</strong>；生产资料全社会公有；实行<strong>"各尽所能，按需分配"</strong></td>
+                </tr>
+                <tr>
+                  <td>社会层面</td>
+                  <td>消灭阶级和阶级差别；消灭<strong>三大差别</strong>（工农·城乡·脑体）；社会关系高度和谐</td>
+                </tr>
+                <tr>
+                  <td>精神层面</td>
+                  <td>人们精神境界<strong>极大提高</strong>；劳动成为"生活的第一需要"；自觉遵守社会公德</td>
+                </tr>
+                <tr>
+                  <td>人的层面</td>
+                  <td><strong>每个人自由而全面的发展</strong>；成为自然、社会和自身的主人；"<strong>自由人联合体</strong>"</td>
+                </tr>
+              </table>
+              <div class="insight">
+                <strong>💡 "每个人的自由发展是一切人的自由发展的条件"</strong><br>
+                这是共产主义最核心的价值目标——不是少数人的解放，而是<strong>每个人的解放</strong>。
+                人的自由全面发展只有在消灭了私有制、阶级和旧式分工之后才能真正实现。
+              </div>
+            </div>
+
+            <!-- 过渡条件 -->
+            <div class="section-item">
+              <div class="sec-title">📋 从必然王国到自由王国</div>
+              <div class="card-grid">
+                <div class="card">
+                  <div class="card-title">物质条件</div>
+                  <p>生产力高度发展，物质财富极大丰富</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">社会条件</div>
+                  <p>消灭阶级差别、三大差别；社会主义制度高度完善</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">精神条件</div>
+                  <p>人们的精神境界极大提高；劳动成为生活第一需要</p>
+                </div>
+              </div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：为什么共产主义是历史必然？</div>
+                <div class="step"><span class="num">1</span><span>资本主义基本矛盾（生产社会化vs私人占有）→经济危机→证明资本主义不是永恒的</span></div>
+                <div class="step"><span class="num">2</span><span>→ 社会主义代替资本主义是生产力发展的客观要求</span></div>
+                <div class="step"><span class="num">3</span><span>→ 社会主义的充分发展→生产力极大提高→阶级消灭→三大差别消失</span></div>
+                <div class="step"><span class="num">4</span><span>→ 社会主义向共产主义过渡——不是主观愿望，是历史发展的<strong>总趋势</strong></span></div>
+                <div class="step"><span class="arr">↓</span><span>这是一个漫长的过程，需要若干代人的努力，但历史发展的总趋势不可逆转</span></div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+      <aside class="aside-col">
+        <div class="callout">
+          <strong>📖 科学社会主义</strong><br><br>
+          <strong>理论基石：</strong>唯物史观+剩余价值学说<br>
+          <strong>核心结论：</strong>"两个必然"<br>
+          <strong>最高目标：</strong>自由人联合体
+        </div>
+        <div class="callout tip">
+          <strong>🔗 逻辑主线</strong><br>
+          空想→唯物史观→<br>
+          剩余价值→科学→<br>
+          基本原则→实践→<br>
+          共产主义
+        </div>
+        <div class="callout">
+          <strong>🎯 关键概念</strong><br>
+          · 两大发现<br>
+          · 两个必然<br>
+          · 无产阶级使命<br>
+          · 一国胜利论<br>
+          · 各尽所能按需分配<br>
+          · 自由人联合体<br>
+          · 必然王国/自由王国
+        </div>
+      </aside>
+
+    </div>
+
+    <div class="footer">
+      科学社会主义 · 空想到科学 → 理论到实践 → 必然到自由
+    </div>
+
+  </div>
+
+</body>
+</html>

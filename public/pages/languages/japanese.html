@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>日语 — 知识图谱 3D</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%; height: 100%;
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: #080818;
+      color: rgba(255,255,255,.85);
+    }
+    a { text-decoration: none; color: inherit; }
+
+    .back-link {
+      position: fixed; top: 16px; left: 20px;
+      z-index: 100;
+      font-size: 13px; color: rgba(255,255,255,.35);
+      transition: all .2s;
+    }
+    .back-link:hover { color: rgba(255,255,255,.7); }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 40px 40px;
+      gap: 48px;
+    }
+
+    .desc {
+      flex: 0 0 320px;
+      padding-top: 20px;
+    }
+    .desc .title {
+      font-size: 32px; font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+    .desc .title-bar {
+      width: 48px; height: 4px; border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .desc .text {
+      font-size: 14px; line-height: 1.8;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 16px;
+    }
+    .desc .tags {
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+    .desc .tag {
+      font-size: 11px; padding: 3px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.08);
+      color: rgba(255,255,255,.35);
+      background: rgba(255,255,255,.03);
+    }
+
+    .children {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 8px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .children::-webkit-scrollbar { width: 3px; }
+    .children::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 2px; }
+
+    .child-card {
+      background: rgba(15,15,40,.5);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 12px;
+      padding: 14px 18px;
+      transition: all .2s;
+      cursor: pointer;
+    }
+    .child-card:hover {
+      background: rgba(25,25,55,.7);
+      border-color: rgba(255,255,255,.12);
+    }
+    .child-card .head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 6px;
+    }
+    .child-card .dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .child-card .name {
+      font-size: 16px; font-weight: 600;
+    }
+    .child-card .arrow {
+      margin-left: auto;
+      color: rgba(255,255,255,.2);
+      font-size: 12px;
+    }
+    .child-card .desc-text {
+      font-size: 12px; line-height: 1.6;
+      color: rgba(255,255,255,.4);
+      margin-left: 20px;
+      margin-bottom: 8px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      color: rgba(255,255,255,.3);
+      margin-top: 12px;
+      margin-bottom: 4px;
+      padding-left: 4px;
+    }
+
+    @media (max-width: 720px) {
+      .container { flex-direction: column; gap: 24px; padding: 50px 20px 20px; }
+      .desc { flex: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="../languages.html">← 🌐 自然语言</a>
+
+  <div class="container">
+    <div class="desc">
+      <div class="title" style="color:#ec4899">🇯🇵 日语</div>
+      <div class="title-bar" style="background:#ec4899"></div>
+      <div class="text">
+        日本語（にほんご）的学习知识体系。从五十音出发，掌握音韵规律与通用语法，逐步构建日语理解框架。
+      </div>
+      <div class="tags">
+        <span class="tag">日语</span>
+        <span class="tag">日本語</span>
+        <span class="tag">外语学习</span>
+      </div>
+    </div>
+
+    <div class="children">
+
+      <div class="section-label">🔤 音韵体系</div>
+
+      <a class="child-card" href="#phonology" style="border-left:3px solid #f43f5e">
+        <div class="head">
+          <span class="dot" style="background:#f43f5e"></span>
+          <span class="name" style="color:#f43f5e">音韵体系</span>
+          <span class="arrow">→</span>
+        </div>
+        <div class="desc-text">
+          日语发音体系。五十音图（清音）、浊音·半浊音·鼻浊音、长音·促音·拗音、声调アクセント。
+          五十音单音均为清音，干脆利落。长音本质是音拍（モーラ）的延长，而非刻意拉长发音。
+          中文母语者因汉语本就存在音长感知（如"偷 tōu"），对日语长音有天然亲和力。
+        </div>
+      </a>
+
+      <div class="section-label">📖 通用语法</div>
+
+      <a class="child-card" href="#grammar" style="border-left:3px solid #8b5cf6">
+        <div class="head">
+          <span class="dot" style="background:#8b5cf6"></span>
+          <span class="name" style="color:#8b5cf6">通用语法</span>
+          <span class="arrow">→</span>
+        </div>
+        <div class="desc-text">
+          日语通用语法体系。助词（は/が/を/に/で/へ/と/から/まで/より/の…）、动词活用（ます形/て形/た形/ない形/辞書形/意向形/可能形/命令形…）、形容词活用、敬语（丁寧語/尊敬語/謙譲語）、文体与句末表达。
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- 语法详情 -->
+  <div id="grammar" style="max-width:1200px;margin:0 auto;padding:0 40px 80px;">
+
+    <div class="section-label" style="margin-top:0;">📖 です（断定助动词「だ」的礼貌体）</div>
+
+    <div class="child-card" style="border-left:3px solid #8b5cf6;cursor:default;margin-bottom:16px;">
+      <div class="desc-text" style="margin-left:0;color:rgba(255,255,255,.55);">
+
+        <p style="margin-bottom:8px;">です是日语最核心的句末断定词，本质是简体「だ」的丁寧語（礼貌体）。</p>
+        <p style="margin-bottom:8px;">中文母语者可将其理解为"句末语气词槽位"——类似中文的"是……的""……啊""……吗"，但です的作用更偏向语法断定而非情绪表达。</p>
+
+        <table style="width:100%;border-collapse:collapse;margin:12px 0;font-size:14px;">
+          <tr style="border-bottom:1px solid rgba(255,255,255,.1);">
+            <th style="text-align:left;padding:8px 12px;color:rgba(255,255,255,.4);font-weight:400;width:90px;">时态</th>
+            <th style="text-align:left;padding:8px 12px;color:rgba(255,255,255,.4);font-weight:400;width:100px;">肯定</th>
+            <th style="text-align:left;padding:8px 12px;color:rgba(255,255,255,.4);font-weight:400;width:100px;">否定</th>
+            <th style="text-align:left;padding:8px 12px;color:rgba(255,255,255,.4);font-weight:400;">备注</th>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,.05);">
+            <td style="padding:10px 12px;color:#f43f5e;font-weight:600;">現在</td>
+            <td style="padding:10px 12px;">です</td>
+            <td style="padding:10px 12px;">
+              では<b>ありません</b><br>
+              <span style="color:rgba(255,255,255,.35);font-size:12px;">じゃありません（口语）</span>
+            </td>
+            <td style="padding:10px 12px;color:rgba(255,255,255,.35);font-size:12px;">
+              否定本质是「では+ありません」<br>
+              口语「じゃ」是「では」的缩约
+            </td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(255,255,255,.05);">
+            <td style="padding:10px 12px;color:#f43f5e;font-weight:600;">過去</td>
+            <td style="padding:10px 12px;">でした</td>
+            <td style="padding:10px 12px;">
+              では<b>ありませんでした</b><br>
+              <span style="color:rgba(255,255,255,.35);font-size:12px;">じゃありませんでした（口语）</span>
+            </td>
+            <td style="padding:10px 12px;color:rgba(255,255,255,.35);font-size:12px;">
+              过去否定 = です否定 + 过去<br>
+              「ありません」→「ありませんでした」
+            </td>
+          </tr>
+        </table>
+
+        <p style="margin-bottom:4px;"><b style="color:#ec4899;">疑問形：</b>肯定 + <b>か</b></p>
+        <table style="width:100%;border-collapse:collapse;margin:8px 0;font-size:14px;">
+          <tr style="border-bottom:1px solid rgba(255,255,255,.05);">
+            <td style="padding:8px 12px;width:160px;">学生<b>ですか</b></td>
+            <td style="padding:8px 12px;color:rgba(255,255,255,.45);font-size:12px;">是学生吗？（肯定疑问）</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;">学生では<b>ありませんか</b></td>
+            <td style="padding:8px 12px;color:rgba(255,255,255,.45);font-size:12px;">不是学生吗？（否定疑问）</td>
+          </tr>
+        </table>
+
+        <p style="margin-top:12px;margin-bottom:4px;"><b style="color:#ec4899;">🎯 か ≈ 吗？</b></p>
+        <p style="color:rgba(255,255,255,.45);font-size:13px;margin-bottom:6px;">
+          基本等价，但注意：口语中か经常省略，靠上挑语调表达疑问，跟中文"你去？"（不带"吗"）一样。
+        </p>
+        <p style="color:rgba(255,255,255,.35);font-size:12px;margin-bottom:6px;">
+          <b>です与中文感叹词的对比：</b><br>
+          中文感叹词（啊/吧/呢/哦）删了不影响句义，只是少了情绪色彩。<br>
+          日语です删了语法不完整（「学生」→ 缺断定，等于半句话）。<br>
+          所以です不是感叹词，但可以放在"句末词"这个槽位里理解。
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

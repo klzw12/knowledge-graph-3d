@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>政治经济学 — 知识图谱 3D</title>
+  <link rel="stylesheet" href="../../css/common.css" />
+  <style>
+    .title-area .bar { background:#0891b2; }
+    .aside-col .callout { border-left-color:#0891b2; }
+    .aside-col .callout strong { color:#0891b2; }
+
+    .chapter-block { display:flex; flex-direction:column; gap:20px; margin-bottom:48px; }
+    .chapter-title {
+      font-size:22px; font-weight:700; margin:0 0 4px;
+      display:flex; align-items:baseline; gap:10px;
+    }
+    .chapter-title .num {
+      font-size:13px; font-weight:400;
+      background:rgba(8,145,178,.15); color:#0891b2;
+      padding:2px 10px; border-radius:6px;
+    }
+    .chapter-bar { width:36px; height:3px; border-radius:2px; margin-bottom:16px; }
+
+    .section-item {
+      background:rgba(8,145,178,.04);
+      border:1px solid rgba(255,255,255,.04);
+      border-radius:10px;
+      padding:16px 20px;
+      transition:all .15s;
+    }
+    .section-item .reasoning-chain .highlight {
+      background:rgba(251,191,36,.08);
+      border-left:3px solid rgba(251,191,36,.4);
+      padding:10px 14px; margin:8px 0; border-radius:0 6px 6px 0;
+      font-size:13px; line-height:1.7; color:rgba(255,255,255,.85);
+    }
+    .section-item .note.highlight {
+      background:rgba(251,191,36,.06);
+      border:1px solid rgba(251,191,36,.2);
+      border-radius:8px;
+      padding:12px 16px;
+      margin:10px 0;
+    }
+    .section-item .note.highlight .label {
+      font-size:11px; font-weight:600;
+      background:rgba(251,191,36,.15); color:#fbbf24;
+      padding:1px 8px; border-radius:4px;
+    }
+    .section-item .note.highlight p {
+      margin:6px 0 0 0; font-size:13px; line-height:1.8;
+      color:rgba(255,255,255,.85);
+    }
+    .section-item:hover {
+      background:rgba(8,145,178,.08);
+      border-color:rgba(8,145,178,.12);
+    }
+    .section-item .sec-title {
+      font-size:15px; font-weight:600; color:rgba(255,255,255,.8);
+      margin-bottom:10px;
+    }
+    .section-item .sec-title .tag {
+      font-size:11px; font-weight:400;
+      background:rgba(8,145,178,.12); color:#0891b2;
+      padding:1px 8px; border-radius:4px; margin-left:8px;
+    }
+    .section-item .card-grid {
+      display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+      gap:10px; margin:10px 0;
+    }
+    .section-item .card {
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:8px; padding:12px 14px;
+    }
+    .section-item .card .card-title {
+      font-size:12px; font-weight:600; color:#0891b2;
+      margin-bottom:4px; text-transform:uppercase; letter-spacing:.5px;
+    }
+    .section-item .card p {
+      font-size:12.5px; line-height:1.7; color:rgba(255,255,255,.5);
+      margin:0;
+    }
+    .section-item .card p strong { color:#06b6d4; }
+
+    .reasoning-chain {
+      background:rgba(8,145,178,.06);
+      border:1px solid rgba(8,145,178,.15);
+      border-radius:10px;
+      padding:16px 20px;
+      margin:10px 0;
+    }
+    .reasoning-chain .chain-title {
+      font-size:12px; font-weight:600; color:#0891b2;
+      margin-bottom:8px; letter-spacing:.5px;
+    }
+    .reasoning-chain .step {
+      display:flex; align-items:flex-start; gap:8px;
+      margin:6px 0;
+      font-size:13px; line-height:1.7;
+      color:rgba(255,255,255,.6);
+    }
+    .reasoning-chain .step .num {
+      flex-shrink:0;
+      width:20px; height:20px; border-radius:50%;
+      background:rgba(8,145,178,.15); color:#0891b2;
+      font-size:11px; font-weight:600;
+      display:flex; align-items:center; justify-content:center;
+      margin-top:2px;
+    }
+    .reasoning-chain .step .arr {
+      color:rgba(8,145,178,.3);
+      font-size:18px; flex-shrink:0;
+    }
+
+    .section-item .insight {
+      margin-top:10px;
+      padding:10px 14px;
+      border-left:2px solid rgba(8,145,178,.25);
+      font-size:12.5px; line-height:1.7;
+      color:rgba(255,255,255,.45);
+      background:rgba(8,145,178,.03);
+      border-radius:0 6px 6px 0;
+    }
+
+    .chain-map {
+      display:flex; flex-wrap:wrap; align-items:center; gap:4px 6px;
+      margin:20px 0 28px; padding:18px 20px;
+      background:rgba(8,145,178,.04);
+      border:1px solid rgba(8,145,178,.12);
+      border-radius:12px;
+    }
+    .chain-map .node {
+      display:inline-flex; align-items:center; gap:4px;
+      padding:6px 14px; border-radius:8px;
+      font-size:13px; font-weight:500;
+      background:rgba(8,145,178,.10);
+      border:1px solid rgba(8,145,178,.20);
+      color:rgba(255,255,255,.8);
+      white-space:nowrap;
+    }
+    .chain-map .arrow { font-size:16px; color:rgba(8,145,178,.4); flex-shrink:0; }
+
+    .formula-block {
+      background:rgba(0,0,0,.25);
+      border-radius:8px; padding:12px 16px;
+      margin:10px 0; overflow-x:auto; text-align:center;
+    }
+    .formula-block .katex { color:rgba(255,255,255,.85); font-size:1.05em; }
+
+    @media (max-width:720px) {
+      .layout { flex-direction:column; }
+      .nav-col { position:static; flex:none; width:100%; }
+      .aside-col { display:none; }
+      .chain-map { flex-direction:column; align-items:flex-start; }
+      .chain-map .arrow { transform:rotate(90deg); }
+      .card-grid { grid-template-columns:1fr; }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'\\\\\\\\(',right:'\\\\\\\\)',display:false},{left:'\\\\\\\\[',right:'\\\\\\\\]',display:true}]});"></script>
+</head>
+<body>
+
+  <a class="back-link" href="../humanities.html">← 📚 人文与成长</a>
+
+  <div class="page">
+
+    <div class="title-area">
+      <h1>
+        马克思主义政治经济学
+        <span class="en">Marxist Political Economy</span>
+      </h1>
+      <div class="bar"></div>
+      <p class="brief">
+        马克思主义政治经济学以<strong>商品</strong>为逻辑起点，通过对商品二因素→劳动二重性→价值规律→剩余价值→资本积累→垄断资本主义的逐层剖析，
+        揭示了资本主义经济制度的本质、矛盾和发展趋势。
+      </p>
+    </div>
+
+    <!-- 逻辑链概览 -->
+    <div class="chain-map">
+      <span class="node">📦 商品</span>
+      <span class="arrow">→</span>
+      <span class="node">💰 货币</span>
+      <span class="arrow">→</span>
+      <span class="node">🔬 剩余价值</span>
+      <span class="arrow">→</span>
+      <span class="node">🏭 资本积累</span>
+      <span class="arrow">→</span>
+      <span class="node">🏢 垄断</span>
+      <span class="arrow">→</span>
+      <span class="node">🌍 全球化</span>
+    </div>
+
+    <div class="layout">
+
+      <nav class="nav-col">
+        <div class="nav-title">目录</div>
+        <a href="#commodity">📦 商品与货币——分析的起点</a>
+        <a href="#surplus">🔬 剩余价值——资本主义的秘密</a>
+        <a href="#accumulation">🏭 资本积累与再生产</a>
+        <a href="#monopoly">🏢 垄断资本主义——自由竞争→垄断</a>
+      </nav>
+
+      <main class="main-col">
+
+        <!-- ============================================================ -->
+        <!-- 第一章：商品与货币 -->
+        <!-- ============================================================ -->
+        <section id="commodity">
+          <div class="chapter-title">
+            商品与货币
+            <span class="num">政治经济学的起点</span>
+          </div>
+          <div class="chapter-bar"></div>
+
+          <div class="chapter-block">
+
+            <!-- 商品二因素 -->
+            <div class="section-item">
+              <div class="sec-title">📦 商品二因素——一切分析从这里开始</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：为什么商品有使用价值和价值两重属性？</div>
+                <div class="step"><span class="num">1</span><span>商品是用来交换的劳动产品——要有用（使用价值）才能被人需要</span></div>
+                <div class="step"><span class="num">2</span><span>但不同的商品（如小麦和铁）使用价值不同，无法直接比较——需要共同的东西</span></div>
+                <div class="step"><span class="num">3</span><span>共同点：都是人类的劳动产品——凝结了<strong>无差别的人类劳动</strong></span></div>
+                <div class="step"><span class="num">4</span><span>→ 这个凝结的劳动就是<strong>价值</strong>——交换的<strong>基础</strong></span></div>
+                <div class="step"><span class="arr">↓</span><span><strong>结论</strong>：商品是使用价值和价值的统一体。使用价值是价值的<strong>物质承担者</strong>，价值是交换的基础</span></div>
+              </div>
+            </div>
+
+            <!-- 劳动二重性 -->
+            <div class="section-item">
+              <div class="sec-title">🔨 劳动二重性——理解政治经济学的枢纽</div>
+              <div class="card-grid">
+                <div class="card">
+                  <div class="card-title">具体劳动</div>
+                  <p>生产使用价值的具体形式劳动（木匠做桌子、裁缝做衣服）。体现<strong>人与自然</strong>的关系。不同的具体劳动生产不同的使用价值。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">抽象劳动</div>
+                  <p>无差别的一般人类劳动（脑力和体力的耗费）。体现<strong>人与人</strong>的社会关系。抽象劳动<strong>形成价值</strong>。</p>
+                </div>
+              </div>
+              <div class="insight">
+                <strong>💡 关键</strong>：具体劳动和抽象劳动是<strong>同一劳动的两种规定</strong>，不是两个劳动过程。
+                劳动二重性学说是马克思的<strong>首创</strong>，是理解政治经济学的枢纽。
+              </div>
+            </div>
+
+            <!-- 价值量与价值规律 -->
+            <div class="section-item">
+              <div class="sec-title">📐 价值量与价值规律</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：价值量如何决定？</div>
+                <div class="step"><span class="num">1</span><span>商品价值量由<strong>社会必要劳动时间</strong>决定——不是某个人的劳动时间，而是社会平均</span></div>
+                <div class="step"><span class="num">2</span><span>→ 劳动生产率越高，单位商品所含劳动时间越少，价值量越小</span></div>
+                <div class="step"><span class="num">3</span><span>→ 交换以价值量为基础——<strong>等价交换</strong>是价值规律的要求</span></div>
+                <div class="step"><span class="arr">↓</span><span>价值规律的三重作用：①自发调节资源配置 ②刺激生产力发展 ③导致两极分化</span></div>
+              </div>
+            </div>
+
+            <!-- 货币 -->
+            <div class="section-item">
+              <div class="sec-title">💰 货币——商品交换的必然产物</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：从物物交换到货币</div>
+                <div class="step"><span class="num">1</span><span>最初的交换是偶然的物物交换（一只羊换两把斧头）</span></div>
+                <div class="step"><span class="num">2</span><span>→ 交换扩大后，需要一种商品充当"一般等价物"——大家都接受的中介</span></div>
+                <div class="step"><span class="num">3</span><span>→ 一般等价物最终固定在金银上——<strong>货币</strong>产生</span></div>
+                <div class="step"><span class="num">4</span><span>→ 货币的职能：价值尺度·流通手段·贮藏手段·支付手段·世界货币</span></div>
+                <div class="note highlight">
+                  <span class="label">📝 记忆口诀</span>
+                  <p><strong>价值尺度想就行</strong>（观念上的货币，脑补标价）<br>
+                  <strong>流通手段现付清</strong>（一手交钱一手交货，钱货同时）<br>
+                  <strong>支付手段有时间差</strong>（赊账、交税、还贷、发工资）<br>
+                  <strong>贮藏得是金银锭</strong>（必须是足值的金属货币，纸币不行）<br>
+                  <strong>世界货币走出国</strong>（黄金/美元在国际流通）</p>
+                </div>
+                <div class="note highlight" style="border-color:rgba(239,68,68,.3);">
+                  <span class="label" style="background:rgba(239,68,68,.15); color:#ef4444;">⚠️ 易错点</span>
+                  <p><strong>贮藏得是金银锭</strong>——注意"现实的货币"范围太大，包含了纸币；但纸币不能当贮藏手段（会贬值）。所以必须是<strong>"足值的金属货币"</strong>——排除了纸币，更精确。</p>
+                  <p style="margin-top:4px; font-size:12px; color:rgba(255,255,255,.6);">💡 二选一技巧：两个选项看起来都对时，范围更窄更精确的那个一般是正确答案。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 商品经济的基本矛盾：私人劳动与社会劳动 -->
+            <div class="section-item">
+              <div class="sec-title">⚡ 私人劳动与社会劳动——商品经济的基本矛盾</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条</div>
+                <div class="step"><span class="num">1</span><span>私人劳动：每个生产者自己决定生产什么、生产多少，劳动是私人的事</span></div>
+                <div class="step"><span class="num">2</span><span>→ 但商品是<strong>为社会生产</strong>的——必须通过交换满足他人的需要</span></div>
+                <div class="step"><span class="num">3</span><span>→ 社会劳动：只有在交换成功时，私人劳动才被承认为社会劳动的一部分</span></div>
+                <div class="step"><span class="arr">↓</span><span>商品卖不出去 = 私人劳动无法转化为社会劳动 = 抽象劳动不被社会承认</span></div>
+              </div>
+
+              <div class="note highlight">
+                <span class="label">💭 拓展思考——价值的社会历史性</span>
+                <p>马克思说"价值是凝结在商品中的一般人类劳动"，但这个"凝结"的社会承认<strong>不是一劳永逸</strong>的。社会标准会随时间漂移：</p>
+                <p style="margin-top:6px">
+                🏺 <strong>古董增值</strong>——宋代瓷碗当年只是普通碗，因稀缺性+文化意义价值暴增<br>
+                📱 <strong>旧技术贬值</strong>——NCF推荐系统的使用价值仍在（能做推荐），但社会需要更好的DCN，其价值缩水<br>
+                🎨 <strong>梵高生前vs死后</strong>——画还是那些画，生前社会不承认→穷困；死后社会承认→天价
+                </p>
+                <p style="margin-top:8px; color:rgba(251,191,36,1); font-size:12px;">
+                → 这是马克思框架里没展开的一个缺口：使用价值的"有用性"在自然属性上可能是稳定的（NCF能用），但<strong>社会认可的有用性</strong>是波动的。真正决定"抽象劳动能否被承认"的，是社会需要的变化，不是劳动本身。
+                </p>
+              </div>
+              <div class="note highlight" style="border-color:rgba(239,68,68,.3);">
+                <span class="label" style="background:rgba(239,68,68,.15); color:#ef4444;">⚠️ 易混淆</span>
+                <p><strong>矛盾的解决途径 vs 矛盾的爆发形式</strong></p>
+                <p>✅ 解决途径：日常的<strong>商品交换</strong>——卖出去，私人劳动就被社会承认了，矛盾暂时缓解。<br>
+                ❌ 经济危机不是解决途径，而是矛盾<strong>积累到极限后的暴力爆发</strong>（工厂倒闭、商品销毁）。</p>
+                <p style="margin-top:4px; font-size:12px; color:rgba(255,255,255,.6);">类比：感冒的根源是病毒，发烧是爆发症状，不能把退烧当解决病毒的根本途径。</p>
+              </div>
+            </div>
+
+            <!-- 资本主义基本矛盾 -->
+            <div class="section-item">
+              <div class="sec-title">💥 资本主义基本矛盾——资本主义特有的根源</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条</div>
+                <div class="step"><span class="num">1</span><span>资本主义生产方式的特点：<strong>生产社会化</strong>——分工协作使生产成为社会性活动</span></div>
+                <div class="step"><span class="num">2</span><span>→ 但生产资料和产品归<strong>资本家私人占有</strong>——生产越社会化，与私有制的冲突越尖锐</span></div>
+                <div class="step"><span class="num">3</span><span>→ <strong>生产社会化 vs 生产资料资本主义私人占有</strong> = 资本主义基本矛盾</span></div>
+                <div class="step"><span class="arr">↓</span><span>这是<strong>资本主义社会一切矛盾的总根源</strong>，经济危机是其集中表现</span></div>
+              </div>
+              <div class="card-grid" style="grid-template-columns:1fr 1fr;">
+                <div class="card" style="border-color:rgba(99,102,241,.3);">
+                  <div class="card-title" style="color:#818cf8;">商品经济基本矛盾</div>
+                  <p><strong>私人劳动 vs 社会劳动</strong></p>
+                  <p>存在于<strong>一切商品经济</strong>中——包括奴隶社会、封建社会、社会主义社会的商品经济。</p>
+                  <p style="font-size:12px; color:rgba(255,255,255,.5);">更广，但不等于"资本主义的一切矛盾根源"</p>
+                </div>
+                <div class="card" style="border-color:rgba(251,191,36,.3);">
+                  <div class="card-title" style="color:#fbbf24;">资本主义基本矛盾</div>
+                  <p><strong>生产社会化 vs 私有制</strong></p>
+                  <p>只存在于<strong>资本主义</strong>，是<strong>资本主义社会一切矛盾的根源</strong>，经济危机的根本原因。</p>
+                  <p style="font-size:12px; color:rgba(255,255,255,.5);">更专，瞄准"资本主义社会"这个限定词</p>
+                </div>
+              </div>
+              <div class="insight" style="border-left-color:#fbbf24;">
+                <strong>💡 区分关键</strong>：题干出现<strong>"资本主义社会"</strong>这个限定词时，选资本主义基本矛盾，不是商品经济基本矛盾。<br>
+                商品经济基本矛盾横跨多种社会形态，资本主义基本矛盾<strong>只属于资本主义</strong>。
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 第二章：剩余价值 -->
+        <!-- ============================================================ -->
+        <section id="surplus">
+          <div class="chapter-title">
+            剩余价值
+            <span class="num">资本主义生产的秘密</span>
+          </div>
+          <div class="chapter-bar"></div>
+
+          <div class="chapter-block">
+
+            <div class="section-item">
+              <div class="sec-title">🔄 货币转化为资本——关键是劳动力成为商品</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：G→W→G' 的秘密</div>
+                <div class="step"><span class="num">1</span><span>简单商品流通：W（商品）→ G（货币）→ W（商品）——为买而卖</span></div>
+                <div class="step"><span class="num">2</span><span>资本流通：G（货币）→ W（商品）→ G'（更多货币）——为卖而买</span></div>
+                <div class="step"><span class="num">3</span><span>→ G' - G = <strong>剩余价值（m）</strong>——从哪儿来的？</span></div>
+                <div class="step"><span class="num">4</span><span>→ 货币购买了一种特殊商品：<strong>劳动力</strong>——它的使用能创造<strong>超过自身价值</strong>的价值</span></div>
+                <div class="step"><span class="arr">↓</span><span><strong>结论</strong>：剩余价值 = 雇佣工人创造的新价值 - 劳动力自身的价值。劳动力成为商品是货币转化为资本<strong>的前提</strong></span></div>
+              </div>
+            </div>
+
+            <!-- 核心公式 -->
+            <div class="section-item">
+              <div class="sec-title">📐 核心公式</div>
+              <div class="formula-block">
+                \\[ W = c + v + m \\]
+              </div>
+              <p class="desc" style="text-align:center;font-size:13px;color:rgba(255,255,255,.5)">
+                商品价值 = 不变资本 + 可变资本 + 剩余价值
+              </p>
+              <div class="card-grid">
+                <div class="card">
+                  <div class="card-title">不变资本（c）</div>
+                  <p>购买生产资料的资本——只转移价值，不创造新价值</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">可变资本（v）</div>
+                  <p>购买劳动力的资本——创造新价值，是剩余价值的<strong>唯一源泉</strong></p>
+                </div>
+                <div class="card">
+                  <div class="card-title">剩余价值率</div>
+                  <p>\\\\(m' = m/v\\\) ——反映对工人的剥削程度</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">利润率</div>
+                  <p>\\\\(p' = m/(c+v)\\\\) ——反映资本的总获利程度</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 剩余价值生产方法 -->
+            <div class="section-item">
+              <div class="sec-title">⚙️ 剩余价值的生产方法</div>
+              <div class="card-grid">
+                <div class="card">
+                  <div class="card-title">绝对剩余价值</div>
+                  <p>延长工作日或提高劳动强度——在必要劳动时间不变的情况下增加剩余劳动时间。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">相对剩余价值</div>
+                  <p>提高社会劳动生产率→缩短必要劳动时间→相对延长剩余劳动时间。本质效率驱动。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">超额剩余价值</div>
+                  <p>个别企业率先提高劳动生产率→个别价值低于社会价值→获得超额。是相对剩余价值的<strong>来源</strong>。</p>
+                </div>
+              </div>
+              <div class="insight">
+                <strong>💡 三者关系</strong><br>
+                绝对剩余价值→延长劳动时间（原始手段）；相对剩余价值→技术提升（发展手段）；
+                超额剩余价值是相对剩余价值的<strong>驱动力</strong>——每个企业都追求超额剩余价值，结果全社会劳动生产率提高→形成相对剩余价值。
+              </div>
+            </div>
+
+            <!-- 资本主义基本矛盾 -->
+            <div class="section-item">
+              <div class="sec-title">⚡ 资本主义基本矛盾</div>
+              <p class="desc">
+                <strong>生产社会化</strong>与<strong>生产资料资本主义私人占有</strong>之间的矛盾——资本主义一切矛盾的<strong>总根源</strong>。
+              </p>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：基本矛盾如何产生经济危机？</div>
+                <div class="step"><span class="num">1</span><span>生产高度社会化——分工细化、市场扩大、生产协作全球化</span></div>
+                <div class="step"><span class="num">2</span><span>但生产资料和产品归资本家私人占有——生产归谁说了算？资本家！</span></div>
+                <div class="step"><span class="num">3</span><span>→ 资本家为追求利润无限扩大生产，但工人的购买力受工资限制</span></div>
+                <div class="step"><span class="num">4</span><span>→ 生产无限扩大的趋势 vs 有支付能力的需求相对缩小 → <strong>生产相对过剩</strong>（不是绝对过剩！）</span></div>
+                <div class="step"><span class="num">5</span><span>→ 危机爆发：商品积压→工厂减产裁员→购买力进一步下降→恶性循环</span></div>
+                <div class="step"><span class="arr">↓</span><span>危机周期：危机→萧条→复苏→高涨→危机……周而复始</span></div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 第三章：资本积累 -->
+        <!-- ============================================================ -->
+        <section id="accumulation">
+          <div class="chapter-title">
+            资本积累与再生产
+            <span class="num">资本主义的发展趋势</span>
+          </div>
+          <div class="chapter-bar"></div>
+
+          <div class="chapter-block">
+
+            <!-- 资本积累 -->
+            <div class="section-item">
+              <div class="sec-title">🏭 资本积累——剩余价值转化为资本</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：剩余价值→资本积累→两极分化</div>
+                <div class="step"><span class="num">1</span><span>资本家不把全部剩余价值都消费掉——把一部分<strong>再转化为资本</strong>，扩大生产</span></div>
+                <div class="step"><span class="num">2</span><span>→ 资本有机构成提高（c/v比上升）：更多资本买机器，相对减少对劳动力的需求</span></div>
+                <div class="step"><span class="num">3</span><span>→ 造成<strong>相对过剩人口</strong>（产业后备军）——不是人口太多，是资本不需要那么多人</span></div>
+                <div class="step"><span class="num">4</span><span>→ 一端是财富的积累，另一端是贫困的积累——资本主义的<strong>两极分化</strong></span></div>
+                <div class="step"><span class="arr">↓</span><span>资本积累的历史趋势：为资本主义灭亡准备了物质条件和掘墓人（无产阶级）</span></div>
+              </div>
+            </div>
+
+            <!-- 社会再生产 -->
+            <div class="section-item">
+              <div class="sec-title">🔄 社会总再生产的条件</div>
+              <p class="desc">
+                社会总产品按最终用途分：<strong>第I部类</strong>（生产资料）和<strong>第II部类</strong>（消费资料）。
+                核心问题是社会总产品的<strong>价值补偿和实物补偿</strong>——卖得出去、买得回来。
+              </p>
+              <div class="formula-block">
+                \\[ \\text{简单再生产：} \\quad I(v + m) = II(c) \\]
+              </div>
+              <div class="formula-block">
+                \\[ \\text{扩大再生产前提：} \\quad I(c+v+m) > I(c) + II(c) \\]
+              </div>
+              <div class="insight">
+                <strong>💡 意义</strong><br>
+                社会总再生产公式揭示了<strong>社会化大生产的比例性要求</strong>——各部类必须保持一定比例才能顺利运行。
+                但资本主义的私人占有和逐利本性使这种比例不断被破坏→经济危机。
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- 第四章：垄断资本主义 -->
+        <!-- ============================================================ -->
+        <section id="monopoly">
+          <div class="chapter-title">
+            垄断资本主义
+            <span class="num">自由竞争→垄断→帝国主义</span>
+          </div>
+          <div class="chapter-bar"></div>
+
+          <div class="chapter-block">
+
+            <!-- 垄断的形成 -->
+            <div class="section-item">
+              <div class="sec-title">🏢 从自由竞争到垄断——必然的历史过程</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 推演链条：自由竞争为什么必然走向垄断？</div>
+                <div class="step"><span class="num">1</span><span>自由竞争→资本集中（大资本吞并小资本，小资本合并成大资本）</span></div>
+                <div class="step"><span class="num">2</span><span>→ <strong>生产集中</strong>：生产资料、劳动力、商品的生产日益集中于少数大企业</span></div>
+                <div class="step"><span class="num">3</span><span>→ 当生产集中到相当高度时，少数大企业之间达成协议→共同控制生产和销售</span></div>
+                <div class="step"><span class="num">4</span><span>→ <strong>垄断产生</strong>：卡特尔/辛迪加/托拉斯/康采恩——获取高额垄断利润</span></div>
+                <div class="step"><span class="arr">↓</span><span>三个原因：①极少数企业容易联合②企业规模巨大限制竞争③避免两败俱伤</span></div>
+              </div>
+            </div>
+
+            <!-- 垄断不能消除竞争——关键的推演链 -->
+            <div class="section-item">
+              <div class="sec-title">⚡ 为什么垄断不能消除竞争？——教材里常被压缩的逻辑</div>
+              <div class="reasoning-chain">
+                <div class="chain-title">🔗 完整推演链条：垄断≠消灭竞争</div>
+                <div class="step"><span class="num">❶</span><span><strong>垄断没有消除产生竞争的经济条件</strong></span></div>
+                <div class="step"><span class="num" style="background:rgba(8,145,178,.08);font-size:11px">↪</span><span>竞争产生的根源是<strong>商品经济</strong>。只要有商品生产和交换，价值规律就发挥作用，就必然存在竞争。垄断垄断的是市场，但<strong>没有消灭商品经济本身</strong>。</span></div>
+                <div class="step"><span class="num">❷</span><span><strong>垄断必须通过竞争来维持</strong></span></div>
+                <div class="step"><span class="num" style="background:rgba(8,145,178,.08);font-size:11px">↪</span><span>垄断地位不是一劳永逸的——其他企业可能以新技术、新产品挑战垄断者。垄断组织必须持续通过竞争手段（技术升级、价格战、控制原料等）来<strong>巩固和扩大自己的垄断地位</strong>。</span></div>
+                <div class="step"><span class="num">❸</span><span><strong>任何垄断组织都不可能包罗万象</strong></span></div>
+                <div class="step"><span class="num" style="background:rgba(8,145,178,.08);font-size:11px">↪</span><span>社会生产是复杂多样的，存在无数未垄断的部门和中小企业。垄断组织内部、垄断组织之间、垄断组织与非垄断组织之间——<strong>多层次的竞争同时存在</strong>。</span></div>
+                <div class="step"><span class="arr">↓</span><span><strong>结论</strong>：垄断从竞争中产生，但不能消灭竞争——而是与竞争<strong>并存</strong>，使竞争在更高层次上展开</span></div>
+              </div>
+              <div class="insight">
+                <strong>💡 竞争特点的变化</strong><br>
+                自由竞争（目的：平均利润，手段：经济为主，范围：国内）→
+                垄断竞争（目的：高额垄断利润，手段：经济+非经济，范围：国内+国际，后果：阻碍技术进步）
+              </div>
+            </div>
+
+            <!-- 金融资本与帝国主义 -->
+            <div class="section-item">
+              <div class="sec-title">🏛️ 金融资本与帝国主义的五大特征</div>
+              <div class="card-grid">
+                <div class="card">
+                  <div class="card-title">金融资本</div>
+                  <p>工业垄断资本+银行垄断资本融合。金融寡头通过<strong>"参与制"</strong>（层层控股）控制经济，通过"个人联合"控制政治。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">帝国主义五特征</div>
+                  <p>①垄断组织起决定作用 ②金融寡头统治 ③资本输出意义重大 ④国际垄断同盟形成 ⑤列强分割世界完毕。实质：垄断资本获取高额垄断利润。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">国家垄断资本主义</div>
+                  <p>国家政权+私人垄断资本结合。形式：国有企业·公私合营·宏观调节·微观规制。可缓解矛盾但<strong>不能解决</strong>资本主义基本矛盾。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">经济全球化</div>
+                  <p>生产全球化（跨国公司主导）+贸易全球化+金融全球化。积极作用促进资源配置；负面：差距扩大、环境恶化、主权受冲击。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 当代资本主义 -->
+            <div class="section-item">
+              <div class="sec-title">🏛️ 当代资本主义新变化</div>
+              <div class="card-grid">
+                <div class="card">
+                  <div class="card-title">所有制变化</div>
+                  <p>私人资本→私人股份资本→国家资本→法人资本。所有权与经营权分离。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">经济新特点</div>
+                  <p>去工业化、产业空心化；经济高度金融化，虚拟经济与实体经济脱节；财政债务化；金融危机频发。</p>
+                </div>
+                <div class="card">
+                  <div class="card-title">政治困境</div>
+                  <p>西式民主陷入困境、政党极化、社会撕裂、贫富差距扩大、社会流动性退化。</p>
+                </div>
+              </div>
+              <div class="insight">
+                <strong>💡 实质不变</strong><br>
+                虽然形式在变，但资本主义的<strong>根本性质没有改变</strong>——生产资料私有制、雇佣劳动制度、
+                剩余价值生产、基本矛盾依然存在。这些变化是在资本主义框架内的调整。
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+
+      </main>
+
+      <aside class="aside-col">
+        <div class="callout">
+          <strong>📖 政治经济学</strong><br><br>
+          <strong>研究对象：</strong>生产关系及其发展规律<br>
+          <strong>逻辑起点：</strong>商品<br>
+          <strong>核心概念：</strong>剩余价值
+        </div>
+        <div class="callout tip">
+          <strong>🔗 逻辑主线</strong><br>
+          商品→货币→劳动力→<br>
+          剩余价值→资本→积累→<br>
+          集中→垄断→帝国主义
+        </div>
+        <div class="callout warn">
+          <strong>📌 核心公式</strong><br>
+          W = c + v + m<br>
+          m' = m / v<br>
+          p' = m / (c+v)<br>
+          I(v+m) = II(c)
+        </div>
+        <div class="callout">
+          <strong>🎯 关键概念</strong><br>
+          · 社会必要劳动时间<br>
+          · 劳动二重性<br>
+          · 不变资本/可变资本<br>
+          · 绝对/相对剩余价值<br>
+          · 资本有机构成<br>
+          · 参与制（金融寡头）<br>
+          · 生产相对过剩
+        </div>
+      </aside>
+
+    </div>
+
+    <div class="footer">
+      马克思主义政治经济学 · 商品→剩余价值→垄断 层层推进
+    </div>
+
+  </div>
+
+</body>
+</html>
